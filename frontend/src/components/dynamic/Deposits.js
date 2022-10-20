@@ -8,11 +8,12 @@ function preventDefault(event) {
 }
 
 export default function Deposits() {
+  console.log("Deposits function loaded.")
   return (
     <React.Fragment>
       <Title>Recent Deposits</Title>
       <Typography component="p" variant="h4">
-        $3,024.00
+        {/* TODO fetch from back-end */}
       </Typography>
       <Typography color="text.secondary" sx={{ flex: 1 }}>
         on 15 March, 2019
