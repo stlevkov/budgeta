@@ -21,8 +21,12 @@ import { mainListItems, secondaryListItems } from "./listItems";
 //import Chart from "./Chart";
 import Deposits from "./dynamic/Deposits";
 import Orders from "./dynamic/Orders";
+import Incomes from "./dynamic/Incomes";
+
+console.log("Dashboard.js loaded. Loading functions...")
 
 function Copyright(props) {
+  console.log("Copyright function loaded.")
   return (
     <Typography
       variant="body2"
@@ -89,6 +93,7 @@ const Drawer = styled(MuiDrawer, {
 const mdTheme = createTheme();
 
 function DashboardContent() {
+  console.log("DashboardContent function loaded.")
   const [open, setOpen] = React.useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
@@ -178,6 +183,18 @@ function DashboardContent() {
                   }}
                 >
                   {/* <Chart /> */}
+                </Paper>
+              </Grid>
+               {/* Incomes */}
+               <Grid item xs={12} md={4} lg={3}>
+                <Paper
+                  sx={{
+                    p: 2,
+                    display: "flex",
+                    flexDirection: "column",
+                    height: 240,
+                  }}>
+                  <Incomes />
                 </Paper>
               </Grid>
               {/* Recent Deposits */}
