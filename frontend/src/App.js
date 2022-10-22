@@ -1,9 +1,8 @@
 // import { ThemeProvider, createTheme } from "@mui/material/styles";
 // import CssBaseline from "@mui/material/CssBaseline";
-// import Header from "./components/static/Header";
 
 import "./App.css";
-import Dashboard from "./components/Dashboard";
+import Dashboard from "./pages/home/Dashboard";
 
 import React from "react";
 
@@ -20,7 +19,7 @@ function App() {
     // <ThemeProvider theme={darkTheme}>
     //   <CssBaseline />
     //   <div className="App">
-    //     <Header />
+    //
     //   </div>
     // </ThemeProvider>
   );
