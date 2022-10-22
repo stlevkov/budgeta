@@ -18,7 +18,9 @@ public class IncomeServiceImpl implements IncomeService{
 
     @Override
     public void createIncome(Income income) throws ConstraintViolationException, TodoCollectionException {
+        System.out.println("Trying to create new Income: " + income);
         Optional<Income> incomeOptional = incomeRepo.findByName(income.getName());
+        System.out.println("Is the income already present? " + incomeOptional.isPresent());
         if(incomeOptional.isPresent()){
             throw new TodoCollectionException(TodoCollectionException.todoAlreadyExists());
         }

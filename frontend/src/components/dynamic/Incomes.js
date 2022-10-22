@@ -23,14 +23,14 @@ class Incomes extends React.Component {
             <React.Fragment>
                 <Title>Recent Deposits</Title>
                 <Typography component="p" variant="h4">
-                    <ul>
+                    
                         {this.state.incomes.map(income => (
                             // <li key={user.id}>
                             //     <Link to={`/${user.id}`}> {user.name}</Link>
                             // </li>
-                            <p>${income.value}</p>
+                            <p>${income.name}</p>
                         ))}
-                    </ul>
+                   
                 </Typography>
                 <Typography color="text.secondary" sx={{ flex: 1 }}>
                     on 15 March, 2019
