@@ -16,12 +16,14 @@ import Paper from "@mui/material/Paper";
 import Link from "@mui/material/Link";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import { mainListItems, secondaryListItems } from "./listItems";
 //import Chart from "./Chart";
-import Deposits from "./dynamic/Deposits";
 import Orders from "./dynamic/Orders";
 import Incomes from "./dynamic/Incomes";
+import FormDialog from "./dialogs/CreateExpenseDialog";
+
 
 console.log("Dashboard.js loaded. Loading functions...")
 
@@ -130,6 +132,11 @@ function DashboardContent() {
             >
               Dashboard
             </Typography>
+            <FormDialog/>
+            <IconButton color="inherit" 
+              aria-label="Add new Expense">
+              <AddShoppingCartIcon />
+            </IconButton>
             <IconButton color="inherit">
               <Badge badgeContent={4} color="secondary">
                 <NotificationsIcon />
@@ -185,8 +192,8 @@ function DashboardContent() {
                   {/* <Chart /> */}
                 </Paper>
               </Grid>
-               {/* Incomes */}
-               <Grid item xs={12} md={4} lg={3}>
+              {/* Incomes */}
+              <Grid item xs={12} md={4} lg={3}>
                 <Paper
                   sx={{
                     p: 2,
@@ -195,19 +202,6 @@ function DashboardContent() {
                     height: 240,
                   }}>
                   <Incomes />
-                </Paper>
-              </Grid>
-              {/* Recent Deposits */}
-              <Grid item xs={12} md={4} lg={3}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    display: "flex",
-                    flexDirection: "column",
-                    height: 240,
-                  }}
-                >
-                  <Deposits />
                 </Paper>
               </Grid>
               {/* Recent Orders */}
