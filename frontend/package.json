@@ -3,8 +3,8 @@
   "jest": {
   "transformIgnorePatterns": [
     "node_modules/(?!(react-leaflet|@react-leaflet|d3-*|axios))"
-  ],
-}
+  ]
+  },
   "version": "0.1.0",
   "private": true,
   "dependencies": {
