@@ -14,6 +14,8 @@ import Incomes from "../../components/dynamic/Incomes";
 import Copyright from "../components/Copyright";
 import Navbar from "../components/NavBar";
 import Sidebar from "../components/Sidebar";
+import ExpensesDirectionStack from "../../components/dynamic/ExpensesStack";
+import Divider from '@mui/material/Divider';
 
 console.log("Dashboard.js loaded. Loading functions...");
 
@@ -55,6 +57,10 @@ function Dashboard() {
           }}
         >
           <Toolbar />
+          <Container maxWidth sx={{ mt: 2, mb: 2 }}>
+            <ExpensesDirectionStack/>
+          </Container>
+          <Divider/>
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             <Grid container spacing={3}>
               {/* Chart */}
