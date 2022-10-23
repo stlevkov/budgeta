@@ -42,7 +42,7 @@ const ExpensesDirectionStack = () => {
           console.log("Something is wrong")
         }
       } catch (err) {
-        console.log(err);
+        //console.log(err); TODO makes tests fail because of network delay response
         setExpenses(defaultExpenses);
       }
     };
