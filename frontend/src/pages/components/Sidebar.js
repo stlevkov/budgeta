@@ -11,7 +11,7 @@ import {
 } from "../components/SidebarLinkList";
 
 const Sidebar = styled(MuiDrawer, {
-  shouldForwardProp: (prop) => prop !== "open",
+  shouldForwardProp: (prop) => prop !== "open" && prop !== "sidebarWidth",
 })(({ theme, open, sidebarWidth }) => ({
   "& .MuiDrawer-paper": {
     position: "relative",

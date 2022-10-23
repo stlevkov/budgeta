@@ -9,7 +9,7 @@ import Badge from "@mui/material/Badge";
 import FormDialog from "../../components/dialogs/CreateExpenseDialog";
 
 const Navbar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== "open",
+  shouldForwardProp: (prop) => prop !== "open" && prop !== "sidebarWidth",
 })(({ theme, open, sidebarWidth }) => ({
   zIndex: theme.zIndex.drawer + 1,
   transition: theme.transitions.create(["width", "margin"], {

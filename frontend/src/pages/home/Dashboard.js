@@ -17,8 +17,6 @@ import Sidebar from "../components/Sidebar";
 
 console.log("Dashboard.js loaded. Loading functions...");
 
-const sidebarWidth = 240;
-
 const mdTheme = createTheme();
 
 function Dashboard() {
@@ -28,6 +26,7 @@ function Dashboard() {
     setOpen(!open);
   };
 
+  const sidebarWidth = 240;
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: "flex" }}>

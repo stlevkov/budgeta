@@ -1,8 +1,0 @@
-import { render, screen } from '@testing-library/react';
-import Dashboard from "./components/Dashboard";
-
-test('renders test', () => {
-  render(<Dashboard />);
-  const linkElement = screen.getByText('Bugeta App');
-  expect(linkElement).toBeInTheDocument();
-});
