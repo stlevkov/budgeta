@@ -1,6 +1,5 @@
 package com.mybudget.app.model;
 
-import lombok.ToString;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotNull;

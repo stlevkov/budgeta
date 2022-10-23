@@ -2,10 +2,8 @@ package com.mybudget.app.controller;
 
 import com.mybudget.app.exception.TodoCollectionException;
 import com.mybudget.app.model.Income;
-import com.mybudget.app.model.TodoDTO;
 import com.mybudget.app.repository.IncomeRepository;
 import com.mybudget.app.service.IncomeService;
-import com.mybudget.app.service.TodoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
