@@ -1,6 +1,6 @@
 /*
     Budgeta Application
-    Copyright (C) 2022  S.K.Levkov, K.K.Ivanov
+    Copyright (C) 2022  S.Levkov, K.Ivanov
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -12,14 +12,20 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
  */
-package com.mybudget.app.service;
+package com.mybudget.app.exception;
 
-import com.mybudget.app.exception.ValidationCollectionException;
-import com.mybudget.app.model.Expense;
+public class ValidationCollectionException extends Exception {
+    private static final long serialVersionUID = 1L;
 
-import javax.validation.ConstraintViolationException;
+    public ValidationCollectionException(String message){
+        super(message);
+    }
 
-public interface ExpenseService {
+    public static String todoNotFound(String id){
+        return "Item with " + id + " not found.";
+    }
 
-    void createExpense(Expense expense) throws ConstraintViolationException, ValidationCollectionException;
+    public static String alreadyExists(){
+        return "Item with given name already Exists";
+    }
 }
