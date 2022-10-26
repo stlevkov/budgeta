@@ -48,7 +48,6 @@ function SavingsDirectionStack() {
 
     fetched.then((result) => {
       setSavings(result);
-      console.log(result);
     });
   }, []);
 
@@ -65,7 +64,7 @@ function SavingsDirectionStack() {
                 <Typography
                   component="p"
                   align="left"
-                  color="teal"
+                  color="#9ccc65"
                   variant="standard"
                 >
                   {saving.name}
@@ -74,7 +73,7 @@ function SavingsDirectionStack() {
               <Typography
                 sx={{ mt: 1 }}
                 component="p"
-                color="teal"
+                color="#b0b0b0"
                 align="left"
                 variant="h5"
               >

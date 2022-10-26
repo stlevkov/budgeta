@@ -90,7 +90,7 @@ const ExpensesDirectionStack = () => {
               <Typography
                 sx={{ mt: 1 }}
                 component="p"
-                color="grey"
+                color="#b0b0b0"
                 align="left"
                 variant="h5"
               >
