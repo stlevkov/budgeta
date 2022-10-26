@@ -61,13 +61,13 @@ function Dashboard() {
           }}
         >
           {/* Expense Stack */}
-          <Container sx={{ mt: 2, mb: 2 }}>
+          <Container maxWidth sx={{ mt: 2, mb: 2 }}>
             <ExpensesDirectionStack />
           </Container>
 
           <Divider />
           {/* Analytic Stack */}
-          <Container sx={{ mt: 2, mb: 2 }}>
+          <Container maxWidth sx={{ mt: 2, mb: 2 }}> 
             {/* Incomes */}
             <Grid item xs={12} md={4} lg={3}>
               <Paper
@@ -89,13 +89,13 @@ function Dashboard() {
           </Container>
           <Divider>SAVINGS</Divider>
           {/* Savings Stack */}
-          <Container sx={{ mt: 2, mb: 2 }}>
+          <Container maxWidth sx={{ mt: 2, mb: 2 }}>
             <SavingsDirectionStack />
           </Container>
 
           <Divider />
           {/* Statistics Stack */}
-          <Container maxWidth="lg" sx={{ mt: 2, mb: 2 }}>
+          <Container maxWidth sx={{ mt: 2, mb: 4 }}>
             <Grid container spacing={3}>
               {/* Chart */}
               <Grid item xs={12} md={8} lg={9}>
