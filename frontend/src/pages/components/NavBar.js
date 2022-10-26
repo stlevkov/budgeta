@@ -7,6 +7,7 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import MenuIcon from "@mui/icons-material/Menu";
 import Badge from "@mui/material/Badge";
 import FormDialog from "../../components/dialogs/CreateExpenseDialog";
+import SettingsButton from "../../components/SettingsButton";
 
 const Navbar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open" && prop !== "sidebarWidth",
@@ -62,6 +63,7 @@ function NavBar({ open, toggleSidebar, sidebarWidth }) {
             <NotificationsIcon />
           </Badge>
         </IconButton>
+        <SettingsButton />
       </Toolbar>
     </Navbar>
   );
