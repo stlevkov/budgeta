@@ -1,6 +1,6 @@
 package com.mybudget.app.controller;
 
-import com.mybudget.app.exception.TodoCollectionException;
+import com.mybudget.app.exception.ValidationCollectionException;
 import com.mybudget.app.model.Income;
 import com.mybudget.app.repository.IncomeRepository;
 import com.mybudget.app.service.IncomeService;
@@ -61,7 +61,7 @@ public class IncomeController {
             return new ResponseEntity<>(income, HttpStatus.CREATED);
         } catch (ConstraintViolationException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
-        } catch (TodoCollectionException e) {
+        } catch (ValidationCollectionException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         }
     }

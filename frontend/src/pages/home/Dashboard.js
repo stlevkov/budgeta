@@ -73,7 +73,7 @@ function Dashboard() {
             />
           </Divider>
           {/* Expense Stack */}
-          <Container sx={{ mt: 2, mb: 4 }}>
+          <Container maxWidth sx={{ mt: 2, mb: 4 }}>
             <ExpensesDirectionStack />
           </Container>
 
@@ -89,7 +89,7 @@ function Dashboard() {
               label="INCOME"
             />
           </Divider>
-          <Container sx={{ mt: 2, mb: 4 }}>
+          <Container maxWidth sx={{ mt: 2, mb: 4 }}>
             {/* Incomes */}
             <Grid item xs={12} md={4} lg={3}>
               <Paper
@@ -121,7 +121,7 @@ function Dashboard() {
             />
           </Divider>
           {/* Savings Stack */}
-          <Container sx={{ mt: 2, mb: 4 }}>
+          <Container maxWidth sx={{ mt: 2, mb: 4 }}>
             <SavingsDirectionStack />
           </Container>
 
@@ -137,7 +137,7 @@ function Dashboard() {
             />
           </Divider>
           {/* Statistics Stack */}
-          <Container maxWidth="lg" sx={{ mt: 2, mb: 4 }}>
+          <Container maxWidth sx={{ mt: 2, mb: 4 }}>
             <Grid container spacing={3}>
               {/* Chart */}
               <Grid item xs={12} md={8} lg={9}>

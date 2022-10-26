@@ -1,6 +1,20 @@
+/*
+    Budgeta Application
+    Copyright (C) 2022  S.K.Levkov, K.K.Ivanov
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+ */
 package com.mybudget.app.controller;
 
-import com.mybudget.app.exception.TodoCollectionException;
+import com.mybudget.app.exception.ValidationCollectionException;
 import com.mybudget.app.model.Saving;
 import com.mybudget.app.repository.SavingRepository;
 import com.mybudget.app.service.SavingService;
@@ -60,7 +74,7 @@ public class SavingController {
             return new ResponseEntity<>(saving, HttpStatus.CREATED);
         } catch (ConstraintViolationException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
-        } catch (TodoCollectionException e) {
+        } catch (ValidationCollectionException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         }
     }
