@@ -14,10 +14,7 @@
  */
 package com.mybudget.app.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -26,10 +23,19 @@ import java.math.BigDecimal;
 
 @Setter
 @Getter
-@AllArgsConstructor
+@NoArgsConstructor
 @ToString
 @Document(collection = "cost_analytics")
 public class CostAnalytic {
+
+    public CostAnalytic(BigDecimal targetSaving){
+        this.targetSaving = targetSaving;
+    }
+
+    public CostAnalytic(String id, BigDecimal targetSaving){
+        this.id = id;
+        this.targetSaving = targetSaving;
+    }
 
     @Id
     private String id;
