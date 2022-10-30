@@ -8,6 +8,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Badge from "@mui/material/Badge";
 import FormDialog from "../../components/dialogs/CreateExpenseDialog";
 import SettingsButton from "../../components/SettingsButton";
+import InputTargetSaving from "../../components/dynamic/TargetSaving";
 
 const Navbar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open" && prop !== "sidebarWidth",
@@ -57,6 +58,7 @@ function NavBar({ open, toggleSidebar, sidebarWidth }) {
           Dashboard
         </Typography>
         <FormDialog />
+        <InputTargetSaving/>
 
         <IconButton color="inherit">
           <Badge badgeContent={4} color="secondary">
