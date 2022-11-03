@@ -8,13 +8,13 @@ import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 
 //import Chart from "./Chart";
-import Incomes from "../../components/dynamic/Incomes";
 import Copyright from "../components/Copyright";
 import Navbar from "../components/NavBar";
 import Sidebar from "../components/Sidebar";
 import ExpensesDirectionStack from "../../components/dynamic/ExpensesStack";
 import SavingsDirectionStack from "../../components/dynamic/SavingsStack";
 import Divider from "@mui/material/Divider";
+import CostAnalyticStack from "../../components/dynamic/CostAnalyticStack";
 
 console.log("Dashboard.js loaded. Loading functions...");
 
@@ -67,25 +67,8 @@ function Dashboard() {
 
           <Divider />
           {/* Analytic Stack */}
-          <Container maxWidth sx={{ mt: 2, mb: 2 }}> 
-            {/* Incomes */}
-            <Grid item xs={12} md={4} lg={3}>
-              <Paper
-                sx={{
-                  p: 2,
-                  display: "flex",
-                  flexDirection: "column",
-                }}
-              >
-                <Incomes />
-              </Paper>
-            </Grid>
-            {/* Recent Orders */}
-            {/* <Grid item xs={12}>
-              <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
-                <Orders />
-              </Paper>
-            </Grid>*/}
+          <Container maxWidth sx={{ mt: 2, mb: 2 }}>
+              <CostAnalyticStack />
           </Container>
           <Divider>SAVINGS</Divider>
           {/* Savings Stack */}
