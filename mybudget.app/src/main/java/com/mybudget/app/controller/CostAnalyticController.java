@@ -16,7 +16,6 @@ package com.mybudget.app.controller;
 
 import com.mybudget.app.exception.ValidationCollectionException;
 import com.mybudget.app.model.CostAnalytic;
-import com.mybudget.app.model.Saving;
 import com.mybudget.app.repository.CostAnalyticRepository;
 import com.mybudget.app.service.CostAnalyticService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,11 +23,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.ConstraintViolationException;
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class CostAnalyticController {

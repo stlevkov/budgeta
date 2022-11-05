@@ -5,7 +5,7 @@ import InputLabel from '@mui/material/InputLabel';
 import InputAdornment from '@mui/material/InputAdornment';
 import FormControl from '@mui/material/FormControl';
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 
 
 export default function InputTargetSaving() {
