@@ -6,7 +6,10 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
-import Link from '@mui/material/Link';
+import IncomeDialog from "../dialogs/IncomesDialog";
+import IconButton from '@mui/material/IconButton';
+import AddCardIcon from '@mui/icons-material/AddCard';
+import Grid from '@mui/material/Unstable_Grid2';
 
 const defaultCostAnalytics = {
   "id": "635c504c360cfd5b7e0dd036",
@@ -76,15 +79,16 @@ async function fetchCostAnalytics() {
 }
 
 export default function CostAnalyticStack() {
-  const [costAnalytic, setCostAnalytics] = useState({});
-  const [incomes, setIncomes] = useState({});
+  const [costAnalytic, setCostAnalytics] = useState(defaultCostAnalytics);
+  const [incomes, setIncomes] = useState(defaultIncomes);
   useEffect(() => {
     let fetchedCostAnalytics = fetchCostAnalytics();
-    fetchedCostAnalytics.then((result) => {
-      setCostAnalytics(result);
+    fetchedCostAnalytics.then((resultCostAnalytic) => {
+      setCostAnalytics(resultCostAnalytic);
     });
     let fetchedIncomes = fetchIncomes();
     fetchedIncomes.then((result) => {
+      console.log("Incomes: " + incomes)
       setIncomes(result);
     });
   }, []);
@@ -98,31 +102,48 @@ export default function CostAnalyticStack() {
       {/* All Incomes */}
       <Item>
         <React.Fragment>
-          <Tooltip title="All Collected Incomes" placement="top">
-            <Typography
-              component="p"
-              color="orange"
-              fontSize="1.5em"
-              variant="standard"
-              align="left"
-            >
-              INCOMES
-            </Typography>
-          </Tooltip>
-          <Typography
-            sx={{ mt: 2 }}
-            component="p"
-            color="#b0b0b0"
-            fontSize="3em"
-            align="left"
-          >
-            $ 4900
-          </Typography>
-          <Typography align="left">
-          <Link href="#" color="inherit" variant="inherit">
-            See Details
-          </Link>
-          </Typography>
+          <Grid container spacing={0}>
+            <Grid xs={6} md={12}>
+              <Tooltip title="All Collected Incomes" placement="top">
+                <Typography
+                  component="p"
+                  color="orange"
+                  fontSize="1.5em"
+                  variant="standard"
+                  align="left"
+                >
+                  INCOMES
+                </Typography>
+              </Tooltip>
+            </Grid>
+            <Grid xs={6} md={12}>
+              <Typography
+                sx={{ mt: 1 }}
+                component="p"
+                color="#b0b0b0"
+                fontSize="3em"
+                align="left"
+              >
+                $ {incomes.reduce((a, b) => a.value + b.value)}
+              </Typography>
+            </Grid>
+            <Grid xs={6} md={10}>
+              <Typography sx={{ mt: 0 }} fontSize="1.3em" align="left">
+                <IncomeDialog myData={incomes} />
+              </Typography>
+            </Grid>
+            <Grid xs={6} md={2}>
+              <IconButton
+                sx={{ mt: -1.5 }}
+                color="primary"
+                aria-label="add another income"
+                size="large"
+                align="right"
+              >
+                <AddCardIcon fontSize="inherit" />
+              </IconButton>
+            </Grid>
+          </Grid>
         </React.Fragment>
       </Item>
       {/* Unexpected for month */}
