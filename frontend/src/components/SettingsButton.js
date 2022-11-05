@@ -6,12 +6,12 @@ import Divider from "@mui/material/Divider";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import SettingsIcon from "@mui/icons-material/Settings";
-import CircleIcon from "@mui/icons-material/Circle";
-import { grey } from "@mui/material/colors";
+import ThemeSwitch from "./ThemeSwitch";
 
 export default function SettingsButton() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -40,12 +40,11 @@ export default function SettingsButton() {
         PaperProps={{
           elevation: 0,
           sx: {
-            background: grey[900],
+            background: "primary",
             width: 210,
             overflow: "visible",
             filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
             marginTop: "1.2em",
-
             "&:before": {
               content: '""',
               display: "block",
@@ -62,21 +61,26 @@ export default function SettingsButton() {
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        <List>
+        <List
+          sx={{
+            paddingTop: 0,
+            paddingBottom: 0,
+          }}
+        >
           <ListItem
             secondaryAction={
-              <IconButton edge="end" aria-label="delete">
-                <CircleIcon />
-              </IconButton>
+              <ThemeSwitch edge="end" aria-label="theme-switch" />
             }
           >
             <ListItemText>Theme</ListItemText>
           </ListItem>
           <Divider />
+
+          {/* Currency */}
           <ListItem
             secondaryAction={
-              <IconButton edge="end" aria-label="delete">
-                $
+              <IconButton size="small" edge="end" aria-label="currency">
+                USD
               </IconButton>
             }
           >
