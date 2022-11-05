@@ -58,7 +58,7 @@ function SavingsDirectionStack() {
     >
       {Object.values(savings).map((saving) => {
         return (
-          <Item>
+          <Item key={saving.name}>
             <React.Fragment>
               <Tooltip title={saving.description} placement="top">
                 <Typography

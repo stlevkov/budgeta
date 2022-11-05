@@ -75,7 +75,7 @@ const ExpensesDirectionStack = () => {
     >
       {expenses.map((expense) => {
         return (
-          <Item>
+          <Item key={expense.name}>
             <React.Fragment>
               <Tooltip title={expense.description} placement="top">
                 <Typography
