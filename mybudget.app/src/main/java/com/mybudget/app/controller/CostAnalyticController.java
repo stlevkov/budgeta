@@ -44,15 +44,50 @@ public class CostAnalyticController {
         return new ResponseEntity<>("No CostAnalytics available", HttpStatus.NOT_FOUND);
     }
 
-    @PutMapping("/api/costAnalytics")
+    @PutMapping("/api/costAnalytics/unexpected")
+    public ResponseEntity<?> updateUnexpected(@RequestBody BigDecimal unexpected){
+        System.out.println("Updating CostAnalytic - unexpected");
+        List<CostAnalytic> costAnalytics = costAnalyticRepository.findAll();
+        // TODO: 6.11.22 г. Move this to the Service and remove the code duplications
+        if(costAnalytics.size() < 1){
+            System.out.println("Unable to update the CostAnalytic, there is no one created yet. Creating...");
+            // creating
+            try {
+                costAnalyticService.createCostAnalytic(new CostAnalytic(BigDecimal.ZERO, unexpected));
+                System.out.println("Created.");
+                return new ResponseEntity<>(unexpected, HttpStatus.OK);
+            } catch (ValidationCollectionException e) {
+                return new ResponseEntity<>("Unable to create CostAnalytic. Reason: " + e.getMessage(),
+                        HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+
+        // updating
+        try {
+            CostAnalytic costAnalytic = new CostAnalytic(
+                    costAnalytics.get(0).getId(),
+                    costAnalytics.get(0).getTargetSaving() == null ?
+                            BigDecimal.ZERO : costAnalytics.get(0).getTargetSaving(),
+                    unexpected);
+            costAnalytic = costAnalyticService.updateCostAnalytic(costAnalytic);
+            System.out.println("Updated.");
+            return new ResponseEntity<>(costAnalytic, HttpStatus.OK);
+        } catch (ValidationCollectionException e) {
+            // TODO: 29.10.22 г. Remove this, its redundant
+            return new ResponseEntity<>("CostAnalytic with id " + costAnalytics.get(0).getId() + " is not found.", HttpStatus.NOT_FOUND);
+        }
+
+    }
+
+    @PutMapping("/api/costAnalytics/targetSaving")
     public ResponseEntity<?> updateCostAnalytic(@RequestBody BigDecimal targetSaving){
-        System.out.println("Updating CostAnalytic");
+        System.out.println("Updating CostAnalytic - targetSaving");
         List<CostAnalytic> costAnalytics = costAnalyticRepository.findAll();
         if(costAnalytics.size() < 1){
             System.out.println("Unable to update the CostAnalytic, there is no one created yet. Creating...");
             // creating
             try {
-                costAnalyticService.createCostAnalytic(new CostAnalytic(targetSaving));
+                costAnalyticService.createCostAnalytic(new CostAnalytic(targetSaving, BigDecimal.ZERO));
                 System.out.println("Created.");
                 return new ResponseEntity<>(targetSaving, HttpStatus.OK);
             } catch (ValidationCollectionException e) {
@@ -63,7 +98,11 @@ public class CostAnalyticController {
         // updating
         try {
             CostAnalytic costAnalytic = costAnalyticService.updateCostAnalytic(
-                    new CostAnalytic(costAnalytics.get(0).getId(), targetSaving));
+                    new CostAnalytic(
+                            costAnalytics.get(0).getId(),
+                            targetSaving,
+                            costAnalytics.get(0).getUnexpected() == null ?
+                                    BigDecimal.ZERO : costAnalytics.get(0).getUnexpected()));
             System.out.println("Updated.");
             return new ResponseEntity<>(costAnalytic, HttpStatus.OK);
         } catch (ValidationCollectionException e) {

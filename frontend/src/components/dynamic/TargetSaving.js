@@ -45,7 +45,7 @@ export default function InputTargetSaving() {
     if (event.key === "Enter") {
       console.log("Sending POST request with data: " + targetSaving);
       axios
-        .put("http://localhost:8080/api/costAnalytics", targetSaving, {
+        .put("http://localhost:8080/api/costAnalytics/targetSaving", targetSaving, {
           headers: {
             "Content-Type": "application/json",
           },

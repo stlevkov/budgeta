@@ -28,13 +28,15 @@ import java.math.BigDecimal;
 @Document(collection = "cost_analytics")
 public class CostAnalytic {
 
-    public CostAnalytic(BigDecimal targetSaving){
+    public CostAnalytic(BigDecimal targetSaving, BigDecimal unexpected){
         this.targetSaving = targetSaving;
+        this.unexpected = unexpected;
     }
 
-    public CostAnalytic(String id, BigDecimal targetSaving){
+    public CostAnalytic(String id, BigDecimal targetSaving, BigDecimal unexpected){
         this.id = id;
         this.targetSaving = targetSaving;
+        this.unexpected = unexpected;
     }
 
     @Id
@@ -43,29 +45,41 @@ public class CostAnalytic {
     /**
      * Target saving is the amount of money which must be, or marked to be saved for the month.
      * Based on this value, when changed - all the Expenses and Savings will be re-calculated.
+     * The user must update this value.
      */
     @NotNull
     private BigDecimal targetSaving;
 
     /**
+     * Unexpected are the amount of money which needs to be spend for the current month.
+     * They are not intent to be regular (e.g. monthly), but just one time spending.
+     * The user must update this value.
+     * TODO - Can be improved as List of object to hold history.
+     */
+    @NotNull
+    private BigDecimal unexpected;
+
+    /**
      * Daily recommended is the amount of money which is calculated based on the:
-     * (Incomes - (Expenses + Savings)) / 30.
-     * This is the maximum amount of money that should be spent daily.
+     * (Incomes - (Expenses + Savings + Unexpected)) / days in month.
+     * This is the maximum amount of money that should be spent daily (e.g. not exceed).
      * The value is not supposed to be updated by the user. It is calculated and read by the app.
      */
     @NotNull
     private BigDecimal dailyRecommended;
 
     /**
-     * Monthly target is the amount of money which needs to be spent over the month. This value is calculated
-     * based on the (Incomes - (Expenses + Savings)).
+     * Monthly target is the amount of money which needs to be spent over the month.
+     * This value is calculated based on the (Incomes - (Expenses + Savings + Unexpected)).
+     * The value is not supposed to be updated by the user. It is calculated and read by the app.
      */
     @NotNull
     private BigDecimal monthlyTarget;
 
     /**
-     * All expenses are the amount of money which is marked to be spent for the month. The value is calculated
-     * based on the sum of the Expenses.
+     * All expenses are the amount of money which is marked to be spent for the month.
+     * The value is calculated based on the sum of the regular monthly Expenses only.
+     * The value is not supposed to be updated by the user. It is calculated and read by the app.
      */
     @NotNull
     private BigDecimal allExpenses;
