@@ -67,7 +67,7 @@ export default function IncomeDialog({ myData }) {
 
   useEffect(() => {
     setIncomes(myData)
-  }, []);
+  }, [myData]);
 
   const [value, setValue] = React.useState(0);
 

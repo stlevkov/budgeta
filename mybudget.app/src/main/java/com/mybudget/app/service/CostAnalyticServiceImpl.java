@@ -53,6 +53,7 @@ public class CostAnalyticServiceImpl implements CostAnalyticService {
             throw new ValidationCollectionException("Creation of more CostAnalytic entries is not allowed");
         }
         System.out.println("Creating CostAnalytic from the service");
+        costAnalytic.setUnexpected(BigDecimal.ZERO);
         costAnalytic.setAllExpenses(BigDecimal.ZERO);
         costAnalytic.setDailyRecommended(BigDecimal.ZERO);
         costAnalytic.setMonthlyTarget(BigDecimal.ZERO);
@@ -62,6 +63,7 @@ public class CostAnalyticServiceImpl implements CostAnalyticService {
     @Override
     public CostAnalytic updateCostAnalytic(CostAnalytic costAnalytic) throws ConstraintViolationException, ValidationCollectionException {
         System.out.println("Trying to update initial CostAnalytic: " + costAnalytic);
+        // At this point Unexpected and TargetSaving are already set in the object by the caller
         List<CostAnalytic> costAnalytics = costAnalyticRepository.findAll();
         System.out.println("Is the CostAnalytic already present? " + (costAnalytics.size() == 1));
         if(costAnalytics.size() < 1){
@@ -71,9 +73,12 @@ public class CostAnalyticServiceImpl implements CostAnalyticService {
         BigDecimal sumExpenses = ArithmeticUtils.sumExpenses(expenseRepository.findAll());
         BigDecimal sumIncomes = ArithmeticUtils.sumIncomes(incomeRepository.findAll());
         BigDecimal sumSavings = ArithmeticUtils.sumSavings(savingRepository.findAll());
+        BigDecimal targetSaving = costAnalytic.getTargetSaving();
+        BigDecimal unexpected = costAnalytic.getUnexpected();
+        // TODO: 6.11.22 г. SUM the Unexpected when migrate to List<Unexpected>
 
-        BigDecimal monthlyTarget = calculateMonthlyTarget(sumExpenses, sumIncomes, sumSavings);
-        BigDecimal dailyRecommended = calculateDailyRecommended(costAnalytic.getTargetSaving(), sumExpenses, sumIncomes, sumSavings);
+        BigDecimal monthlyTarget = calculateMonthlyTarget(sumExpenses, sumIncomes, sumSavings, targetSaving, unexpected);
+        BigDecimal dailyRecommended = calculateDailyRecommended(targetSaving, sumExpenses, sumIncomes, sumSavings, unexpected);
 
         costAnalytic.setAllExpenses(sumExpenses);
         costAnalytic.setDailyRecommended(dailyRecommended);
@@ -81,14 +86,14 @@ public class CostAnalyticServiceImpl implements CostAnalyticService {
         return costAnalyticRepository.save(costAnalytic);
     }
 
-    private BigDecimal calculateMonthlyTarget(BigDecimal sumExpenses, BigDecimal sumIncomes, BigDecimal sumSavings) {
-        // Incomes - (Expenses + Savings)
-        return sumIncomes.subtract(sumExpenses.add(sumSavings)).setScale(2, RoundingMode.HALF_EVEN);
+    private BigDecimal calculateMonthlyTarget(BigDecimal sumExpenses, BigDecimal sumIncomes, BigDecimal sumSavings, BigDecimal targetSaving, BigDecimal unexpected) {
+        // Incomes - (Expenses + Savings + TargetSave + Unexpected)
+        return sumIncomes.subtract(sumExpenses.add(sumSavings).add(targetSaving).add(unexpected)).setScale(2, RoundingMode.HALF_EVEN);
     }
 
-    private BigDecimal calculateDailyRecommended(BigDecimal targetSavings, BigDecimal sumExpenses, BigDecimal sumIncomes, BigDecimal sumSavings){
-        // (Incomes - (Expenses + Savings + targetSave)) / 30
-        BigDecimal overall = sumIncomes.subtract(targetSavings.add(sumExpenses).add(sumSavings));
+    private BigDecimal calculateDailyRecommended(BigDecimal targetSavings, BigDecimal sumExpenses, BigDecimal sumIncomes, BigDecimal sumSavings, BigDecimal unexpected){
+        // (Incomes - (Expenses + Savings + TargetSave + Unexpected)) / days in month
+        BigDecimal overall = sumIncomes.subtract(targetSavings.add(sumExpenses).add(sumSavings).add(unexpected));
         return overall.divide(BigDecimal.valueOf(Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH)),
                 2, RoundingMode.HALF_EVEN);
     }

@@ -10,9 +10,11 @@ import IncomeDialog from "../dialogs/IncomesDialog";
 import IconButton from '@mui/material/IconButton';
 import AddCardIcon from '@mui/icons-material/AddCard';
 import Grid from '@mui/material/Unstable_Grid2';
+import InputUnexpected from "./Unexpected";
 
 const defaultCostAnalytics = {
   "id": "635c504c360cfd5b7e0dd036",
+  "unexpected" : 800,
   "targetSaving": 2555,
   "dailyRecommended": 37.26,
   "monthlyTarget": 3710.00,
@@ -149,26 +151,7 @@ export default function CostAnalyticStack() {
       {/* Unexpected for month */}
       <Item>
         <React.Fragment>
-          <Tooltip title="Unexpected spendings for the current month" placement="top">
-            <Typography
-              component="p"
-              align="left"
-              color="orange"
-              fontSize="1.5em"
-              variant="standard"
-            >
-              UNEXPECTED
-            </Typography>
-          </Tooltip>
-          <Typography
-            sx={{ mt: 3 }}
-            component="p"
-            color="#b0b0b0"
-            fontSize="3em"
-            align="left"
-          >
-            $ 2300
-          </Typography>
+          <InputUnexpected myData={costAnalytic.unexpected}/>
         </React.Fragment>
       </Item>
       {/* All Expenses */}
