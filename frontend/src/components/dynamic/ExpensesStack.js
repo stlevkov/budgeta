@@ -5,7 +5,9 @@ import { styled } from "@mui/material/styles";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
 import Tooltip from "@mui/material/Tooltip";
+import Grid from "@mui/material/Unstable_Grid2";
 
 const defaultExpenses = [
   { name: "TV/GSM", description: "Test", value: "80" },
@@ -37,19 +39,35 @@ const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
   padding: theme.spacing(1),
   textAlign: "center",
-  width: "10em",
+  width: "16em",
   height: "6em",
   color: theme.palette.text.secondary,
 }));
 
+const RedditTextField = styled(TextField)(({ theme }) => ({
+  "& .MuiInput-root": {
+    border: "none",
+    overflow: "hidden",
+    fontSize: "2rem ",
+    backgroundColor: "transparent",
+    "&:hover": {
+      backgroundColor: "transparent",
+    },
+    "&.Mui-focused": {
+      backgroundColor: "transparent",
+      border: "none",
+    },
+  },
+}));
+
 const ExpensesDirectionStack = () => {
   const [expenses, setExpenses] = useState([]);
+
   useEffect(() => {
     const fetchAllExpenses = async () => {
       try {
         const response = await axios.get("http://localhost:8080/api/expenses");
         if (response.data !== "") {
-          console.log(response.data); //Prints out my three objects in an array in my console. works great
           let objects = response.data.map(JSON.stringify);
           let uniqueSet = new Set(objects);
           let uniqueArray = Array.from(uniqueSet).map(JSON.parse);
@@ -68,6 +86,26 @@ const ExpensesDirectionStack = () => {
     };
   }, []);
 
+  const handleKeyDown = (expense, event) => {
+    if (event.key === "Enter") {
+      expense.value = event.target.value;
+      axios
+        .put(`http://localhost:8080/api/expenses/${expense.id}`, expense, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          console.log(
+            "[ExpenseStack] RESPONSE OK: " + JSON.stringify(response.data)
+          );
+        })
+        .catch((error) => {
+          console.log("[ExpenseStack] RESPONSE ERROR: " + error);
+        });
+    }
+  };
+
   return (
     <Stack
       direction={{ xs: "column", sm: "row" }}
@@ -75,29 +113,42 @@ const ExpensesDirectionStack = () => {
     >
       {expenses.map((expense) => {
         return (
-          <Item key={expense.name}>
-            <React.Fragment>
-              <Tooltip title={expense.description} placement="top">
+          <Grid container spacing={0}>
+            <Item key={expense.name} sx={{ display: "flex", flexWrap: "wrap" }}>
+              <Grid xs={12} md={12}>
+                <Tooltip title={expense.description} placement="top">
+                  <Typography
+                    component="p"
+                    align="left"
+                    color="orange"
+                    variant="standard"
+                  >
+                    {expense.name}
+                  </Typography>
+                </Tooltip>
+              </Grid>
+              <Grid xs={1} md={2}>
                 <Typography
+                  sx={{ paddingRight: "1rem", fontSize: "2rem" }}
                   component="p"
-                  align="left"
-                  color="orange"
-                  variant="standard"
+                  align="center"
                 >
-                  {expense.name}
+                  $
                 </Typography>
-              </Tooltip>
-              <Typography
-                sx={{ mt: 1 }}
-                component="p"
-                color="#b0b0b0"
-                align="left"
-                variant="h5"
-              >
-                $ {expense.value}
-              </Typography>
-            </React.Fragment>
-          </Item>
+              </Grid>
+              <Grid xs={11} md={10}>
+                <RedditTextField
+                  id={`${expense.name}-input`}
+                  variant="standard"
+                  InputProps={{
+                    disableUnderline: true,
+                  }}
+                  onKeyDown={(event) => handleKeyDown(expense, event)}
+                  defaultValue={expense.value}
+                />
+              </Grid>
+            </Item>
+          </Grid>
         );
       })}
     </Stack>
