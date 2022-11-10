@@ -21,6 +21,7 @@
     "react-edit-text": "^5.0.2",
     "react-number-format": "^5.1.1",
     "react-scripts": "5.0.1",
+    "recharts": "^2.1.16",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
