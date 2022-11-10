@@ -44,7 +44,7 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
-const RedditTextField = styled(TextField)(({ theme }) => ({
+const ExpenseEditable = styled(TextField)(({ theme }) => ({
   "& .MuiInput-root": {
     border: "none",
     overflow: "hidden",
@@ -137,7 +137,7 @@ const ExpensesDirectionStack = () => {
                 </Typography>
               </Grid>
               <Grid xs={11} md={10}>
-                <RedditTextField
+                <ExpenseEditable
                   id={`${expense.name}-input`}
                   variant="standard"
                   InputProps={{

@@ -6,6 +6,8 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
+import TextField from "@mui/material/TextField";
+import Grid from "@mui/material/Unstable_Grid2";
 
 const defaultSavings = {
   0: { name: "CAR REPAIRS", description: "Test", value: "150" },
@@ -29,7 +31,6 @@ async function fetchAllSavings() {
   try {
     const response = await axios.get("http://localhost:8080/api/savings");
     if (response.data !== "") {
-      console.log(response.data); //Prints out my three objects in an array in my console. works great
       return response.data;
     } else {
       console.log("Something is wrong");
@@ -41,7 +42,23 @@ async function fetchAllSavings() {
   }
 }
 
-function SavingsDirectionStack() {
+const SavingsEditable = styled(TextField)(({ theme }) => ({
+  "& .MuiInput-root": {
+    border: "none",
+    overflow: "hidden",
+    fontSize: "2rem ",
+    backgroundColor: "transparent",
+    "&:hover": {
+      backgroundColor: "transparent",
+    },
+    "&.Mui-focused": {
+      backgroundColor: "transparent",
+      border: "none",
+    },
+  },
+}));
+
+export default function SavingsDirectionStack() {
   const [savings, setSavings] = useState({});
   useEffect(() => {
     let fetched = fetchAllSavings();
@@ -51,6 +68,26 @@ function SavingsDirectionStack() {
     });
   }, []);
 
+  const handleKeyDown = (saving, event) => {
+    if (event.key === "Enter") {
+      saving.value = event.target.value;
+      axios
+        .put(`http://localhost:8080/api/savings/${saving.id}`, saving, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          console.log(
+            "[SavingStack] RESPONSE OK " + JSON.stringify(response.data)
+          );
+        })
+        .catch((error) => {
+          console.log("[SavingsStack] RESPONSE ERROR: " + error);
+        });
+    }
+  };
+
   return (
     <Stack
       direction={{ xs: "column", sm: "row" }}
@@ -58,33 +95,45 @@ function SavingsDirectionStack() {
     >
       {Object.values(savings).map((saving) => {
         return (
-          <Item key={saving.name}>
-            <React.Fragment>
-              <Tooltip title={saving.description} placement="top">
+          <Grid container spacing={0}>
+            <Item key={saving.name} sx={{ display: "flex", flexWrap: "wrap" }}>
+              <Grid xs={12} md={12}>
+                <Tooltip title={saving.description} placement="top">
+                  <Typography
+                    component="p"
+                    align="left"
+                    color="#9ccc65"
+                    variant="standard"
+                  >
+                    {saving.name}
+                  </Typography>
+                </Tooltip>
+              </Grid>
+
+              <Grid xs={1} md={2}>
                 <Typography
+                  sx={{ paddingRight: "1rem", fontSize: "2rem" }}
                   component="p"
-                  align="left"
-                  color="#9ccc65"
-                  variant="standard"
+                  align="center"
                 >
-                  {saving.name}
+                  $
                 </Typography>
-              </Tooltip>
-              <Typography
-                sx={{ mt: 1 }}
-                component="p"
-                color="#b0b0b0"
-                align="left"
-                variant="h5"
-              >
-                $ {saving.value}
-              </Typography>
-            </React.Fragment>
-          </Item>
+              </Grid>
+              <Grid xs={11} md={10}>
+                <SavingsEditable
+                  id={`${saving.name}-input`}
+                  variant="standard"
+                  InputProps={{
+                    disableUnderline: true,
+                  }}
+                  onKeyDown={(event) => handleKeyDown(saving, event)}
+                  defaultValue={saving.value}
+                />
+              </Grid>
+            </Item>
+          </Grid>
         );
       })}
     </Stack>
   );
 }
-
-export default SavingsDirectionStack;
