@@ -11,10 +11,10 @@ import ExpensesDirectionStack from "../../components/dynamic/ExpensesStack";
 import SavingsDirectionStack from "../../components/dynamic/SavingsStack";
 import Divider from "@mui/material/Divider";
 import CostAnalyticStack from "../../components/dynamic/CostAnalyticStack";
-import StatisticChart from "../../components/dynamic/StatisticChart";
+import StatisticChart from "../../components/charts/AreaChart";
 
 export default function Dashboard() {
-  const sidebarWidth = 240;
+  const sidebarWidth = 210;
   const [open, setOpen] = React.useState(true);
   const toggleSidebar = () => {
     setOpen(!open);
@@ -41,7 +41,7 @@ export default function Dashboard() {
               : theme.palette.grey[1000],
           flexGrow: 1,
           height: "100vh",
-          marginTop: "4em",
+          marginTop: "5em",
           overflow: "auto",
         }}
       >
@@ -79,13 +79,7 @@ export default function Dashboard() {
           </Grid>
           {/* ChartJs */}
           <Grid xs={12} md={9} lg={7}>
-            <Paper
-              sx={{
-                p: 2,
-                display: "flex",
-                flexDirection: "column",
-              }}
-            >
+            <Paper sx={{ height: "16em", padding: "1em" }}>
               <StatisticChart />
             </Paper>
           </Grid>
