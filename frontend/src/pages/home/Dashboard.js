@@ -11,7 +11,7 @@ import ExpensesDirectionStack from "../../components/dynamic/ExpensesStack";
 import SavingsDirectionStack from "../../components/dynamic/SavingsStack";
 import Divider from "@mui/material/Divider";
 import CostAnalyticStack from "../../components/dynamic/CostAnalyticStack";
-import StatisticChart from "../../components/charts/AreaChart";
+import StatisticChart from "../../components/charts/StatisticChart";
 
 export default function Dashboard() {
   const sidebarWidth = 210;
