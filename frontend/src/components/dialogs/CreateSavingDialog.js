@@ -16,23 +16,16 @@ import FormControl from "@mui/material/FormControl";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import axios from "axios";
 
-export default function CreateExpenseDialog() {
+export default function CreateSavingDialog() {
   const [open, setOpen] = React.useState(false);
   const [itemName, setItemName] = React.useState("");
   const [itemDesc, setItemDesc] = React.useState("");
-  const [itemCost, setItemCost] = React.useState(0);
+  const [itemAmount, setItemAmount] = React.useState(0);
 
-  /**
-   * {
-    "name" : "Stoycho",
-    "description" : "Main Salary Income",
-    "value" : 4500
-    }
-   */
   let state = {
     name: itemName,
     description: itemDesc,
-    value: itemCost,
+    value: itemAmount,
   };
 
   const handleClickOpen = () => {
@@ -42,7 +35,7 @@ export default function CreateExpenseDialog() {
   const handleCancel = () => {
     setItemName("");
     setItemDesc("");
-    setItemCost(0);
+    setItemAmount(0);
     setOpen(false);
   };
 
@@ -51,7 +44,7 @@ export default function CreateExpenseDialog() {
     // Using Axios - ensure you first install the package
     console.log("Sending POST request");
     axios
-      .post("http://localhost:8080/api/expenses", state)
+      .post("http://localhost:8080/api/savings", state)
       .then((response) => {
         console.log("RESPONSE OK: " + response.data);
         // Handle data
@@ -61,7 +54,7 @@ export default function CreateExpenseDialog() {
       });
     setItemName("");
     setItemDesc("");
-    setItemCost(0);
+    setItemAmount(0);
     setOpen(false);
   };
 
@@ -71,15 +64,13 @@ export default function CreateExpenseDialog() {
         <ListItemIcon>
           <AddCircleIcon />
         </ListItemIcon>
-        <ListItemText primary="Expense" />
+        <ListItemText primary="Saving" />
       </ListItemButton>
 
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>New Expense</DialogTitle>
+        <DialogTitle>New Saving</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            Add regular monthly Expense which automatically will be calculated
-          </DialogContentText>
+          <DialogContentText>Add new saving</DialogContentText>
           <TextField
             required
             autoFocus
@@ -113,13 +104,13 @@ export default function CreateExpenseDialog() {
             // sx={{ m: 1 }}
             variant="filled"
           >
-            <InputLabel htmlFor="cost">Cost</InputLabel>
+            <InputLabel htmlFor="amnt">Amount</InputLabel>
             <FilledInput
               required
-              id="cost"
-              value={itemCost}
+              id="amnt"
+              value={itemAmount}
               onChange={(e) => {
-                setItemCost(e.target.value);
+                setItemAmount(e.target.value);
               }}
               startAdornment={
                 <InputAdornment position="start">$</InputAdornment>

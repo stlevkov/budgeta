@@ -1,5 +1,4 @@
 import * as React from "react";
-import Box from "@mui/material/Box";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InputLabel from "@mui/material/InputLabel";
 import InputAdornment from "@mui/material/InputAdornment";
@@ -45,11 +44,15 @@ export default function InputTargetSaving() {
     if (event.key === "Enter") {
       console.log("Sending POST request with data: " + targetSaving);
       axios
-        .put("http://localhost:8080/api/costAnalytics/targetSaving", targetSaving, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
+        .put(
+          "http://localhost:8080/api/costAnalytics/targetSaving",
+          targetSaving,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        )
         .then((response) => {
           console.log("RESPONSE OK: " + JSON.stringify(response.data));
           // Handle data
@@ -62,22 +65,20 @@ export default function InputTargetSaving() {
   };
 
   return (
-    <Box sx={{ display: "flex", flexWrap: "wrap" }}>
-      <div>
-        <FormControl fullWidth="sm" sx={{ m: 1 }}>
-          <InputLabel htmlFor="outlined-adornment-amount">
-            Target Saving
-          </InputLabel>
-          <OutlinedInput
-            id="outlined-adornment-amount"
-            value={targetSaving}
-            onChange={handleTargetSavingChange}
-            onKeyDown={handleKeyDown}
-            startAdornment={<InputAdornment position="start">$</InputAdornment>}
-            label="Target Saving"
-          />
-        </FormControl>
-      </div>
-    </Box>
+    <div>
+      <FormControl fullWidth="sm" sx={{ margin: 1 }}>
+        <InputLabel htmlFor="outlined-adornment-amount">
+          Target Saving
+        </InputLabel>
+        <OutlinedInput
+          id="outlined-adornment-amount"
+          value={targetSaving}
+          onChange={handleTargetSavingChange}
+          onKeyDown={handleKeyDown}
+          startAdornment={<InputAdornment position="start">$</InputAdornment>}
+          label="Target Saving"
+        />
+      </FormControl>
+    </div>
   );
 }

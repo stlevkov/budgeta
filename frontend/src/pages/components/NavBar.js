@@ -1,14 +1,15 @@
+import * as React from "react";
 import MuiAppBar from "@mui/material/AppBar";
-import { styled } from "@mui/material/styles";
-import Typography from "@mui/material/Typography";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import MenuIcon from "@mui/icons-material/Menu";
-import Badge from "@mui/material/Badge";
-import FormDialog from "../../components/dialogs/CreateExpenseDialog";
 import SettingsButton from "../../components/SettingsButton";
 import InputTargetSaving from "../../components/dynamic/TargetSaving";
+import { styled } from "@mui/material/styles";
+import Box from "@mui/material/Box";
+import Toolbar from "@mui/material/Toolbar";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import Badge from "@mui/material/Badge";
+import MenuIcon from "@mui/icons-material/Menu";
+import NotificationsIcon from "@mui/icons-material/Notifications";
 
 const Navbar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open" && prop !== "sidebarWidth",
@@ -28,47 +29,50 @@ const Navbar = styled(MuiAppBar, {
   }),
 }));
 
-function NavBar({ open, toggleSidebar, sidebarWidth }) {
+export default function NavBar({ open, toggleSidebar, sidebarWidth }) {
   return (
-    <Navbar position="absolute" open={open} sidebarWidth={sidebarWidth}>
-      <Toolbar
-        sx={{
-          pr: "24px", // keep right padding when drawer closed
-        }}
-      >
-        <IconButton
-          edge="start"
-          color="inherit"
-          aria-label="open drawer"
-          onClick={toggleSidebar}
-          sx={{
-            marginRight: "36px",
-            ...(open && { display: "none" }),
-          }}
-        >
-          <MenuIcon />
-        </IconButton>
-        <Typography
-          component="h1"
-          variant="h6"
-          color="inherit"
-          noWrap
-          sx={{ flexGrow: 1 }}
-        >
-          Dashboard
-        </Typography>
-        <FormDialog />
-        <InputTargetSaving/>
+    <Box sx={{ flexGrow: 1 }}>
+      <Navbar open={open} sidebarWidth={sidebarWidth}>
+        <Toolbar>
+          <IconButton
+            size="large"
+            edge="start"
+            color="inherit"
+            onClick={toggleSidebar}
+            sx={{
+              marginRight: "2",
+              ...(open && { display: "none" }),
+            }}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography
+            variant="h6"
+            noWrap
+            component="div"
+            sx={{ display: { xs: "none", sm: "block" } }}
+          >
+            Dashboard
+          </Typography>
 
-        <IconButton color="inherit">
-          <Badge badgeContent={4} color="secondary">
-            <NotificationsIcon />
-          </Badge>
-        </IconButton>
-        <SettingsButton />
-      </Toolbar>
-    </Navbar>
+          <Box sx={{ flexGrow: 1 }} />
+          <Box sx={{ marginRight: 2 }}>
+            <InputTargetSaving />
+          </Box>
+          <Box sx={{ display: "flex" }}>
+            <IconButton
+              size="large"
+              aria-label="show 17 new notifications"
+              color="inherit"
+            >
+              <Badge badgeContent={4} color="secondary">
+                <NotificationsIcon />
+              </Badge>
+            </IconButton>
+            <SettingsButton />
+          </Box>
+        </Toolbar>
+      </Navbar>
+    </Box>
   );
 }
-
-export default NavBar;
