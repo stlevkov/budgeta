@@ -36,7 +36,7 @@ const Sidebar = styled(MuiDrawer, {
   },
 }));
 
-function SideBar({ open, toggleSidebar, sidebarWidth }) {
+export default function SideBar({ open, toggleSidebar, sidebarWidth }) {
   return (
     <Sidebar variant="permanent" open={open} sidebarWidth={sidebarWidth}>
       <Toolbar
@@ -60,5 +60,3 @@ function SideBar({ open, toggleSidebar, sidebarWidth }) {
     </Sidebar>
   );
 }
-
-export default SideBar;
