@@ -8,6 +8,8 @@ import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Tooltip from "@mui/material/Tooltip";
 import Grid from "@mui/material/Unstable_Grid2";
+import CloseIcon from '@mui/icons-material/Close';
+import IconButton from '@mui/material/IconButton';
 
 const defaultExpenses = [
   { name: "TV/GSM", description: "Test", value: "80" },
@@ -59,6 +61,34 @@ const ExpenseEditable = styled(TextField)(({ theme }) => ({
     },
   },
 }));
+
+const deleteExpense = (expense, expenses, setExpenses, event) => {
+  console.log("Will delete item with id: " + expense.id);
+
+  const removeExpenseRequest = async () => {
+    try {
+      const response = await axios.delete("http://localhost:8080/api/expenses/" + expense.id);
+      if (response.data !== "") {
+        removeItemFromState();
+      } else {
+        console.log("Something is wrong");
+      }
+    } catch (err) {
+      //console.log(err); TODO makes tests fail because of network delay response
+      setExpenses(defaultExpenses);
+    }
+  };
+
+  const removeItemFromState = () => {
+    var array = [...expenses];
+    var index = array.indexOf(expense)
+    if (index !== -1) {
+      array.splice(index, 1);
+      setExpenses(array);
+    }
+  };
+  removeExpenseRequest();
+};
 
 const ExpensesDirectionStack = () => {
   const [expenses, setExpenses] = useState([]);
@@ -115,7 +145,7 @@ const ExpensesDirectionStack = () => {
         return (
           <Grid container spacing={0}>
             <Item key={expense.name} sx={{ display: "flex", flexWrap: "wrap" }}>
-              <Grid xs={12} md={12}>
+              <Grid xs={12} md={11}>
                 <Tooltip title={expense.description} placement="top">
                   <Typography
                     component="p"
@@ -125,6 +155,19 @@ const ExpensesDirectionStack = () => {
                   >
                     {expense.name}
                   </Typography>
+                </Tooltip>
+              </Grid>
+              <Grid xs={12} md={1}>
+                <Tooltip title={"Remove " + expense.name} placement="top">
+                  <IconButton
+                    sx={{ mt: -1.5 }}
+                    color="primary"
+                    aria-label="remove expense"
+                    size="small"
+                    align="right"
+                  >
+                    <CloseIcon fontSize="inherit" onClick={(event) => deleteExpense(expense, expenses, setExpenses, event)} />
+                  </IconButton>
                 </Tooltip>
               </Grid>
               <Grid xs={1} md={2}>
