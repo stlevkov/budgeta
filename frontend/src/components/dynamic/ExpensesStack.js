@@ -90,7 +90,7 @@ const deleteExpense = (expense, expenses, setExpenses, event) => {
   removeExpenseRequest();
 };
 
-const ExpensesDirectionStack = () => {
+const ExpensesDirectionStack = (onExpenses) => {
   const [expenses, setExpenses] = useState([]);
 
   useEffect(() => {

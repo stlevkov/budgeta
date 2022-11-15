@@ -80,7 +80,7 @@ async function fetchCostAnalytics() {
   }
 }
 
-export default function CostAnalyticStack() {
+export default function CostAnalyticStack({costAnalyticState}) {
   const [costAnalytic, setCostAnalytics] = useState(defaultCostAnalytics);
   const [incomes, setIncomes] = useState(defaultIncomes);
   useEffect(() => {
@@ -225,7 +225,8 @@ export default function CostAnalyticStack() {
             fontSize="3em"
             align="left"
           >
-            $ {costAnalytic.dailyRecommended}
+            {/* $ {costAnalytic.dailyRecommended} */}
+          $ {costAnalyticState.dailyRecommended}
           </Typography>
         </React.Fragment>
       </Item>
