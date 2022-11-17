@@ -27,9 +27,11 @@ export default function InputTargetSaving({calculateDailyRecommended}) {
           setTargetSaving(response.data.targetSaving);
         } else {
           console.log("Something is wrong");
+          setTargetSaving(0);
         }
       } catch (err) {
-        console.log("[TargetSavings] - catch failed"); // TODO makes tests fail because of network delay response
+        console.log("[TargetSavings] - catch failed. Reason: " + err); // TODO makes tests fail because of network delay response
+        setTargetSaving(0);
       }
     };
     fetchTargetSaving();
@@ -45,7 +47,6 @@ export default function InputTargetSaving({calculateDailyRecommended}) {
     console.log("Handle change: " + event.target.value)
     setTargetSaving(event.target.value);
     calculateDailyRecommended(event.target.value);
-
   };
 
   const handleKeyDown = (event) => {

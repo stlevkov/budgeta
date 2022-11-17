@@ -175,7 +175,7 @@ export default function CostAnalyticStack({costAnalyticState}) {
             fontSize="3em"
             align="left"
           >
-            $ {costAnalytic.allExpenses}
+            $ {costAnalyticState.allExpenses}
           </Typography>
         </React.Fragment>
       </Item>
@@ -200,7 +200,7 @@ export default function CostAnalyticStack({costAnalyticState}) {
             fontSize="3em"
             align="left"
           >
-            $ {costAnalytic.monthlyTarget}
+            $ {costAnalyticState.monthlyTarget}
           </Typography>
         </React.Fragment>
       </Item>
