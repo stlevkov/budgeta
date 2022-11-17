@@ -121,19 +121,18 @@ export default function Dashboard() {
   const [sumSavings, setSumSavings] = useState(0);
 
   /**
-   * (Incomes - (Expenses + Savings + TargetSave + Unexpected)) / days in month
+   * Daily recommended: (Incomes - (Expenses + Savings + TargetSave + Unexpected)) / days in month
+   * Monthly target:    (Incomes - (Expenses + Savings + TargetSave + Unexpected)
+   * 
    * @param {int} targetSaving Target Saving set by navbar field
    */
-  const calculateDailyRecommended = (targetSaving) => {
-    console.log("sumExpenses: " + sumExpenses);
-    console.log("sumSavings: " + sumSavings);
-    console.log("target saving: " + targetSaving);
-    console.log("unexpected: " + costAnalytics.unexpected);
+  const calculateCostAnalytics = (targetSaving) => {
     let sumAllExpenses = (sumExpenses + sumSavings + parseFloat(targetSaving) + parseFloat(costAnalytics.unexpected));
-    console.log("Days in month: " + daysInThisMonth());
     let daily = (sumIncomes - sumAllExpenses) / daysInThisMonth();
+    let availableForSpend = (sumIncomes - sumAllExpenses);
     const clone = structuredClone(costAnalytics);
     clone.dailyRecommended = Math.round((daily + Number.EPSILON) * 100) / 100;
+    clone.monthlyTarget = Math.round((availableForSpend + Number.EPSILON) * 100) / 100;
     setCostAnalytics(clone);
   }
 
@@ -161,7 +160,7 @@ export default function Dashboard() {
         open={open}
         toggleSidebar={toggleSidebar}
         sidebarWidth={sidebarWidth}
-        onTargetSaving={calculateDailyRecommended}
+        onTargetSaving={calculateCostAnalytics}
       />
       <Sidebar
         open={open}
