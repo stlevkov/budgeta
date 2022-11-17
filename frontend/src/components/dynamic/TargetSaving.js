@@ -1,13 +1,13 @@
 import * as React from "react";
-import OutlinedInput from "@mui/material/OutlinedInput";
-import InputLabel from "@mui/material/InputLabel";
-import InputAdornment from "@mui/material/InputAdornment";
-import FormControl from "@mui/material/FormControl";
 import axios from "axios";
 import { useEffect } from "react";
+import TextField from '@mui/material/TextField';
+import Grid from "@mui/material/Unstable_Grid2";
+import Typography from "@mui/material/Typography";
 
-export default function InputTargetSaving() {
-  const [targetSaving, setTargetSaving] = React.useState("");
+export default function InputTargetSaving({calculateDailyRecommended}) {
+
+  const [targetSaving, setTargetSaving] = React.useState(0);
 
   const handleTargetSavingChange = (e) => {
     console.log(
@@ -30,17 +30,26 @@ export default function InputTargetSaving() {
         }
       } catch (err) {
         console.log("[TargetSavings] - catch failed"); // TODO makes tests fail because of network delay response
-        // setTargetSaving(defaultExpenses);
       }
     };
     fetchTargetSaving();
     return () => {
       console.log("clearing the target saving state in return");
-      setTargetSaving("");
+      setTargetSaving(0);
     };
   }, []);
 
+  // having event here is important, otherwise, the component will not be editable
+  // remark: Dont use defaultValue for valueChange, use the value instead and handle the event properly
+  const handleChange = (event) => {
+    console.log("Handle change: " + event.target.value)
+    setTargetSaving(event.target.value);
+    calculateDailyRecommended(event.target.value);
+
+  };
+
   const handleKeyDown = (event) => {
+    console.log("Evvent")
     if (event.key === "Enter") {
       console.log("Sending POST request with data: " + targetSaving);
       axios
@@ -66,19 +75,34 @@ export default function InputTargetSaving() {
 
   return (
     <div>
-      <FormControl fullWidth="sm" sx={{ margin: 1 }}>
-        <InputLabel htmlFor="outlined-adornment-amount">
-          Target Saving
-        </InputLabel>
-        <OutlinedInput
-          id="outlined-adornment-amount"
-          value={targetSaving}
-          onChange={handleTargetSavingChange}
-          onKeyDown={handleKeyDown}
-          startAdornment={<InputAdornment position="start">$</InputAdornment>}
-          label="Target Saving"
-        />
-      </FormControl>
+      <Grid container spacing={0}>
+        <Grid xs={12} md={8}>
+          <Typography
+            component="p"
+            align="left"
+            color="gray"
+            variant="standard"
+            fontSize="1.2em"
+            style={{marginTop: 6, marginRight: 6}}
+          >
+            TARGET SAVING
+          </Typography>
+        </Grid>
+        <Grid xs={12} md={4}>
+          <TextField
+            hiddenLabel
+            id="inputTargetSavingField"
+            variant="filled"
+            size="small"
+            fontSize="1.2em"
+            style={{ width: 80}}
+            defaultValue={targetSaving}
+            value={targetSaving}
+            onChange={handleChange}
+            onKeyDown={(event) => handleKeyDown(event)}
+          />
+        </Grid>
+      </Grid>
     </div>
   );
 }

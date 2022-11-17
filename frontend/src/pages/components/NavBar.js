@@ -29,7 +29,7 @@ const Navbar = styled(MuiAppBar, {
   }),
 }));
 
-export default function NavBar({ open, toggleSidebar, sidebarWidth }) {
+export default function NavBar({ open, toggleSidebar, sidebarWidth, onTargetSaving }) {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Navbar open={open} sidebarWidth={sidebarWidth}>
@@ -57,7 +57,7 @@ export default function NavBar({ open, toggleSidebar, sidebarWidth }) {
 
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ marginRight: 2 }}>
-            <InputTargetSaving />
+            <InputTargetSaving calculateDailyRecommended={onTargetSaving} />
           </Box>
           <Box sx={{ display: "flex" }}>
             <IconButton
