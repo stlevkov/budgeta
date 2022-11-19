@@ -93,7 +93,7 @@ export default function CostAnalyticStack({costAnalyticState}) {
       console.log("Incomes: " + incomes)
       setIncomes(result);
     });
-  }, [incomes]);
+  }, []);
 
   return (
     <Stack

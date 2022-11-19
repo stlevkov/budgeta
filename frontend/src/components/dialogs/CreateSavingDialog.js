@@ -18,14 +18,16 @@ import axios from "axios";
 
 export default function CreateSavingDialog() {
   const [open, setOpen] = React.useState(false);
-  const [itemName, setItemName] = React.useState("");
-  const [itemDesc, setItemDesc] = React.useState("");
-  const [itemAmount, setItemAmount] = React.useState(0);
+  const [itemName, setItemName] = React.useState(""); // TODO can be property of Object
+  const [itemDesc, setItemDesc] = React.useState(""); // TODO can be property of object
+  const [itemAmount, setItemAmount] = React.useState(0); // TODO can be property of Object
 
   let state = {
     name: itemName,
     description: itemDesc,
     value: itemAmount,
+    purpose: "unknown",
+    location: "unknown"
   };
 
   const handleClickOpen = () => {
@@ -40,8 +42,6 @@ export default function CreateSavingDialog() {
   };
 
   const handleClose = () => {
-    // console.log(JSON.stringify(state))
-    // Using Axios - ensure you first install the package
     console.log("Sending POST request");
     axios
       .post("http://localhost:8080/api/savings", state)
