@@ -9,12 +9,12 @@ export default function InputTargetSaving({calculateDailyRecommended}) {
 
   const [targetSaving, setTargetSaving] = React.useState(0);
 
-  const handleTargetSavingChange = (e) => {
-    console.log(
-      "Handle Target Saving Change to dynamically set the values of the dashboard"
-    );
-    setTargetSaving(e.target.value);
-  };
+  // const handleTargetSavingChange = (e) => {
+  //   console.log(
+  //     "Handle Target Saving Change to dynamically set the values of the dashboard"
+  //   );
+  //   setTargetSaving(e.target.value);
+  // };
 
   useEffect(() => {
     const fetchTargetSaving = async () => {

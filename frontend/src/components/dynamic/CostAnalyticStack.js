@@ -93,7 +93,7 @@ export default function CostAnalyticStack({costAnalyticState}) {
       console.log("Incomes: " + incomes)
       setIncomes(result);
     });
-  }, []);
+  }, [incomes]);
 
   return (
     <Stack
@@ -154,31 +154,6 @@ export default function CostAnalyticStack({costAnalyticState}) {
           <InputUnexpected myData={costAnalytic.unexpected}/>
         </React.Fragment>
       </Item>
-      {/* All Expenses */}
-      <Item>
-        <React.Fragment>
-          <Tooltip title="All Expenses without Savings" placement="top">
-            <Typography
-              component="p"
-              align="left"
-              color="orange"
-              fontSize="1.5em"
-              variant="standard"
-            >
-              ALL EXPENSES
-            </Typography>
-          </Tooltip>
-          <Typography
-            sx={{ mt: 3 }}
-            component="p"
-            color="#b0b0b0"
-            fontSize="3em"
-            align="left"
-          >
-            $ {costAnalyticState.allExpenses}
-          </Typography>
-        </React.Fragment>
-      </Item>
       {/* Monthly Target */}
       <Item>
         <React.Fragment>
@@ -204,8 +179,33 @@ export default function CostAnalyticStack({costAnalyticState}) {
           </Typography>
         </React.Fragment>
       </Item>
+       {/* Monthly Target */}
+       <Item>
+        <React.Fragment>
+          <Tooltip title="Monthly target for spendings" placement="top">
+            <Typography
+              component="p"
+              align="left"
+              color="orange"
+              fontSize="1.5em"
+              variant="standard"
+            >
+              FREE SLOT
+            </Typography>
+          </Tooltip>
+          <Typography
+            sx={{ mt: 3 }}
+            component="p"
+            color="#b0b0b0"
+            fontSize="3em"
+            align="left"
+          >
+            $ {costAnalyticState.monthlyTarget}
+          </Typography>
+        </React.Fragment>
+      </Item>
       {/* Daily Recommended */}
-      <Item>
+      <Item style={{backgroundColor: "#07233e"}}>
         <React.Fragment>
           <Tooltip title="Daily recommended - try not to exceed" placement="top">
             <Typography

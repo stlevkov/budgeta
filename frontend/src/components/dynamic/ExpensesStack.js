@@ -11,6 +11,43 @@ import Grid from "@mui/material/Unstable_Grid2";
 import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/material/IconButton';
 
+import PropTypes from 'prop-types';
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
+
+function CircularProgressWithLabel(props) {
+  return (
+    <Box sx={{ position: 'relative', display: 'inline-flex' }}>
+      <CircularProgress variant="determinate" {...props} />
+      <Box
+        sx={{
+          top: 0,
+          left: 0,
+          bottom: 0,
+          right: 0,
+          position: 'absolute',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Typography sx={{mt: 1}} variant="caption" component="div" color="text.secondary">
+          {`${Math.round(props.value)}%`}
+        </Typography>
+      </Box>
+    </Box>
+  );
+}
+
+CircularProgressWithLabel.propTypes = {
+  /**
+   * The value of the progress indicator for the determinate variant.
+   * Value between 0 and 100.
+   * @default 0
+   */
+  value: PropTypes.number.isRequired,
+};
+
 const defaultExpenses = [
   { name: "TV/GSM", description: "Test", value: "80" },
   { name: "PET", description: "My pet expenses for the month", value: "135" },
@@ -90,8 +127,9 @@ const deleteExpense = (expense, expenses, setExpenses, event) => {
   removeExpenseRequest();
 };
 
-const ExpensesDirectionStack = (onExpenses) => {
+const ExpensesDirectionStack = (expensesState) => {
   const [expenses, setExpenses] = useState([]);
+  const [progress, setProgress] = useState(43); // TODO - Calculate & Update dynamically 
 
   useEffect(() => {
     const fetchAllExpenses = async () => {
@@ -110,11 +148,13 @@ const ExpensesDirectionStack = (onExpenses) => {
         setExpenses(defaultExpenses);
       }
     };
+    setProgress(progress);
     fetchAllExpenses();
     return () => {
+      setProgress(0);
       setExpenses([]);
     };
-  }, []);
+  }, [progress]);
 
   const handleKeyDown = (expense, event) => {
     if (event.key === "Enter") {
@@ -141,6 +181,23 @@ const ExpensesDirectionStack = (onExpenses) => {
       direction={{ xs: "column", sm: "row" }}
       spacing={{ xs: 1, sm: 2, md: 2 }}
     >
+      {/* All Expenses */}
+      <Item style={{ backgroundColor: '#00000000', width: 100 }}>
+        <React.Fragment>
+          <Tooltip title="All expenses as a % of the Incomes" placement="top">
+            <Typography
+              component="p"
+              align="left"
+              color="orange"
+              variant="standard"
+            >
+              EXPENSES
+            </Typography>
+          </Tooltip>
+          <CircularProgressWithLabel sx={{ mt: 1 }} value={progress} />
+        </React.Fragment>
+      </Item>
+
       {expenses.map((expense) => {
         return (
           <Grid container spacing={0}>
