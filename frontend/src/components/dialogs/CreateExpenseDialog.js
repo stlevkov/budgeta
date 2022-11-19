@@ -13,10 +13,12 @@ import FilledInput from "@mui/material/FilledInput";
 import InputLabel from "@mui/material/InputLabel";
 import InputAdornment from "@mui/material/InputAdornment";
 import FormControl from "@mui/material/FormControl";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
 import axios from "axios";
+import AddIcon from '@mui/icons-material/Add';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from "@mui/material/Tooltip";
 
-export default function CreateExpenseDialog() {
+export default function CreateExpenseDialog({onCreate}) {
   const [open, setOpen] = React.useState(false);
   const [itemName, setItemName] = React.useState("");
   const [itemDesc, setItemDesc] = React.useState("");
@@ -47,14 +49,12 @@ export default function CreateExpenseDialog() {
   };
 
   const handleClose = () => {
-    // console.log(JSON.stringify(state))
-    // Using Axios - ensure you first install the package
     console.log("Sending POST request");
     axios
       .post("http://localhost:8080/api/expenses", state)
       .then((response) => {
         console.log("RESPONSE OK: " + response.data);
-        // Handle data
+        onCreate(response.data);
       })
       .catch((error) => {
         console.log("RESPONSE ERROR: " + error);
@@ -67,13 +67,17 @@ export default function CreateExpenseDialog() {
 
   return (
     <div>
-      <ListItemButton onClick={handleClickOpen}>
-        <ListItemIcon>
-          <AddCircleIcon />
-        </ListItemIcon>
-        <ListItemText primary="Expense" />
-      </ListItemButton>
-
+      <Tooltip title={"Create New Expense"} placement="top">
+        <IconButton
+          sx={{ mt: -1.5, ml: -1.5 }}
+          color="primary"
+          aria-label="add expense"
+          size="small"
+          align="right"
+        >
+          <AddIcon fontSize="inherit" onClick={handleClickOpen} />
+        </IconButton>
+      </Tooltip>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>New Expense</DialogTitle>
         <DialogContent>

@@ -180,10 +180,6 @@ export default function Dashboard() {
           overflow: "auto",
         }}
       >
-        {/* Analytic Stack */}
-        <Container maxWidth sx={{ mt: 2, mb: 2 }}>
-          <CostAnalyticStack costAnalyticState={costAnalytics} />
-        </Container>
         <Divider>Expenses</Divider>
         {/* Expense Stack */}
         <Container maxWidth sx={{ mt: 2, mb: 2 }}>
@@ -194,8 +190,11 @@ export default function Dashboard() {
         <Container maxWidth sx={{ mt: 2, mb: 2 }}>
           <SavingsDirectionStack />
         </Container>
-
-        <Divider />
+        <Divider>Analytics</Divider>
+          {/* Analytic Stack */}
+          <Container maxWidth sx={{ mt: 2, mb: 2 }}>
+          <CostAnalyticStack costAnalyticState={costAnalytics} />
+        </Container>
         {/* Statistics Stack */}
         <Grid container spacing={2} sx={{ margin: 2 }}>
           {/* Target */}

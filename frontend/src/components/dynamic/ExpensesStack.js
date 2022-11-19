@@ -10,10 +10,10 @@ import Tooltip from "@mui/material/Tooltip";
 import Grid from "@mui/material/Unstable_Grid2";
 import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/material/IconButton';
-
 import PropTypes from 'prop-types';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
+import CreateExpenseDialog from "../../components/dialogs/CreateExpenseDialog";
 
 function CircularProgressWithLabel(props) {
   return (
@@ -31,7 +31,7 @@ function CircularProgressWithLabel(props) {
           justifyContent: 'center',
         }}
       >
-        <Typography sx={{mt: 1}} variant="caption" component="div" color="text.secondary">
+        <Typography sx={{ mt: 1 }} variant="caption" component="div" color="text.secondary">
           {`${Math.round(props.value)}%`}
         </Typography>
       </Box>
@@ -136,10 +136,7 @@ const ExpensesDirectionStack = (expensesState) => {
       try {
         const response = await axios.get("http://localhost:8080/api/expenses");
         if (response.data !== "") {
-          let objects = response.data.map(JSON.stringify);
-          let uniqueSet = new Set(objects);
-          let uniqueArray = Array.from(uniqueSet).map(JSON.parse);
-          setExpenses(uniqueArray);
+          setExpenses(response.data);
         } else {
           console.log("Something is wrong");
         }
@@ -155,6 +152,13 @@ const ExpensesDirectionStack = (expensesState) => {
       setExpenses([]);
     };
   }, []);
+
+  function addExpense(expense){
+    console.log("Will add expense: " + expense);
+    expenses.push(expense);
+    var array = [...expenses];
+    setExpenses(array);
+  };
 
   // edit expense
   const handleKeyDown = (expense, event) => {
@@ -183,18 +187,25 @@ const ExpensesDirectionStack = (expensesState) => {
       spacing={{ xs: 1, sm: 2, md: 2 }}
     >
       {/* All Expenses */}
-      <Item style={{ backgroundColor: '#00000000', width: 100 }}>
+      <Item style={{ backgroundColor: '#00000000', width: 130 }}>
         <React.Fragment>
-          <Tooltip title="All expenses as a % of the Incomes" placement="top">
-            <Typography
-              component="p"
-              align="left"
-              color="orange"
-              variant="standard"
-            >
-              EXPENSES
-            </Typography>
-          </Tooltip>
+          <Grid container spacing={0}>
+            <Grid xs={12} md={11}>
+              <Tooltip title="All expenses as a % of the Incomes" placement="top">
+                <Typography
+                  component="p"
+                  align="left"
+                  color="orange"
+                  variant="standard"
+                >
+                  EXPENSES
+                </Typography>
+              </Tooltip>
+            </Grid>
+            <Grid xs={12} md={1}>
+              <CreateExpenseDialog onCreate={addExpense} />
+            </Grid>
+          </Grid>
           <CircularProgressWithLabel sx={{ mt: 1 }} value={progress} />
         </React.Fragment>
       </Item>
