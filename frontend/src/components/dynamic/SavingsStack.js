@@ -9,6 +9,42 @@ import Tooltip from "@mui/material/Tooltip";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Unstable_Grid2";
 
+import PropTypes from 'prop-types';
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
+
+function CircularProgressWithLabel(props) {
+  return (
+    <Box sx={{ position: 'relative', display: 'inline-flex' }}>
+      <CircularProgress variant="determinate" {...props} />
+      <Box
+        sx={{
+          top: 0,
+          left: 0,
+          bottom: 0,
+          right: 0,
+          position: 'absolute',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Typography sx={{ mt: 1 }} variant="caption" component="div" color="text.secondary">
+          {`${Math.round(props.value)}%`}
+        </Typography>
+      </Box>
+    </Box>
+  );
+}
+CircularProgressWithLabel.propTypes = {
+  /**
+   * The value of the progress indicator for the determinate variant.
+   * Value between 0 and 100.
+   * @default 0
+   */
+  value: PropTypes.number.isRequired,
+};
+
 const defaultSavings = {
   0: { name: "CAR REPAIRS", description: "Test", value: "150" },
   1: { name: "APARTMENT REPAIRS", description: "Apartment", value: "80" },
@@ -60,13 +96,20 @@ const SavingsEditable = styled(TextField)(({ theme }) => ({
 
 export default function SavingsDirectionStack() {
   const [savings, setSavings] = useState({});
+  const [progress, setProgress] = useState(15); // TODO - Calculate & Update dynamically 
+
   useEffect(() => {
     let fetched = fetchAllSavings();
 
     fetched.then((result) => {
       setSavings(result);
     });
-  }, []);
+    setProgress(progress);
+    return () => {
+      setProgress(0);
+      setSavings([]);
+    };
+  }, [progress]);
 
   const handleKeyDown = (saving, event) => {
     if (event.key === "Enter") {
@@ -93,6 +136,23 @@ export default function SavingsDirectionStack() {
       direction={{ xs: "column", sm: "row" }}
       spacing={{ xs: 1, sm: 2, md: 2 }}
     >
+      {/* All Savings */}
+      <Item style={{ backgroundColor: '#00000000', width: 100 }}>
+        <React.Fragment>
+          <Tooltip title="All savings as a % of the Incomes" placement="top">
+            <Typography
+              component="p"
+              align="left"
+              color="orange"
+              variant="standard"
+            >
+              SAVINGS
+            </Typography>
+          </Tooltip>
+          <CircularProgressWithLabel sx={{ mt: 1 }} value={progress} />
+        </React.Fragment>
+      </Item>
+
       {Object.values(savings).map((saving) => {
         return (
           <Grid container spacing={0}>

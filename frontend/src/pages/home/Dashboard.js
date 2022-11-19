@@ -110,10 +110,10 @@ function daysInThisMonth() {
 
 export default function Dashboard() {
   const sidebarWidth = 210;
-  const [open, setOpen] = React.useState(true);
-  const [expenses, setExpenses] = useState([]);
-  const [incomes, setIncomes] = useState([]);
-  const [savings, setSavings] = useState([]);
+  const [open, setOpen] = useState(true);
+  const [expenses, setExpenses] = useState([]); // TODO provide as hook in each Stack
+  const [incomes, setIncomes] = useState([]);   // TODO provide as hook in each Stack
+  const [savings, setSavings] = useState([]);   // TODO provide as hook in each Stack
   const [costAnalytics, setCostAnalytics] = useState({});
 
   const [sumExpenses, setSumExpenses] = useState(0);
@@ -180,17 +180,16 @@ export default function Dashboard() {
           overflow: "auto",
         }}
       >
-        {/* Expense Stack */}
-        <Container maxWidth sx={{ mt: 2, mb: 2 }}>
-          <ExpensesDirectionStack />
-        </Container>
-
-        <Divider />
         {/* Analytic Stack */}
         <Container maxWidth sx={{ mt: 2, mb: 2 }}>
           <CostAnalyticStack costAnalyticState={costAnalytics} />
         </Container>
-        <Divider>SAVINGS</Divider>
+        <Divider>Expenses</Divider>
+        {/* Expense Stack */}
+        <Container maxWidth sx={{ mt: 2, mb: 2 }}>
+          <ExpensesDirectionStack expensesState={expenses} />
+        </Container>
+        <Divider>Savings</Divider>
         {/* Savings Stack */}
         <Container maxWidth sx={{ mt: 2, mb: 2 }}>
           <SavingsDirectionStack />
