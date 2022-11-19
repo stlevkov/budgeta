@@ -6,7 +6,6 @@ import ListSubheader from "@mui/material/ListSubheader";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import AssignmentIcon from "@mui/icons-material/Assignment";
-import CreateExpenseDialog from "../../components/dialogs/CreateExpenseDialog";
 import CreateSavingDialog from "../../components/dialogs/CreateSavingDialog";
 
 export const sidebarMainLinkList = (
@@ -19,7 +18,7 @@ export const sidebarMainLinkList = (
       <ListItemText primary="Dashboard" />
     </ListItemButton>
     {/* Add expense */}
-    <CreateExpenseDialog />
+    
 
     {/* Add saving */}
     <CreateSavingDialog />
