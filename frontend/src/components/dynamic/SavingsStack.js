@@ -12,6 +12,9 @@ import Grid from "@mui/material/Unstable_Grid2";
 import PropTypes from 'prop-types';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
+import CloseIcon from '@mui/icons-material/Close';
+import IconButton from '@mui/material/IconButton';
+
 
 function CircularProgressWithLabel(props) {
   return (
@@ -94,6 +97,34 @@ const SavingsEditable = styled(TextField)(({ theme }) => ({
   },
 }));
 
+const deleteSaving = (saving, savings, setSavings, event) => {
+  console.log("Will delete item with id: " + saving.id);
+
+  const removeSavingRequest = async () => {
+    try {
+      const response = await axios.delete("http://localhost:8080/api/savings/" + saving.id);
+      if (response.data !== "") {
+        removeItemFromState();
+      } else {
+        console.log("Something is wrong");
+      }
+    } catch (err) {
+      //console.log(err); TODO makes tests fail because of network delay response
+      setSavings(defaultSavings);
+    }
+  };
+
+  const removeItemFromState = () => {
+    var array = [...savings];
+    var index = array.indexOf(saving)
+    if (index !== -1) {
+      array.splice(index, 1);
+      setSavings(array);
+    }
+  };
+  removeSavingRequest();
+};
+
 export default function SavingsDirectionStack() {
   const [savings, setSavings] = useState({});
   const [progress, setProgress] = useState(15); // TODO - Calculate & Update dynamically 
@@ -109,7 +140,7 @@ export default function SavingsDirectionStack() {
       setProgress(0);
       setSavings([]);
     };
-  }, [progress]);
+  }, []);
 
   const handleKeyDown = (saving, event) => {
     if (event.key === "Enter") {
@@ -157,7 +188,7 @@ export default function SavingsDirectionStack() {
         return (
           <Grid container spacing={0}>
             <Item key={saving.name} sx={{ display: "flex", flexWrap: "wrap" }}>
-              <Grid xs={12} md={12}>
+              <Grid xs={12} md={11}>
                 <Tooltip title={saving.description} placement="top">
                   <Typography
                     component="p"
@@ -169,7 +200,19 @@ export default function SavingsDirectionStack() {
                   </Typography>
                 </Tooltip>
               </Grid>
-
+              <Grid xs={12} md={1}>
+                <Tooltip title={"Remove " + saving.name} placement="top">
+                  <IconButton
+                    sx={{ mt: -1.5 }}
+                    color="primary"
+                    aria-label="remove saving"
+                    size="small"
+                    align="right"
+                  >
+                    <CloseIcon fontSize="inherit" onClick={(event) => deleteSaving(saving, savings, setSavings, event)} />
+                  </IconButton>
+                </Tooltip>
+              </Grid>
               <Grid xs={1} md={2}>
                 <Typography
                   sx={{ paddingRight: "1rem", fontSize: "2rem" }}

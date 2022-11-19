@@ -154,8 +154,9 @@ const ExpensesDirectionStack = (expensesState) => {
       setProgress(0);
       setExpenses([]);
     };
-  }, [progress]);
+  }, []);
 
+  // edit expense
   const handleKeyDown = (expense, event) => {
     if (event.key === "Enter") {
       expense.value = event.target.value;
