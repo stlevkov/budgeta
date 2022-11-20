@@ -13,10 +13,12 @@ import FilledInput from "@mui/material/FilledInput";
 import InputLabel from "@mui/material/InputLabel";
 import InputAdornment from "@mui/material/InputAdornment";
 import FormControl from "@mui/material/FormControl";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
 import axios from "axios";
+import AddIcon from '@mui/icons-material/Add';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from "@mui/material/Tooltip";
 
-export default function CreateSavingDialog() {
+export default function CreateSavingDialog({onCreate}) {
   const [open, setOpen] = React.useState(false);
   const [itemName, setItemName] = React.useState(""); // TODO can be property of Object
   const [itemDesc, setItemDesc] = React.useState(""); // TODO can be property of object
@@ -47,7 +49,7 @@ export default function CreateSavingDialog() {
       .post("http://localhost:8080/api/savings", state)
       .then((response) => {
         console.log("RESPONSE OK: " + response.data);
-        // Handle data
+        onCreate(response.data);
       })
       .catch((error) => {
         console.log("RESPONSE ERROR: " + error);
@@ -60,17 +62,23 @@ export default function CreateSavingDialog() {
 
   return (
     <div>
-      <ListItemButton onClick={handleClickOpen}>
-        <ListItemIcon>
-          <AddCircleIcon />
-        </ListItemIcon>
-        <ListItemText primary="Saving" />
-      </ListItemButton>
+      <Tooltip title={"Create New Saving"} placement="top">
+        <IconButton
+          sx={{ mt: -1.5, ml: -1.5 }}
+          color="primary"
+          aria-label="add saving"
+          size="small"
+          align="right"
+        >
+          <AddIcon fontSize="inherit" onClick={handleClickOpen} />
+        </IconButton>
+      </Tooltip>
 
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>New Saving</DialogTitle>
         <DialogContent>
-          <DialogContentText>Add new saving</DialogContentText>
+          <DialogContentText>Add new regular saving, for example - car repairs, clothes, kitchen stuffs
+          </DialogContentText>
           <TextField
             required
             autoFocus

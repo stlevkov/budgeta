@@ -81,7 +81,7 @@ export default function InputTargetSaving({calculateDailyRecommended}) {
           <Typography
             component="p"
             align="left"
-            color="gray"
+            color="yellow"
             variant="standard"
             fontSize="1.2em"
             style={{marginTop: 6, marginRight: 6}}

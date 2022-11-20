@@ -57,7 +57,7 @@ export default function NavBar({ open, toggleSidebar, sidebarWidth, onTargetSavi
 
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ marginRight: 2 }}>
-            <InputTargetSaving calculateDailyRecommended={onTargetSaving} />
+            <InputTargetSaving calculateCostAnalytics={onTargetSaving} />
           </Box>
           <Box sx={{ display: "flex" }}>
             <IconButton

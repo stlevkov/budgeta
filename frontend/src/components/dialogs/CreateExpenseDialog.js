@@ -24,17 +24,12 @@ export default function CreateExpenseDialog({onCreate}) {
   const [itemDesc, setItemDesc] = React.useState("");
   const [itemCost, setItemCost] = React.useState(0);
 
-  /**
-   * {
-    "name" : "Stoycho",
-    "description" : "Main Salary Income",
-    "value" : 4500
-    }
-   */
   let state = {
     name: itemName,
     description: itemDesc,
     value: itemCost,
+    purporse: "unknown",
+    location: "unknown"
   };
 
   const handleClickOpen = () => {
@@ -78,11 +73,12 @@ export default function CreateExpenseDialog({onCreate}) {
           <AddIcon fontSize="inherit" onClick={handleClickOpen} />
         </IconButton>
       </Tooltip>
+
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>New Expense</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Add regular monthly Expense which automatically will be calculated
+            Add regular monthly Expense, for example - Loan, TV, GSM, Car Taxes
           </DialogContentText>
           <TextField
             required
@@ -133,7 +129,7 @@ export default function CreateExpenseDialog({onCreate}) {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCancel}>Cancel</Button>
-          <Button onClick={handleClose}>Finish</Button>
+          <Button onClick={handleClose}>SAVE</Button>
         </DialogActions>
       </Dialog>
     </div>
