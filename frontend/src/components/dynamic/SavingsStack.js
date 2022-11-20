@@ -8,12 +8,12 @@ import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Unstable_Grid2";
-
 import PropTypes from 'prop-types';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/material/IconButton';
+import CreateSavingDialog from "../../components/dialogs/CreateSavingDialog";
 
 
 function CircularProgressWithLabel(props) {
@@ -142,6 +142,13 @@ export default function SavingsDirectionStack() {
     };
   }, []);
 
+  function addSaving(saving){
+    console.log("Will add saving: " + saving);
+    savings.push(saving);
+    var copy = [...savings]; // make a copy to trigger the re-render
+    setSavings(copy);
+  };
+
   const handleKeyDown = (saving, event) => {
     if (event.key === "Enter") {
       saving.value = event.target.value;
@@ -168,18 +175,25 @@ export default function SavingsDirectionStack() {
       spacing={{ xs: 1, sm: 2, md: 2 }}
     >
       {/* All Savings */}
-      <Item style={{ backgroundColor: '#00000000', width: 100 }}>
+      <Item style={{ backgroundColor: '#00000000', width: 130, height: "auto" }}>
         <React.Fragment>
-          <Tooltip title="All savings as a % of the Incomes" placement="top">
-            <Typography
-              component="p"
-              align="left"
-              color="orange"
-              variant="standard"
-            >
-              SAVINGS
-            </Typography>
-          </Tooltip>
+          <Grid container spacing={0}>
+            <Grid xs={12} md={11}>
+              <Tooltip title="All savings as a % of the Incomes" placement="top">
+                <Typography
+                  component="p"
+                  align="left"
+                  color="#9ccc65"
+                  variant="standard"
+                >
+                  SAVINGS
+                </Typography>
+              </Tooltip>
+            </Grid>
+            <Grid xs={12} md={1}>
+              <CreateSavingDialog onCreate={addSaving} />
+            </Grid>
+          </Grid>
           <CircularProgressWithLabel sx={{ mt: 1 }} value={progress} />
         </React.Fragment>
       </Item>
@@ -187,7 +201,7 @@ export default function SavingsDirectionStack() {
       {Object.values(savings).map((saving) => {
         return (
           <Grid container spacing={0}>
-            <Item key={saving.name} sx={{ display: "flex", flexWrap: "wrap" }}>
+            <Item key={saving.name} style={{width: 200, height: "auto"}} sx={{ display: "flex", flexWrap: "wrap" }}>
               <Grid xs={12} md={11}>
                 <Tooltip title={saving.description} placement="top">
                   <Typography

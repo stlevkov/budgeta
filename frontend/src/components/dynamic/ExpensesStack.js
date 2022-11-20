@@ -187,7 +187,7 @@ const ExpensesDirectionStack = (expensesState) => {
       spacing={{ xs: 1, sm: 2, md: 2 }}
     >
       {/* All Expenses */}
-      <Item style={{ backgroundColor: '#00000000', width: 130 }}>
+      <Item style={{ backgroundColor: '#00000000', width: 130, height: "auto" }}>
         <React.Fragment>
           <Grid container spacing={0}>
             <Grid xs={12} md={11}>
@@ -195,7 +195,7 @@ const ExpensesDirectionStack = (expensesState) => {
                 <Typography
                   component="p"
                   align="left"
-                  color="orange"
+                  color="#9ccc12"
                   variant="standard"
                 >
                   EXPENSES
@@ -213,13 +213,13 @@ const ExpensesDirectionStack = (expensesState) => {
       {expenses.map((expense) => {
         return (
           <Grid container spacing={0}>
-            <Item key={expense.name} sx={{ display: "flex", flexWrap: "wrap" }}>
+            <Item key={expense.name} style={{width: 200, height: "auto"}} sx={{ display: "flex", flexWrap: "wrap" }}>
               <Grid xs={12} md={11}>
                 <Tooltip title={expense.description} placement="top">
                   <Typography
                     component="p"
                     align="left"
-                    color="orange"
+                    color="#9ccc12"
                     variant="standard"
                   >
                     {expense.name}

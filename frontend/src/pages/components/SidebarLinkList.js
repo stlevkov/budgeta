@@ -6,7 +6,6 @@ import ListSubheader from "@mui/material/ListSubheader";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import AssignmentIcon from "@mui/icons-material/Assignment";
-import CreateSavingDialog from "../../components/dialogs/CreateSavingDialog";
 
 export const sidebarMainLinkList = (
   <React.Fragment>
@@ -17,11 +16,6 @@ export const sidebarMainLinkList = (
       </ListItemIcon>
       <ListItemText primary="Dashboard" />
     </ListItemButton>
-    {/* Add expense */}
-    
-
-    {/* Add saving */}
-    <CreateSavingDialog />
     {/* Reports */}
     <ListItemButton>
       <ListItemIcon>
