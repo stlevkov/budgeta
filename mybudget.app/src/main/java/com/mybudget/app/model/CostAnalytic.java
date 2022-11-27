@@ -32,7 +32,7 @@ public class CostAnalytic {
         this.targetSaving = targetSaving;
         this.unexpected = unexpected;
     }
-
+    
     public CostAnalytic(String id, BigDecimal targetSaving, BigDecimal unexpected){
         this.id = id;
         this.targetSaving = targetSaving;

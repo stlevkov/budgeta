@@ -12,6 +12,7 @@ import SavingsDirectionStack from "../../components/dynamic/SavingsStack";
 import Divider from "@mui/material/Divider";
 import CostAnalyticStack from "../../components/dynamic/CostAnalyticStack";
 import StatisticChart from "../../components/charts/StatisticChart";
+import TargetStack from "../../components/dynamic/TargetStack";
 import axios from "axios";
 import { useState, useEffect } from "react";
 
@@ -140,7 +141,7 @@ export default function Dashboard() {
     fetchData(setExpenses, setSumExpenses, defaultExpenses, "expenses");
     fetchData(setIncomes, setSumIncomes, defaultIncomes, "incomes");
     fetchData(setSavings, setSumSavings, defaultSavings, "savings");
-    fetchData(setCostAnalytics, false, defaultCostAnalytics,"costAnalytics");
+    fetchData(setCostAnalytics, false, defaultCostAnalytics, "costAnalytics");
     return () => {
       setExpenses([]);
       setIncomes([]);
@@ -191,28 +192,32 @@ export default function Dashboard() {
           <SavingsDirectionStack />
         </Container>
         <Divider>Analytics</Divider>
-          {/* Analytic Stack */}
-          <Container maxWidth sx={{ mt: 2, mb: 2 }}>
+        {/* Analytic Stack */}
+        <Container maxWidth sx={{ mt: 2, mb: 2 }}>
           <CostAnalyticStack costAnalyticState={costAnalytics} />
         </Container>
         {/* Statistics Stack */}
         <Grid container spacing={2} sx={{ margin: 2 }}>
           {/* Target */}
           <Grid xs={12} md={3} lg={5}>
-            <Paper
-              sx={{
-                p: 2,
-                display: "flex",
-                flexDirection: "column",
-              }}
-            >
-              {/* <Target /> */}
-              Targets
-            </Paper>
+
+              <Grid container spacing={2}>
+                <Grid xs={6}>
+                  <Paper>
+                    <TargetStack/>
+                  </Paper>
+                </Grid>
+                <Grid xs={6}>
+                  <Paper>
+                  <TargetStack/>
+                  </Paper>
+                </Grid>
+              </Grid>
+              
           </Grid>
           {/* ChartJs */}
           <Grid xs={12} md={9} lg={7}>
-            <Paper sx={{ height: "16em", padding: "1em" }}>
+            <Paper sx={{ height: "21rem", padding: "1em" }}>
               <StatisticChart />
             </Paper>
           </Grid>
