@@ -5,7 +5,7 @@ import TextField from '@mui/material/TextField';
 import Grid from "@mui/material/Unstable_Grid2";
 import Typography from "@mui/material/Typography";
 
-export default function InputTargetSaving({calculateDailyRecommended}) {
+export default function InputTargetSaving({calculateCostAnalytics}) {
 
   const [targetSaving, setTargetSaving] = React.useState(0);
 
@@ -46,7 +46,7 @@ export default function InputTargetSaving({calculateDailyRecommended}) {
   const handleChange = (event) => {
     console.log("Handle change: " + event.target.value)
     setTargetSaving(event.target.value);
-    calculateDailyRecommended(event.target.value);
+    calculateCostAnalytics(event.target.value);
   };
 
   const handleKeyDown = (event) => {
