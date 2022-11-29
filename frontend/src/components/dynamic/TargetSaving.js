@@ -21,7 +21,7 @@ export default function InputTargetSaving({calculateDailyRecommended}) {
       console.log("Fetching activated from useEffect");
       try {
         const response = await axios.get(
-          "http://localhost:8080/api/costAnalytics"
+          "http://localhost:8787/api/costAnalytics"
         );
         if (response.data !== "") {
           setTargetSaving(response.data.targetSaving);
@@ -55,7 +55,7 @@ export default function InputTargetSaving({calculateDailyRecommended}) {
       console.log("Sending POST request with data: " + targetSaving);
       axios
         .put(
-          "http://localhost:8080/api/costAnalytics/targetSaving",
+          "http://localhost:8787/api/costAnalytics/targetSaving",
           targetSaving,
           {
             headers: {

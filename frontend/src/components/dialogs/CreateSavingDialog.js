@@ -46,7 +46,7 @@ export default function CreateSavingDialog({onCreate}) {
   const handleClose = () => {
     console.log("Sending POST request");
     axios
-      .post("http://localhost:8080/api/savings", state)
+      .post("http://localhost:8787/api/savings", state)
       .then((response) => {
         console.log("RESPONSE OK: " + response.data);
         onCreate(response.data);

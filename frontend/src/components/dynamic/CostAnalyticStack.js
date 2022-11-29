@@ -50,7 +50,7 @@ const Item = styled(Paper)(({ theme }) => ({
 
 async function fetchIncomes() {
   try {
-    const response = await axios.get("http://localhost:8080/api/incomes");
+    const response = await axios.get("http://localhost:8787/api/incomes");
     if (response.data !== "") {
       console.log(response.data); //Prints out my three objects in an array in my console. works great
       return response.data;
@@ -66,7 +66,7 @@ async function fetchIncomes() {
 
 async function fetchCostAnalytics() {
   try {
-    const response = await axios.get("http://localhost:8080/api/costAnalytics");
+    const response = await axios.get("http://localhost:8787/api/costAnalytics");
     if (response.data !== "") {
       console.log(response.data); //Prints out my three objects in an array in my console. works great
       return response.data;

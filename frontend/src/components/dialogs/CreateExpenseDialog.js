@@ -46,7 +46,7 @@ export default function CreateExpenseDialog({onCreate}) {
   const handleClose = () => {
     console.log("Sending POST request");
     axios
-      .post("http://localhost:8080/api/expenses", state)
+      .post("http://localhost:8787/api/expenses", state)
       .then((response) => {
         console.log("RESPONSE OK: " + response.data);
         onCreate(response.data);

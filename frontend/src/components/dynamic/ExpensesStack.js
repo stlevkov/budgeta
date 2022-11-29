@@ -104,7 +104,7 @@ const deleteExpense = (expense, expenses, setExpenses, event) => {
 
   const removeExpenseRequest = async () => {
     try {
-      const response = await axios.delete("http://localhost:8080/api/expenses/" + expense.id);
+      const response = await axios.delete("http://localhost:8787/api/expenses/" + expense.id);
       if (response.data !== "") {
         removeItemFromState();
       } else {
@@ -134,7 +134,7 @@ const ExpensesDirectionStack = (expensesState) => {
   useEffect(() => {
     const fetchAllExpenses = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/api/expenses");
+        const response = await axios.get("http://localhost:8787/api/expenses");
         if (response.data !== "") {
           setExpenses(response.data);
         } else {
@@ -165,7 +165,7 @@ const ExpensesDirectionStack = (expensesState) => {
     if (event.key === "Enter") {
       expense.value = event.target.value;
       axios
-        .put(`http://localhost:8080/api/expenses/${expense.id}`, expense, {
+        .put(`http://localhost:8787/api/expenses/${expense.id}`, expense, {
           headers: {
             "Content-Type": "application/json",
           },
