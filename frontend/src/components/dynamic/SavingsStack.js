@@ -68,7 +68,7 @@ const Item = styled(Paper)(({ theme }) => ({
 
 async function fetchAllSavings() {
   try {
-    const response = await axios.get("http://localhost:8080/api/savings");
+    const response = await axios.get("http://localhost:8787/api/savings");
     if (response.data !== "") {
       return response.data;
     } else {
@@ -102,7 +102,7 @@ const deleteSaving = (saving, savings, setSavings, event) => {
 
   const removeSavingRequest = async () => {
     try {
-      const response = await axios.delete("http://localhost:8080/api/savings/" + saving.id);
+      const response = await axios.delete("http://localhost:8787/api/savings/" + saving.id);
       if (response.data !== "") {
         removeItemFromState();
       } else {
@@ -153,7 +153,7 @@ export default function SavingsDirectionStack() {
     if (event.key === "Enter") {
       saving.value = event.target.value;
       axios
-        .put(`http://localhost:8080/api/savings/${saving.id}`, saving, {
+        .put(`http://localhost:8787/api/savings/${saving.id}`, saving, {
           headers: {
             "Content-Type": "application/json",
           },

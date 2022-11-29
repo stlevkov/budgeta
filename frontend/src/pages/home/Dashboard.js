@@ -77,7 +77,7 @@ const defaultExpenses = [
 
 const fetchData = async (setState, setSumState, defaultState, endpoint) => {
   try {
-    const response = await axios.get("http://localhost:8080/api/" + endpoint);
+    const response = await axios.get("http://localhost:8787/api/" + endpoint);
     if (response.data !== "") {
       setState(response.data);
       if (setSumState) {
