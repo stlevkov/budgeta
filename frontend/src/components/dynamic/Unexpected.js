@@ -8,6 +8,7 @@ import Tooltip from "@mui/material/Tooltip";
 import { useEffect } from "react";
 import { EditText, EditTextarea } from 'react-edit-text';
 import 'react-edit-text/dist/index.css';
+import config from '../../resources/config.json';
 
 const defaultUnexpected = 900;
 
@@ -28,7 +29,7 @@ export default function InputUnexpected({ myData }) {
     const handleKeyDown = (event) => {
         console.log("Sending POST request with data: " + unexpected);
         axios
-            .put("http://localhost:8787/api/costAnalytics/unexpected", unexpected, {
+            .put(config.server.uri + "costAnalytics/unexpected", unexpected, {
                 headers: {
                     "Content-Type": "application/json",
                 },

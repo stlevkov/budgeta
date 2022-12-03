@@ -3,7 +3,6 @@ import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Unstable_Grid2";
 import Paper from "@mui/material/Paper";
-//import Chart from "./Chart";
 import Copyright from "../components/Copyright";
 import Navbar from "../components/NavBar";
 import Sidebar from "../components/Sidebar";
@@ -15,6 +14,7 @@ import StatisticChart from "../../components/charts/StatisticChart";
 import TargetStack from "../../components/dynamic/TargetStack";
 import axios from "axios";
 import { useState, useEffect } from "react";
+import config from '../../resources/config.json';
 
 const defaultSavings = [
   { name: "CAR REPAIRS", description: "Test", value: 150 },
@@ -77,7 +77,7 @@ const defaultExpenses = [
 
 const fetchData = async (setState, setSumState, defaultState, endpoint) => {
   try {
-    const response = await axios.get("http://localhost:8787/api/" + endpoint);
+    const response = await axios.get(config.server.uri + endpoint);
     if (response.data !== "") {
       setState(response.data);
       if (setSumState) {

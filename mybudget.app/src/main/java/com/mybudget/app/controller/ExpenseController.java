@@ -44,7 +44,7 @@ public class ExpenseController {
         if(expenses.size() > 0) {
             return new ResponseEntity<List<Expense>>(expenses, HttpStatus.OK);
         }
-        return new ResponseEntity<>("No Expenses available", HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>("No Expenses available", HttpStatus.ACCEPTED);
     }
 
     @GetMapping("/api/expenses/{id}")
@@ -54,7 +54,7 @@ public class ExpenseController {
         if(expense.isPresent()) {
             return new ResponseEntity<Expense>(expense.get(), HttpStatus.OK);
         }
-        return new ResponseEntity<>("Expense with id " + id + " is not found.", HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>("Expense with id " + id + " is not found.", HttpStatus.ACCEPTED);
     }
 
     @DeleteMapping("/api/expenses/{id}")
@@ -65,7 +65,7 @@ public class ExpenseController {
             expenseRepository.delete(expenses.get());
             return new ResponseEntity<>("Expense with id: " + id + " has been deleted.", HttpStatus.OK);
         }
-        return new ResponseEntity<>("Expense with id " + id + " is not found.", HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>("Expense with id " + id + " is not found.", HttpStatus.ACCEPTED);
     }
 
     @PostMapping("/api/expenses")
@@ -99,6 +99,6 @@ public class ExpenseController {
             }
         }
         return new ResponseEntity<>("Unable to update expense with id " + id +
-                ". Reason: Expense with this ID not found.", HttpStatus.NOT_FOUND);
+                ". Reason: Expense with this ID not found.", HttpStatus.ACCEPTED);
     }
 }

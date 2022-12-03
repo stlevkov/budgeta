@@ -11,6 +11,7 @@ import IconButton from '@mui/material/IconButton';
 import AddCardIcon from '@mui/icons-material/AddCard';
 import Grid from '@mui/material/Unstable_Grid2';
 import InputUnexpected from "./Unexpected";
+import config from '../../resources/config.json';
 
 const defaultCostAnalytics = {
   "id": "635c504c360cfd5b7e0dd036",
@@ -50,7 +51,7 @@ const Item = styled(Paper)(({ theme }) => ({
 
 async function fetchIncomes() {
   try {
-    const response = await axios.get("http://localhost:8787/api/incomes");
+    const response = await axios.get(config.server.uri + "incomes");
     if (response.data !== "") {
       console.log(response.data); //Prints out my three objects in an array in my console. works great
       return response.data;
@@ -66,7 +67,7 @@ async function fetchIncomes() {
 
 async function fetchCostAnalytics() {
   try {
-    const response = await axios.get("http://localhost:8787/api/costAnalytics");
+    const response = await axios.get(config.server.uri + "costAnalytics");
     if (response.data !== "") {
       console.log(response.data); //Prints out my three objects in an array in my console. works great
       return response.data;

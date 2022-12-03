@@ -17,6 +17,7 @@ import axios from "axios";
 import AddIcon from '@mui/icons-material/Add';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from "@mui/material/Tooltip";
+import config from '../../resources/config.json';
 
 export default function CreateExpenseDialog({onCreate}) {
   const [open, setOpen] = React.useState(false);
@@ -46,7 +47,7 @@ export default function CreateExpenseDialog({onCreate}) {
   const handleClose = () => {
     console.log("Sending POST request");
     axios
-      .post("http://localhost:8787/api/expenses", state)
+      .post(config.server.uri + "expenses", state)
       .then((response) => {
         console.log("RESPONSE OK: " + response.data);
         onCreate(response.data);
