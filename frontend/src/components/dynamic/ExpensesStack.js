@@ -2,7 +2,7 @@ import * as React from "react";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import { styled } from "@mui/material/styles";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useState, useEffect } from "react";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
@@ -15,6 +15,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import CreateExpenseDialog from "../../components/dialogs/CreateExpenseDialog";
 import config from '../../resources/config.json';
+import data from '../../resources/data.json';
 
 function CircularProgressWithLabel(props) {
   return (
@@ -48,31 +49,6 @@ CircularProgressWithLabel.propTypes = {
    */
   value: PropTypes.number.isRequired,
 };
-
-const defaultExpenses = [
-  { name: "TV/GSM", description: "Test", value: "80" },
-  { name: "PET", description: "My pet expenses for the month", value: "135" },
-  {
-    name: "APARTMENT",
-    description: "Monthly fee (LOAN) for the apartment",
-    value: "765",
-  },
-  {
-    name: "WATER/ENERGY",
-    description: "Water consumption and Energy",
-    value: "258",
-  },
-  {
-    name: "GARAGE RENT",
-    description: "Garage fee for parking the car",
-    value: "120",
-  },
-  {
-    name: "COSMETICS",
-    description: "Monthly expenses for cosmetics stuffs",
-    value: "75",
-  },
-];
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -113,7 +89,7 @@ const deleteExpense = (expense, expenses, setExpenses, event) => {
       }
     } catch (err) {
       //console.log(err); TODO makes tests fail because of network delay response
-      setExpenses(defaultExpenses);
+      setExpenses(data.defaultExpenses);
     }
   };
 
@@ -143,7 +119,7 @@ const ExpensesDirectionStack = (expensesState) => {
         }
       } catch (err) {
         //console.log(err); TODO makes tests fail because of network delay response
-        setExpenses(defaultExpenses);
+        setExpenses(data.defaultExpenses);
       }
     };
     setProgress(progress);
@@ -165,18 +141,13 @@ const ExpensesDirectionStack = (expensesState) => {
   const handleKeyDown = (expense, event) => {
     if (event.key === "Enter") {
       expense.value = event.target.value;
-      axios
-        .put(`http://localhost:8787/api/expenses/${expense.id}`, expense, {
+      axios.put(config.server.uri + "expenses/" + expense.id, expense, {
           headers: {
             "Content-Type": "application/json",
           },
-        })
-        .then((response) => {
-          console.log(
-            "[ExpenseStack] RESPONSE OK: " + JSON.stringify(response.data)
-          );
-        })
-        .catch((error) => {
+        }).then((response) => {
+          console.log("[ExpenseStack] RESPONSE OK: " + response.data);
+        }).catch((error) => {
           console.log("[ExpenseStack] RESPONSE ERROR: " + error);
         });
     }

@@ -15,6 +15,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/material/IconButton';
 import CreateSavingDialog from "../../components/dialogs/CreateSavingDialog";
 import config from '../../resources/config.json';
+import data from '../../resources/data.json';
 
 function CircularProgressWithLabel(props) {
   return (
@@ -48,14 +49,6 @@ CircularProgressWithLabel.propTypes = {
   value: PropTypes.number.isRequired,
 };
 
-const defaultSavings = {
-  0: { name: "CAR REPAIRS", description: "Test", value: "150" },
-  1: { name: "APARTMENT REPAIRS", description: "Apartment", value: "80" },
-  2: { name: "CLOTHES", description: "Clothes saving", value: "150" },
-  3: { name: "TOYS", description: "Toys", value: "20" },
-  4: { name: "MEDICAL", description: "Medical", value: "75" },
-};
-
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
   ...theme.typography.body2,
@@ -73,11 +66,11 @@ async function fetchAllSavings() {
       return response.data;
     } else {
       console.log("Something is wrong");
-      return defaultSavings;
+      return data.defaultSavings; // TODO This will not work in case of Edit, the ID must be equal
     }
   } catch (err) {
     //console.log(err); TODO makes tests fail because of network delay response
-    return defaultSavings;
+    return data.defaultSavings;
   }
 }
 
@@ -109,8 +102,7 @@ const deleteSaving = (saving, savings, setSavings, event) => {
         console.log("Something is wrong");
       }
     } catch (err) {
-      //console.log(err); TODO makes tests fail because of network delay response
-      setSavings(defaultSavings);
+      setSavings(data.defaultSavings);
     }
   };
 
@@ -126,8 +118,8 @@ const deleteSaving = (saving, savings, setSavings, event) => {
 };
 
 export default function SavingsDirectionStack() {
-  const [savings, setSavings] = useState({});
-  const [progress, setProgress] = useState(15); // TODO - Calculate & Update dynamically 
+  const [savings, setSavings] = useState([]);
+  const [progress, setProgress] = useState(30); // TODO - Calculate & Update dynamically 
 
   useEffect(() => {
     let fetched = fetchAllSavings();
@@ -153,15 +145,13 @@ export default function SavingsDirectionStack() {
     if (event.key === "Enter") {
       saving.value = event.target.value;
       axios
-        .put(`http://localhost:8787/api/savings/${saving.id}`, saving, {
+        .put(config.server.uri + "savings/" + saving.id, saving, {
           headers: {
             "Content-Type": "application/json",
           },
         })
         .then((response) => {
-          console.log(
-            "[SavingStack] RESPONSE OK " + JSON.stringify(response.data)
-          );
+          console.log("[SavingStack] RESPONSE OK " + response.data);
         })
         .catch((error) => {
           console.log("[SavingsStack] RESPONSE ERROR: " + error);

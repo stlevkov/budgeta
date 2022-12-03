@@ -12,32 +12,7 @@ import AddCardIcon from '@mui/icons-material/AddCard';
 import Grid from '@mui/material/Unstable_Grid2';
 import InputUnexpected from "./Unexpected";
 import config from '../../resources/config.json';
-
-const defaultCostAnalytics = {
-  "id": "635c504c360cfd5b7e0dd036",
-  "unexpected" : 800,
-  "targetSaving": 2555,
-  "dailyRecommended": 37.26,
-  "monthlyTarget": 3710.00,
-  "allExpenses": 1790.00
-};
-
-const defaultIncomes = [
-  {
-    "id": "6351b7623300ae5d85e36359",
-    "name": "John",
-    "description": "Main Salary Income",
-    "value": 4900,
-    "updatedAt": "2022-11-02T21:39:24.034+00:00"
-  },
-  {
-    "id": "6362e39db7a2ed58209231f7",
-    "name": "Kery",
-    "description": "Main Salary Income",
-    "value": 1600,
-    "updatedAt": "2022-11-02T21:39:41.762+00:00"
-  }
-];
+import data from '../../resources/data.json';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -57,14 +32,15 @@ async function fetchIncomes() {
       return response.data;
     } else {
       console.log("Something is wrong obtaining the incomes");
-      return defaultIncomes;
+      return data.defaultIncomes;
     }
   } catch (err) {
     //console.log(err); TODO makes tests fail because of network delay response
-    return defaultIncomes;
+    return data.defaultIncomes;
   }
 }
 
+// TODO pass the value from parent instead of fetching it
 async function fetchCostAnalytics() {
   try {
     const response = await axios.get(config.server.uri + "costAnalytics");
@@ -73,17 +49,17 @@ async function fetchCostAnalytics() {
       return response.data;
     } else {
       console.log("Something is wrong getting the costAnalytics");
-      return defaultCostAnalytics;
+      return data.defaultCostAnalytics;
     }
   } catch (err) {
     //console.log(err); TODO makes tests fail because of network delay response
-    return defaultCostAnalytics;
+    return data.defaultCostAnalytics;
   }
 }
 
 export default function CostAnalyticStack({costAnalyticState}) {
-  const [costAnalytic, setCostAnalytics] = useState(defaultCostAnalytics);
-  const [incomes, setIncomes] = useState(defaultIncomes);
+  const [costAnalytic, setCostAnalytics] = useState(data.defaultCostAnalytics);
+  const [incomes, setIncomes] = useState(data.defaultIncomes);
   useEffect(() => {
     let fetchedCostAnalytics = fetchCostAnalytics();
     fetchedCostAnalytics.then((resultCostAnalytic) => {

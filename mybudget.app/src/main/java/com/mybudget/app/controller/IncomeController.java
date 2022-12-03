@@ -44,7 +44,7 @@ public class IncomeController {
         if(incomes.size() > 0) {
             return new ResponseEntity<List<Income>>(incomes, HttpStatus.OK);
         }
-        return new ResponseEntity<>("No Incomes available", HttpStatus.ACCEPTED);
+        return new ResponseEntity<>("No Incomes available", HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/api/incomes/{id}")
@@ -54,7 +54,7 @@ public class IncomeController {
         if(income.isPresent()) {
             return new ResponseEntity<Income>(income.get(), HttpStatus.OK);
         }
-        return new ResponseEntity<>("Income with id " + id + " is not found.", HttpStatus.ACCEPTED);
+        return new ResponseEntity<>("Income with id " + id + " is not found.", HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("/api/incomes/{id}")
@@ -65,7 +65,7 @@ public class IncomeController {
             incomeRepository.delete(incomes.get());
             return new ResponseEntity<>("Income with id: " + id + " has been deleted.", HttpStatus.OK);
         }
-        return new ResponseEntity<>("Income with id " + id + " is not found.", HttpStatus.ACCEPTED);
+        return new ResponseEntity<>("Income with id " + id + " is not found.", HttpStatus.NOT_FOUND);
     }
 
     @PostMapping("/api/incomes")
@@ -100,6 +100,6 @@ public class IncomeController {
             }
         }
         return new ResponseEntity<>("Unable to update income with id " + id +
-                ". Reason: Income with this ID not found.", HttpStatus.ACCEPTED);
+                ". Reason: Income with this ID not found.", HttpStatus.NOT_FOUND);
     }
 }

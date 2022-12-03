@@ -43,7 +43,7 @@ public class SavingController {
         if(savings.size() > 0) {
             return new ResponseEntity<List<Saving>>(savings, HttpStatus.OK);
         }
-        return new ResponseEntity<>("No Savings available", HttpStatus.ACCEPTED);
+        return new ResponseEntity<>("No Savings available", HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/api/savings/{id}")
@@ -53,7 +53,7 @@ public class SavingController {
         if(saving.isPresent()) {
             return new ResponseEntity<Saving>(saving.get(), HttpStatus.OK);
         }
-        return new ResponseEntity<>("Saving with id " + id + " is not found.", HttpStatus.ACCEPTED);
+        return new ResponseEntity<>("Saving with id " + id + " is not found.", HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("/api/savings/{id}")
@@ -64,7 +64,7 @@ public class SavingController {
             savingRepository.delete(saving.get());
             return new ResponseEntity<>("Saving with id: " + id + " has been deleted.", HttpStatus.OK);
         }
-        return new ResponseEntity<>("Saving with id " + id + " is not found.", HttpStatus.ACCEPTED);
+        return new ResponseEntity<>("Saving with id " + id + " is not found.", HttpStatus.NOT_FOUND);
     }
 
     @PostMapping("/api/savings")
@@ -99,7 +99,7 @@ public class SavingController {
             }
         }
         return new ResponseEntity<>("Unable to update saving with id " + id +
-                ". Reason: Saving with this ID not found.", HttpStatus.ACCEPTED);
+                ". Reason: Saving with this ID not found.", HttpStatus.NOT_FOUND);
     }
 
 }

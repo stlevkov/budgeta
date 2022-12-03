@@ -10,13 +10,6 @@ export default function InputTargetSaving({calculateCostAnalytics}) {
 
   const [targetSaving, setTargetSaving] = React.useState(0);
 
-  // const handleTargetSavingChange = (e) => {
-  //   console.log(
-  //     "Handle Target Saving Change to dynamically set the values of the dashboard"
-  //   );
-  //   setTargetSaving(e.target.value);
-  // };
-
   useEffect(() => {
     const fetchTargetSaving = async () => {
       console.log("Fetching activated from useEffect");

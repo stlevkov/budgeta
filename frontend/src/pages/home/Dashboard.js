@@ -15,65 +15,7 @@ import TargetStack from "../../components/dynamic/TargetStack";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import config from '../../resources/config.json';
-
-const defaultSavings = [
-  { name: "CAR REPAIRS", description: "Test", value: 150 },
-  { name: "APARTMENT REPAIRS", description: "Apartment", value: 80 },
-  { name: "CLOTHES", description: "Clothes saving", value: 150 },
-  { name: "TOYS", description: "Toys", value: 20 },
-  { name: "MEDICAL", description: "Medical", value: 75 },
-];
-
-const defaultCostAnalytics = {
-  "id": "635c504c360cfd5b7e0dd036",
-  "unexpected": 800,
-  "targetSaving": 2555,
-  "dailyRecommended": 37.26,
-  "monthlyTarget": 3710.00,
-  "allExpenses": 1790.00
-};
-
-const defaultIncomes = [
-  {
-    "id": "6351b7623300ae5d85e36359",
-    "name": "John",
-    "description": "Main Salary Income",
-    "value": 4900,
-    "updatedAt": "2022-11-02T21:39:24.034+00:00"
-  },
-  {
-    "id": "6362e39db7a2ed58209231f7",
-    "name": "Kery",
-    "description": "Main Salary Income",
-    "value": 1600,
-    "updatedAt": "2022-11-02T21:39:41.762+00:00"
-  }
-];
-
-const defaultExpenses = [
-  { name: "TV/GSM", description: "Test", value: "80" },
-  { name: "PET", description: "My pet expenses for the month", value: "135" },
-  {
-    name: "APARTMENT",
-    description: "Monthly fee (LOAN) for the apartment",
-    value: "765",
-  },
-  {
-    name: "WATER/ENERGY",
-    description: "Water consumption and Energy",
-    value: "258",
-  },
-  {
-    name: "GARAGE RENT",
-    description: "Garage fee for parking the car",
-    value: "120",
-  },
-  {
-    name: "COSMETICS",
-    description: "Monthly expenses for cosmetics stuffs",
-    value: "75",
-  },
-];
+import data from '../../resources/data.json';
 
 const fetchData = async (setState, setSumState, defaultState, endpoint) => {
   try {
@@ -138,10 +80,10 @@ export default function Dashboard() {
   }
 
   useEffect(() => {
-    fetchData(setExpenses, setSumExpenses, defaultExpenses, "expenses");
-    fetchData(setIncomes, setSumIncomes, defaultIncomes, "incomes");
-    fetchData(setSavings, setSumSavings, defaultSavings, "savings");
-    fetchData(setCostAnalytics, false, defaultCostAnalytics, "costAnalytics");
+    fetchData(setExpenses, setSumExpenses, data.defaultExpenses, "expenses");
+    fetchData(setIncomes, setSumIncomes, data.defaultIncomes, "incomes");
+    fetchData(setSavings, setSumSavings, data.defaultSavings, "savings");
+    fetchData(setCostAnalytics, false, data.defaultCostAnalytics, "costAnalytics");
     return () => {
       setExpenses([]);
       setIncomes([]);
