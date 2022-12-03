@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import TextField from '@mui/material/TextField';
 import Grid from "@mui/material/Unstable_Grid2";
 import Typography from "@mui/material/Typography";
+import config from '../../resources/config.json';
 
 export default function InputTargetSaving({calculateCostAnalytics}) {
 
@@ -21,7 +22,7 @@ export default function InputTargetSaving({calculateCostAnalytics}) {
       console.log("Fetching activated from useEffect");
       try {
         const response = await axios.get(
-          "http://localhost:8787/api/costAnalytics"
+          config.server.uri + "costAnalytics"
         );
         if (response.data !== "") {
           setTargetSaving(response.data.targetSaving);
@@ -55,7 +56,7 @@ export default function InputTargetSaving({calculateCostAnalytics}) {
       console.log("Sending POST request with data: " + targetSaving);
       axios
         .put(
-          "http://localhost:8787/api/costAnalytics/targetSaving",
+          config.server.uri + "costAnalytics/targetSaving",
           targetSaving,
           {
             headers: {

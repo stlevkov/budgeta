@@ -14,6 +14,7 @@ import PropTypes from 'prop-types';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import CreateExpenseDialog from "../../components/dialogs/CreateExpenseDialog";
+import config from '../../resources/config.json';
 
 function CircularProgressWithLabel(props) {
   return (
@@ -104,7 +105,7 @@ const deleteExpense = (expense, expenses, setExpenses, event) => {
 
   const removeExpenseRequest = async () => {
     try {
-      const response = await axios.delete("http://localhost:8787/api/expenses/" + expense.id);
+      const response = await axios.delete(config.server.uri + "expenses/" + expense.id);
       if (response.data !== "") {
         removeItemFromState();
       } else {
@@ -134,7 +135,7 @@ const ExpensesDirectionStack = (expensesState) => {
   useEffect(() => {
     const fetchAllExpenses = async () => {
       try {
-        const response = await axios.get("http://localhost:8787/api/expenses");
+        const response = await axios.get(config.server.uri + "expenses");
         if (response.data !== "") {
           setExpenses(response.data);
         } else {

@@ -14,7 +14,7 @@ import Box from '@mui/material/Box';
 import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/material/IconButton';
 import CreateSavingDialog from "../../components/dialogs/CreateSavingDialog";
-
+import config from '../../resources/config.json';
 
 function CircularProgressWithLabel(props) {
   return (
@@ -68,7 +68,7 @@ const Item = styled(Paper)(({ theme }) => ({
 
 async function fetchAllSavings() {
   try {
-    const response = await axios.get("http://localhost:8787/api/savings");
+    const response = await axios.get(config.server.uri + "savings");
     if (response.data !== "") {
       return response.data;
     } else {
@@ -102,7 +102,7 @@ const deleteSaving = (saving, savings, setSavings, event) => {
 
   const removeSavingRequest = async () => {
     try {
-      const response = await axios.delete("http://localhost:8787/api/savings/" + saving.id);
+      const response = await axios.delete(config.server.uri + "savings/" + saving.id);
       if (response.data !== "") {
         removeItemFromState();
       } else {
