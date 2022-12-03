@@ -41,7 +41,7 @@ public class CostAnalyticController {
         if(costAnalytics.size() > 0) {
             return new ResponseEntity<>(costAnalytics.get(0), HttpStatus.OK);
         }
-        return new ResponseEntity<>("No CostAnalytics available", HttpStatus.ACCEPTED);
+        return new ResponseEntity<>("No CostAnalytics available", HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("/api/costAnalytics/unexpected")
