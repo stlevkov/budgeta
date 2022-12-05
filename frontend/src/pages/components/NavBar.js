@@ -29,9 +29,14 @@ const Navbar = styled(MuiAppBar, {
   }),
 }));
 
-export default function NavBar({ open, toggleSidebar, sidebarWidth, onTargetSaving }) {
+export default function NavBar({
+  open,
+  toggleSidebar,
+  sidebarWidth,
+  onTargetSaving,
+}) {
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box>
       <Navbar open={open} sidebarWidth={sidebarWidth}>
         <Toolbar>
           <IconButton

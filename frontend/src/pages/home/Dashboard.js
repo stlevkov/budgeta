@@ -14,8 +14,8 @@ import StatisticChart from "../../components/charts/StatisticChart";
 import TargetStack from "../../components/dynamic/TargetStack";
 import axios from "axios";
 import { useState, useEffect } from "react";
-import config from '../../resources/config.json';
-import data from '../../resources/data.json';
+import config from "../../resources/config.json";
+import data from "../../resources/data.json";
 
 const fetchData = async (setState, setSumState, defaultState, endpoint) => {
   try {
@@ -38,11 +38,13 @@ const fetchData = async (setState, setSumState, defaultState, endpoint) => {
       setSumState(sumValues(defaultState));
     }
   }
-}
+};
 
 function sumValues(array) {
   let sum = 0;
-  array.forEach((obj) => { sum += obj.value })
+  array.forEach((obj) => {
+    sum += obj.value;
+  });
   return sum;
 }
 
@@ -55,8 +57,8 @@ export default function Dashboard() {
   const sidebarWidth = 210;
   const [open, setOpen] = useState(true);
   const [expenses, setExpenses] = useState([]); // TODO provide as hook in each Stack
-  const [incomes, setIncomes] = useState([]);   // TODO provide as hook in each Stack
-  const [savings, setSavings] = useState([]);   // TODO provide as hook in each Stack
+  const [incomes, setIncomes] = useState([]); // TODO provide as hook in each Stack
+  const [savings, setSavings] = useState([]); // TODO provide as hook in each Stack
   const [costAnalytics, setCostAnalytics] = useState({});
 
   const [sumExpenses, setSumExpenses] = useState(0);
@@ -66,24 +68,34 @@ export default function Dashboard() {
   /**
    * Daily recommended: (Incomes - (Expenses + Savings + TargetSave + Unexpected)) / days in month
    * Monthly target:    (Incomes - (Expenses + Savings + TargetSave + Unexpected)
-   * 
+   *
    * @param {int} targetSaving Target Saving set by navbar field
    */
   const calculateCostAnalytics = (targetSaving) => {
-    let sumAllExpenses = (sumExpenses + sumSavings + parseFloat(targetSaving) + parseFloat(costAnalytics.unexpected));
+    let sumAllExpenses =
+      sumExpenses +
+      sumSavings +
+      parseFloat(targetSaving) +
+      parseFloat(costAnalytics.unexpected);
     let daily = (sumIncomes - sumAllExpenses) / daysInThisMonth();
-    let availableForSpend = (sumIncomes - sumAllExpenses);
+    let availableForSpend = sumIncomes - sumAllExpenses;
     const clone = structuredClone(costAnalytics);
     clone.dailyRecommended = Math.round((daily + Number.EPSILON) * 100) / 100;
-    clone.monthlyTarget = Math.round((availableForSpend + Number.EPSILON) * 100) / 100;
+    clone.monthlyTarget =
+      Math.round((availableForSpend + Number.EPSILON) * 100) / 100;
     setCostAnalytics(clone);
-  }
+  };
 
   useEffect(() => {
     fetchData(setExpenses, setSumExpenses, data.defaultExpenses, "expenses");
     fetchData(setIncomes, setSumIncomes, data.defaultIncomes, "incomes");
     fetchData(setSavings, setSumSavings, data.defaultSavings, "savings");
-    fetchData(setCostAnalytics, false, data.defaultCostAnalytics, "costAnalytics");
+    fetchData(
+      setCostAnalytics,
+      false,
+      data.defaultCostAnalytics,
+      "costAnalytics"
+    );
     return () => {
       setExpenses([]);
       setIncomes([]);
@@ -91,7 +103,6 @@ export default function Dashboard() {
       setCostAnalytics({});
     };
   }, []);
-
 
   const toggleSidebar = () => {
     setOpen(!open);
@@ -117,7 +128,12 @@ export default function Dashboard() {
             theme.palette.mode === "light"
               ? theme.palette.grey[200]
               : theme.palette.grey[1000],
+
           flexGrow: 1,
+          flexWrap: "nowrap",
+          flexDirection: "column",
+          alignItems: "stretch",
+          alignContent: "stretch",
           height: "100vh",
           marginTop: "5em",
           overflow: "auto",
@@ -142,20 +158,18 @@ export default function Dashboard() {
         <Grid container spacing={2} sx={{ margin: 2 }}>
           {/* Target */}
           <Grid xs={12} md={3} lg={5}>
-
-              <Grid container spacing={2}>
-                <Grid xs={6}>
-                  <Paper>
-                    <TargetStack/>
-                  </Paper>
-                </Grid>
-                <Grid xs={6}>
-                  <Paper>
-                  <TargetStack/>
-                  </Paper>
-                </Grid>
+            <Grid container spacing={2}>
+              <Grid xs={6}>
+                <Paper>
+                  <TargetStack />
+                </Paper>
               </Grid>
-              
+              <Grid xs={6}>
+                <Paper>
+                  <TargetStack />
+                </Paper>
+              </Grid>
+            </Grid>
           </Grid>
           {/* ChartJs */}
           <Grid xs={12} md={9} lg={7}>
