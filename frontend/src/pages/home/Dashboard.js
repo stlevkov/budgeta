@@ -134,7 +134,6 @@ export default function Dashboard() {
           flexDirection: "column",
           alignItems: "stretch",
           alignContent: "stretch",
-          height: "100vh",
           marginTop: "5em",
           overflow: "auto",
         }}
