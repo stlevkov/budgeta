@@ -14,18 +14,31 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 const Navbar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open" && prop !== "sidebarWidth",
 })(({ theme, open, sidebarWidth }) => ({
+  // open is false
   zIndex: theme.zIndex.drawer + 1,
+  position: "relative",
+  width: `calc(100vw - ${sidebarWidth}px)`,
   transition: theme.transitions.create(["width", "margin"], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
   ...(open && {
-    marginLeft: sidebarWidth,
-    width: `calc(100% - ${sidebarWidth}px)`,
+    [theme.breakpoints.down("lg")]: {
+      width: "100vw",
+      marginLeft: `calc(0px - (${theme.spacing(7)} + 1px))`,
+    },
     transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
     }),
+  }),
+  ...(!open && {
+    width: "100vw",
+    marginLeft: `calc(0px - (${theme.spacing(7)} + 1px))`,
+    [theme.breakpoints.down("lg")]: {
+      width: `calc(100vw - ${sidebarWidth}px)`,
+      marginLeft: 0,
+    },
   }),
 }));
 
@@ -36,34 +49,52 @@ export default function NavBar({
   onTargetSaving,
 }) {
   return (
-    <Box>
-      <Navbar open={open} sidebarWidth={sidebarWidth}>
-        <Toolbar>
+    <Navbar open={open} sidebarWidth={sidebarWidth}>
+      <Toolbar
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <Box sx={{ display: "flex" }}>
           <IconButton
             size="large"
             edge="start"
             color="inherit"
             onClick={toggleSidebar}
-            sx={{
-              marginRight: "2",
+            sx={(theme) => ({
+              [theme.breakpoints.down("lg")]: {
+                display: "block",
+                ...(!open && { display: "none" }),
+              },
               ...(open && { display: "none" }),
-            }}
+            })}
           >
             <MenuIcon />
           </IconButton>
           <Typography
             variant="h6"
             noWrap
-            component="div"
-            sx={{ display: { xs: "none", sm: "block" } }}
+            component="span"
+            sx={{
+              display: {
+                xs: "none",
+                sm: "block",
+                md: "block",
+                lg: "block",
+                xl: "block",
+              },
+              padding: "0.5em",
+            }}
           >
             Dashboard
           </Typography>
+        </Box>
 
-          <Box sx={{ flexGrow: 1 }} />
-          <Box sx={{ marginRight: 2 }}>
-            <InputTargetSaving calculateCostAnalytics={onTargetSaving} />
-          </Box>
+        <Box sx={{ display: "flex" }}>
+          <InputTargetSaving calculateCostAnalytics={onTargetSaving} />
+
           <Box sx={{ display: "flex" }}>
             <IconButton
               size="large"
@@ -76,8 +107,8 @@ export default function NavBar({
             </IconButton>
             <SettingsButton />
           </Box>
-        </Toolbar>
-      </Navbar>
-    </Box>
+        </Box>
+      </Toolbar>
+    </Navbar>
   );
 }

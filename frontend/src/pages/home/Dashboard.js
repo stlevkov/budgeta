@@ -109,78 +109,69 @@ export default function Dashboard() {
   };
 
   return (
-    <Box sx={{ display: "flex" }}>
-      <Navbar
-        open={open}
-        toggleSidebar={toggleSidebar}
-        sidebarWidth={sidebarWidth}
-        onTargetSaving={calculateCostAnalytics}
-      />
-      <Sidebar
-        open={open}
-        toggleSidebar={toggleSidebar}
-        sidebarWidth={sidebarWidth}
-      />
-      <Box
-        component="main"
-        sx={{
-          backgroundColor: (theme) =>
-            theme.palette.mode === "light"
-              ? theme.palette.grey[200]
-              : theme.palette.grey[1000],
+    <Grid container>
+      <Grid xs="auto" sm="auto" md="auto" lg="auto">
+        <Sidebar
+          open={open}
+          toggleSidebar={toggleSidebar}
+          sidebarWidth={sidebarWidth}
+        />
+      </Grid>
+      <Grid xs sm md lg>
+        <Navbar
+          open={open}
+          toggleSidebar={toggleSidebar}
+          sidebarWidth={sidebarWidth}
+          onTargetSaving={calculateCostAnalytics}
+        />
 
-          flexGrow: 1,
-          flexWrap: "nowrap",
-          flexDirection: "column",
-          alignItems: "stretch",
-          alignContent: "stretch",
-          marginTop: "5em",
-          overflow: "auto",
-        }}
-      >
-        <Divider>Expenses</Divider>
-        {/* Expense Stack */}
-        <Container maxWidth sx={{ mt: 2, mb: 2 }}>
-          <ExpensesDirectionStack expensesState={expenses} />
-        </Container>
-        <Divider>Savings</Divider>
-        {/* Savings Stack */}
-        <Container maxWidth sx={{ mt: 2, mb: 2 }}>
-          <SavingsDirectionStack />
-        </Container>
-        <Divider>Analytics</Divider>
-        {/* Analytic Stack */}
-        <Container maxWidth sx={{ mt: 2, mb: 2 }}>
-          <CostAnalyticStack costAnalyticState={costAnalytics} />
-        </Container>
-        {/* Statistics Stack */}
-        <Grid container spacing={2} sx={{ margin: 2 }}>
-          {/* Target */}
-          <Grid xs={12} md={3} lg={5}>
-            <Grid container spacing={2}>
-              <Grid xs={6}>
-                <Paper>
-                  <TargetStack />
-                </Paper>
-              </Grid>
-              <Grid xs={6}>
-                <Paper>
-                  <TargetStack />
-                </Paper>
-              </Grid>
+        <Grid xs={12} sm={12} md={12} lg={12}>
+          {/* Expense Stack */}
+          <Grid xs={12} sm={12} md={12} lg={12} sx={{ padding: "1em" }}>
+            <ExpensesDirectionStack expensesState={expenses} />
+          </Grid>
+
+          <Divider />
+          {/* Savings Stack */}
+          <Grid xs={12} sm={12} md={12} lg={12} sx={{ padding: "1em" }}>
+            <SavingsDirectionStack />
+          </Grid>
+          <Divider>Analytics</Divider>
+          {/* Analytic Stack */}
+          <Grid xs={12} sm={12} md={12} lg={12} sx={{ padding: "1em" }}>
+            <CostAnalyticStack costAnalyticState={costAnalytics} />
+          </Grid>
+          {/* Statistics Stack */}
+          <Grid
+            container
+            xs={12}
+            sm={12}
+            md={12}
+            lg={12}
+            spacing={2}
+            sx={{ padding: "1em" }}
+          >
+            {/* Target */}
+            <Grid xs={12} md={3} lg={3}>
+              <Paper>
+                <TargetStack />
+              </Paper>
+            </Grid>
+            <Grid xs={12} md={3} lg={3}>
+              <Paper>
+                <TargetStack />
+              </Paper>
+            </Grid>
+
+            {/* ChartJs */}
+            <Grid xs={12} md={9} lg={6}>
+              <Paper sx={{ height: "18em" }}>
+                <StatisticChart />
+              </Paper>
             </Grid>
           </Grid>
-          {/* ChartJs */}
-          <Grid xs={12} md={9} lg={7}>
-            <Paper sx={{ height: "21rem", padding: "1em" }}>
-              <StatisticChart />
-            </Paper>
-          </Grid>
         </Grid>
-        <Container maxWidth="lg" sx={{ mt: 1, mb: 1 }}>
-          <Copyright sx={{ pt: 4 }} />
-        </Container>
-      </Box>
-    </Box>
+      </Grid>
+    </Grid>
   );
 }

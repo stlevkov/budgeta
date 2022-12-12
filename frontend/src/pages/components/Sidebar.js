@@ -13,46 +13,69 @@ import {
 const Sidebar = styled(MuiDrawer, {
   shouldForwardProp: (prop) => prop !== "open" && prop !== "sidebarWidth",
 })(({ theme, open, sidebarWidth }) => ({
+  // open is true
   "& .MuiDrawer-paper": {
+    width: sidebarWidth,
+    height: "100vh",
     position: "relative",
     whiteSpace: "nowrap",
-    width: sidebarWidth,
+    flexSrink: 0,
+    boxSizing: "border-box",
+    [theme.breakpoints.down("lg")]: {
+      width: `calc(${theme.spacing(7)} + 1px)`,
+      overflowX: "hidden",
+    },
     transition: theme.transitions.create("width", {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
     }),
-    boxSizing: "border-box",
     ...(!open && {
+      width: `calc(${theme.spacing(7)} + 1px)`,
       overflowX: "hidden",
+      [theme.breakpoints.down("lg")]: {
+        width: sidebarWidth,
+      },
       transition: theme.transitions.create("width", {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
       }),
-      width: theme.spacing(7),
-      [theme.breakpoints.up("sm")]: {
-        width: theme.spacing(9),
-      },
     }),
   },
 }));
 
 export default function SideBar({ open, toggleSidebar, sidebarWidth }) {
   return (
-    <Sidebar variant="permanent" open={open} sidebarWidth={sidebarWidth}>
+    <Sidebar
+      variant="permanent"
+      open={open}
+      sidebarWidth={sidebarWidth}
+      ModalProps={{
+        keepMounted: true, // Better open performance on mobile.
+      }}
+    >
       <Toolbar
         sx={{
           display: "flex",
           alignItems: "center",
           justifyContent: "flex-end",
-          px: [1],
         }}
       >
-        <IconButton onClick={toggleSidebar}>
+        <IconButton
+          onClick={toggleSidebar}
+          sx={(theme) => ({
+            [theme.breakpoints.down("lg")]: {
+              display: "none",
+              ...(open && { display: "block" }),
+              ...(!open && { display: "block" }),
+            },
+            ...(!open && { display: "none" }),
+          })}
+        >
           <ChevronLeftIcon />
         </IconButton>
       </Toolbar>
       <Divider />
-      <List component="nav">
+      <List>
         {sidebarMainLinkList}
         <Divider sx={{ my: 1 }} />
         {sidebarSecondLinkList}
