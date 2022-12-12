@@ -1,22 +1,19 @@
 import * as React from "react";
 import axios from "axios";
 import { useEffect } from "react";
-import TextField from '@mui/material/TextField';
+import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Unstable_Grid2";
 import Typography from "@mui/material/Typography";
-import config from '../../resources/config.json';
+import config from "../../resources/config.json";
 
-export default function InputTargetSaving({calculateCostAnalytics}) {
-
+export default function InputTargetSaving({ calculateCostAnalytics }) {
   const [targetSaving, setTargetSaving] = React.useState(0);
 
   useEffect(() => {
     const fetchTargetSaving = async () => {
       console.log("Fetching activated from useEffect");
       try {
-        const response = await axios.get(
-          config.server.uri + "costAnalytics"
-        );
+        const response = await axios.get(config.server.uri + "costAnalytics");
         if (response.data !== "") {
           setTargetSaving(response.data.targetSaving);
         } else {
@@ -38,25 +35,21 @@ export default function InputTargetSaving({calculateCostAnalytics}) {
   // having event here is important, otherwise, the component will not be editable
   // remark: Dont use defaultValue for valueChange, use the value instead and handle the event properly
   const handleChange = (event) => {
-    console.log("Handle change: " + event.target.value)
+    console.log("Handle change: " + event.target.value);
     setTargetSaving(event.target.value);
     calculateCostAnalytics(event.target.value);
   };
 
   const handleKeyDown = (event) => {
-    console.log("Evvent")
+    console.log("Evvent");
     if (event.key === "Enter") {
       console.log("Sending POST request with data: " + targetSaving);
       axios
-        .put(
-          config.server.uri + "costAnalytics/targetSaving",
-          targetSaving,
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        )
+        .put(config.server.uri + "costAnalytics/targetSaving", targetSaving, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
         .then((response) => {
           console.log("RESPONSE OK: " + JSON.stringify(response.data));
           // Handle data
@@ -77,8 +70,8 @@ export default function InputTargetSaving({calculateCostAnalytics}) {
             align="left"
             color="yellow"
             variant="standard"
-            fontSize="1.2em"
-            style={{marginTop: 6, marginRight: 6}}
+            fontSize="1em"
+            style={{ marginTop: 6, marginRight: 6 }}
           >
             TARGET SAVING
           </Typography>
@@ -90,7 +83,7 @@ export default function InputTargetSaving({calculateCostAnalytics}) {
             variant="filled"
             size="small"
             fontSize="1.2em"
-            style={{ width: 80}}
+            style={{ width: 80 }}
             defaultValue={targetSaving}
             value={targetSaving}
             onChange={handleChange}
