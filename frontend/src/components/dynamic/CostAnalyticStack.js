@@ -6,13 +6,13 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
-import IncomeDialog from "../dialogs/IncomesDialog";
+import ViewIncomeDialog from "../dialogs/ViewIncomesDialog";
 import IconButton from '@mui/material/IconButton';
-import AddCardIcon from '@mui/icons-material/AddCard';
 import Grid from '@mui/material/Unstable_Grid2';
 import InputUnexpected from "./Unexpected";
 import config from '../../resources/config.json';
 import data from '../../resources/data.json';
+import CreateIncomeDialog from "../../components/dialogs/CreateIncomeDialog";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -35,7 +35,7 @@ async function fetchIncomes() {
       return data.defaultIncomes;
     }
   } catch (err) {
-    //console.log(err); TODO makes tests fail because of network delay response
+   // console.log(err); // TODO makes tests fail because of network delay response
     return data.defaultIncomes;
   }
 }
@@ -59,7 +59,9 @@ async function fetchCostAnalytics() {
 
 export default function CostAnalyticStack({costAnalyticState}) {
   const [costAnalytic, setCostAnalytics] = useState(data.defaultCostAnalytics);
-  const [incomes, setIncomes] = useState(data.defaultIncomes);
+  const [incomes, setIncomes] = useState([]);
+  const [sumIncomes, setSumIncomes] = useState(0);
+
   useEffect(() => {
     let fetchedCostAnalytics = fetchCostAnalytics();
     fetchedCostAnalytics.then((resultCostAnalytic) => {
@@ -67,10 +69,29 @@ export default function CostAnalyticStack({costAnalyticState}) {
     });
     let fetchedIncomes = fetchIncomes();
     fetchedIncomes.then((result) => {
-      console.log("Incomes: " + incomes)
       setIncomes(result);
+      calculateSumIncomes(result);
     });
+   
   }, []);
+
+  function addIncome(income){
+    incomes.push(income);
+    var array = [...incomes];
+    setIncomes(array);
+    calculateSumIncomes(array);
+  };
+
+
+  function calculateSumIncomes(incomes){
+    if(incomes.length > 1) {
+      let sum = 0;
+      incomes.forEach(income => sum += income.value);
+      setSumIncomes(sum);
+    } else if (incomes.length === 1) {
+      setSumIncomes(incomes[0].value);
+    }
+  }
 
   return (
     <Stack
@@ -82,7 +103,7 @@ export default function CostAnalyticStack({costAnalyticState}) {
       <Item>
         <React.Fragment>
           <Grid container spacing={0}>
-            <Grid xs={6} md={12}>
+            <Grid xs={6} md={11}>
               <Tooltip title="All Collected Incomes" placement="top">
                 <Typography
                   component="p"
@@ -103,12 +124,12 @@ export default function CostAnalyticStack({costAnalyticState}) {
                 fontSize="3em"
                 align="left"
               >
-                $ {incomes.reduce((a, b) => a.value + b.value)}
+                ${sumIncomes}
               </Typography>
             </Grid>
             <Grid xs={6} md={10}>
               <Typography sx={{ mt: 0 }} fontSize="1.3em" align="left">
-                <IncomeDialog myData={incomes} />
+                <ViewIncomeDialog myData={incomes} />
               </Typography>
             </Grid>
             <Grid xs={6} md={2}>
@@ -119,7 +140,8 @@ export default function CostAnalyticStack({costAnalyticState}) {
                 size="large"
                 align="right"
               >
-                <AddCardIcon fontSize="inherit" />
+                 <CreateIncomeDialog onCreate={addIncome} />
+              
               </IconButton>
             </Grid>
           </Grid>

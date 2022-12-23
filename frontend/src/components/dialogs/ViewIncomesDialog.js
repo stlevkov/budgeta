@@ -11,23 +11,6 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import { useEffect } from "react";
 
-const defaultIncomes = [
-  {
-    "id": "6351b7623300ae5d85e36359",
-    "name": "John",
-    "description": "Main Salary Income",
-    "value": 0,
-    "updatedAt": "2022-11-02T21:39:24.034+00:00"
-  },
-  {
-    "id": "6362e39db7a2ed58209231f7",
-    "name": "Kery",
-    "description": "Main Salary",
-    "value": 0,
-    "updatedAt": "2022-11-02T21:39:41.762+00:00"
-  }
-];
-
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -61,9 +44,9 @@ function a11yProps(index) {
   };
 }
 
-export default function IncomeDialog({ myData }) {
+export default function ViewIncomeDialog({ myData }) {
   const [open, setOpen] = React.useState(false);
-  const [incomes, setIncomes] = React.useState(defaultIncomes)
+  const [incomes, setIncomes] = React.useState([])
 
   useEffect(() => {
     setIncomes(myData)
@@ -83,6 +66,22 @@ export default function IncomeDialog({ myData }) {
     setOpen(false);
   };
 
+  const tabs = [];
+  for (let i = 0; i < incomes.length; i++) {
+      tabs.push(<Tab label={incomes[i].name} {...a11yProps(i)} />);
+  }
+
+  const tabPanels = [];
+  for (let i = 0; i < incomes.length; i++) {
+      tabPanels.push(
+        <TabPanel value={value} index={i}>
+            <Typography variant="h4" gutterBottom>{incomes[i].description}</Typography>
+            <Typography variant="h2" gutterBottom>{incomes[i].value}</Typography>
+            <Typography variant="h5" gutterBottom>Last updated: {incomes[i].updatedAt}</Typography>
+      </TabPanel>
+      );
+  }
+
   return (
     <div>
       <Link
@@ -101,18 +100,10 @@ export default function IncomeDialog({ myData }) {
             <Box sx={{ width: '100%' }}>
               <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-                  <Tab label={incomes[0].name} {...a11yProps(0)} />
-                  <Tab label={incomes[1].name} {...a11yProps(1)} />
+                 {tabs}
                 </Tabs>
               </Box>
-              <TabPanel value={value} index={0}>
-                <h4>{incomes[0].description}</h4>
-                <h2>{incomes[0].value}</h2>
-              </TabPanel>
-              <TabPanel value={value} index={1}>
-                <h4>{incomes[1].description}</h4>
-                <h2>{incomes[1].value}</h2>
-              </TabPanel>
+                {tabPanels}
             </Box>
           </DialogContentText>
         </DialogContent>
