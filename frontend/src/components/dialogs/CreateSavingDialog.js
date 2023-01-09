@@ -19,7 +19,7 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from "@mui/material/Tooltip";
 import config from '../../resources/config.json';
 
-export default function CreateSavingDialog({onCreate}) {
+export default function CreateSavingDialog({onCreate, handleErrorMessageOpen, errorMessage}) {
   const [open, setOpen] = React.useState(false);
   const [itemName, setItemName] = React.useState(""); // TODO can be property of Object
   const [itemDesc, setItemDesc] = React.useState(""); // TODO can be property of object
@@ -54,6 +54,8 @@ export default function CreateSavingDialog({onCreate}) {
       })
       .catch((error) => {
         console.log("RESPONSE ERROR: " + error);
+        errorMessage("Unable to add new Saving. Reason: " + error.message);
+        handleErrorMessageOpen();
       });
     setItemName("");
     setItemDesc("");

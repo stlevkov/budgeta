@@ -117,7 +117,7 @@ const deleteSaving = (saving, savings, setSavings, event) => {
   removeSavingRequest();
 };
 
-export default function SavingsDirectionStack() {
+export default function SavingsDirectionStack({handleErrorMessageOpen, errorMessage}) {
   const [savings, setSavings] = useState([]);
   const [progress, setProgress] = useState(30); // TODO - Calculate & Update dynamically 
 
@@ -181,7 +181,9 @@ export default function SavingsDirectionStack() {
               </Tooltip>
             </Grid>
             <Grid xs={12} md={1}>
-              <CreateSavingDialog onCreate={addSaving} />
+              <CreateSavingDialog onCreate={addSaving} 
+              handleErrorMessageOpen={handleErrorMessageOpen}
+              errorMessage={errorMessage} />
             </Grid>
           </Grid>
           <CircularProgressWithLabel sx={{ mt: 1 }} value={progress} />
