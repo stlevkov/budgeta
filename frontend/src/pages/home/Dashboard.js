@@ -1,4 +1,4 @@
-import * as React from "react";
+import * as React from 'react';
 import Grid from "@mui/material/Unstable_Grid2";
 import Paper from "@mui/material/Paper";
 import Navbar from "../components/NavBar";
@@ -13,6 +13,9 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import config from "../../resources/config.json";
 import data from "../../resources/data.json";
+import Stack from '@mui/material/Stack';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 
 const fetchData = async (setState, setSumState, defaultState, endpoint) => {
   try {
@@ -51,6 +54,8 @@ function daysInThisMonth() {
 }
 
 export default function Dashboard() {
+  const [errorMessageOpen, setErrorMessageOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("No error yet");
   const sidebarWidth = 210;
   const [open, setOpen] = useState(true);
   const [expenses, setExpenses] = useState([]); // TODO provide as hook in each Stack
@@ -105,6 +110,22 @@ export default function Dashboard() {
     setOpen(!open);
   };
 
+  const handleErrorMessageOpen = () => {
+    setErrorMessageOpen(true);
+  }
+
+  const handleErrorMessageClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setErrorMessageOpen(false);
+  };
+
+  const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  });
+
   return (
     <Grid container>
       <Grid xs="auto" sm="auto" md="auto" lg="auto">
@@ -131,7 +152,7 @@ export default function Dashboard() {
           <Divider />
           {/* Savings Stack */}
           <Grid xs={12} sm={12} md={12} lg={12} sx={{ padding: "1em" }}>
-            <SavingsDirectionStack />
+            <SavingsDirectionStack handleErrorMessageOpen={handleErrorMessageOpen} errorMessage={setErrorMessage} />
           </Grid>
           <Divider>Analytics</Divider>
           {/* Analytic Stack */}
@@ -169,6 +190,13 @@ export default function Dashboard() {
           </Grid>
         </Grid>
       </Grid>
+      <Stack spacing={2} sx={{ width: '100%' }}>
+      <Snackbar open={errorMessageOpen} autoHideDuration={6000} onClose={handleErrorMessageClose}>
+        <Alert onClose={handleErrorMessageClose} severity="error" sx={{ width: '100%' }}>
+          {errorMessage}
+        </Alert>
+      </Snackbar>
+    </Stack>
     </Grid>
   );
 }

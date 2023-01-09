@@ -199,7 +199,7 @@ export default function CostAnalyticStack({costAnalyticState}) {
             fontSize="3em"
             align="left"
           >
-            $ {costAnalyticState.monthlyTarget}
+            $ 0
           </Typography>
         </React.Fragment>
       </Item>
