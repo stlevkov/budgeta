@@ -7,6 +7,7 @@ import Divider from "@mui/material/Divider";
 import CircularProgress from '@mui/material/CircularProgress';
 import { useState, useEffect } from "react";
 import PropTypes from 'prop-types';
+import Tooltip from "@mui/material/Tooltip";
 
 function CircularProgressWithLabel(props) {
     return (
@@ -40,8 +41,8 @@ CircularProgressWithLabel.propTypes = {
     value: PropTypes.number.isRequired,
 };
 
-export default function TargetStack({ myData }) {
-    const [progress, setProgress] = useState(85); // TODO - Calculate & Update dynamically 
+export default function TargetStack({ name , target, perc}) {
+    const [progress, setProgress] = useState(perc); // TODO - Calculate & Update dynamically 
 
     useEffect(() => {
         setProgress(progress);
@@ -53,18 +54,45 @@ export default function TargetStack({ myData }) {
     return (
         <div>
             <Grid container spacing={0}>
-                <Grid xs={10}>
-                    TARGET#
+                <Grid xs={9}>
+                <Tooltip title="Saving for" placement="top">
+                    <Typography
+                        component="p"
+                        align="left"
+                        color="gray"
+                        variant="standard"
+                        fontWeight={600}
+                        margin={1}
+                        fontSize="1.3em"
+                    >
+                         {name}
+                    </Typography>
+                </Tooltip>
                 </Grid>
-                <Grid xs={2}>
-                    $19345
+                <Grid xs={3}>
+                <Tooltip title="Saving Target" placement="top">
+                    <Typography
+                        component="p"
+                        align="left"
+                        color="yellow"
+                        variant="standard"
+                        fontWeight={300}
+                        margin={1}
+                        fontSize="1.3em"
+                    >
+                        $ {target}
+                    </Typography>
+                </Tooltip>
                 </Grid>
             </Grid>
             <Divider />
+
             <Box
                 display="flex"
                 justifyContent="center"
                 alignItems="center"
+                marginBottom={3}
+                marginTop={2}
             >
                 <CircularProgressWithLabel sx={{ mt: 1 }} value={progress} />
             </Box>
@@ -74,16 +102,6 @@ export default function TargetStack({ myData }) {
                 alignItems="center"
                 minHeight="2vh"
             >
-                <Typography
-                    component="p"
-                    align="left"
-                    color="green"
-                    variant="standard"
-                    fontSize="1.2rem"
-                    style={{ marginTop: 6, marginRight: 6 }}
-                >
-                    $ 15673
-                </Typography>
             </Box>
             <Divider />
             <Grid container spacing={0}>

@@ -13,6 +13,7 @@ import InputUnexpected from "./Unexpected";
 import config from '../../resources/config.json';
 import data from '../../resources/data.json';
 import CreateIncomeDialog from "../../components/dialogs/CreateIncomeDialog";
+import WithdrawSavingsDialog from "../dialogs/WithdrawSavingsDialog";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -104,7 +105,7 @@ export default function CostAnalyticStack({costAnalyticState}) {
         <React.Fragment>
           <Grid container spacing={0}>
             <Grid xs={6} md={11}>
-              <Tooltip title="All Collected Incomes" placement="top">
+            <Tooltip  title={<Typography fontSize="1.3em">All Collected Incomes each month</Typography>} placement="top">
                 <Typography
                   component="p"
                   color="orange"
@@ -156,7 +157,7 @@ export default function CostAnalyticStack({costAnalyticState}) {
       {/* Monthly Target */}
       <Item>
         <React.Fragment>
-          <Tooltip title="Monthly target for spendings" placement="top">
+        <Tooltip  title={<Typography fontSize="1.3em">Monthly money left for spendings - try not to exceed</Typography>} placement="top">
             <Typography
               component="p"
               align="left"
@@ -168,7 +169,7 @@ export default function CostAnalyticStack({costAnalyticState}) {
             </Typography>
           </Tooltip>
           <Typography
-            sx={{ mt: 3 }}
+            sx={{ mt: 1 }}
             component="p"
             color="#b0b0b0"
             fontSize="3em"
@@ -181,7 +182,7 @@ export default function CostAnalyticStack({costAnalyticState}) {
        {/* Monthly Target */}
        <Item>
         <React.Fragment>
-          <Tooltip title="Monthly target for spendings" placement="top">
+          <Tooltip  title={<Typography fontSize="1.3em">All the money from target saving each month</Typography>} placement="top">
             <Typography
               component="p"
               align="left"
@@ -189,24 +190,43 @@ export default function CostAnalyticStack({costAnalyticState}) {
               fontSize="1.5em"
               variant="standard"
             >
-              FREE SLOT
+              SAVINGS ACCOUNT
             </Typography>
           </Tooltip>
           <Typography
-            sx={{ mt: 3 }}
+            sx={{ mt: 1 }}
             component="p"
             color="#b0b0b0"
             fontSize="3em"
             align="left"
           >
-            $ 0
+            $ 3900
           </Typography>
+          <Grid container spacing={0}>
+            <Grid xs={8} md={10}>
+                <Typography sx={{ mt: 0 }} fontSize="1.3em" align="left">
+                  <ViewIncomeDialog myData={incomes} />
+                </Typography>
+              </Grid>
+              <Grid xs={4} md={2}>
+                <IconButton
+                  sx={{ mt: -1.5 }}
+                  color="primary"
+                  aria-label="add another income"
+                  size="large"
+                  align="right"
+                >
+                  <WithdrawSavingsDialog onCreate={addIncome} />
+                
+                </IconButton>
+              </Grid>
+            </Grid>
         </React.Fragment>
       </Item>
       {/* Daily Recommended */}
       <Item style={{backgroundColor: "#07233e"}}>
         <React.Fragment>
-          <Tooltip title="Daily recommended - try not to exceed" placement="top">
+        <Tooltip  title={<Typography fontSize="1.3em">Daily recommended - try not to exceed</Typography>} placement="top">
             <Typography
               component="p"
               align="left"
@@ -218,7 +238,7 @@ export default function CostAnalyticStack({costAnalyticState}) {
             </Typography>
           </Tooltip>
           <Typography
-            sx={{ mt: 3 }}
+            sx={{ mt: 1 }}
             component="p"
             color="#b0b0b0"
             fontSize="3em"
