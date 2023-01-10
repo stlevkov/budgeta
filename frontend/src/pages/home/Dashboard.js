@@ -172,18 +172,18 @@ export default function Dashboard() {
             {/* Target */}
             <Grid xs={12} md={3} lg={3}>
               <Paper>
-                <TargetStack />
+                <TargetStack name={"HOUSE REPAIR"} target={5600} perc={87} />
               </Paper>
             </Grid>
             <Grid xs={12} md={3} lg={3}>
               <Paper>
-                <TargetStack />
+                <TargetStack name={"NEW CAR"} target={15378} perc={38}/>
               </Paper>
             </Grid>
 
             {/* ChartJs */}
             <Grid xs={12} md={9} lg={6}>
-              <Paper sx={{ height: "18em" }}>
+              <Paper sx={{ height: "22em" }}>
                 <StatisticChart />
               </Paper>
             </Grid>

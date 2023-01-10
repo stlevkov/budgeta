@@ -50,7 +50,7 @@ export default function InputUnexpected({ myData }) {
                 <FormControl fullWidth="sm" sx={{ m: 0 }}>
                     <Grid container spacing={0}>
                         <Grid xs={6} md={12}>
-                            <Tooltip title="Unexpected spendings for the month (exceeding 200)" placement="top">
+                        <Tooltip  title={<Typography fontSize="1.3em">Unexpected spendings for the month</Typography>} placement="top">
                                 <Typography
                                     component="p"
                                     color="orange"
