@@ -13,27 +13,27 @@ import {
 const Sidebar = styled(MuiDrawer, {
   shouldForwardProp: (prop) => prop !== "open" && prop !== "sidebarWidth",
 })(({ theme, open, sidebarWidth }) => ({
-  // open is true
+  // open is true by default
+  width: sidebarWidth,
+  flexShrink: 0,
+  whiteSpace: "nowrap",
+  boxSizing: "border-box",
+  ...(!open && {
+    width: `-${sidebarWidth}`,
+    marginLeft: theme.spacing(7),
+  }),
   "& .MuiDrawer-paper": {
     width: sidebarWidth,
-    height: "100vh",
-    position: "relative",
-    whiteSpace: "nowrap",
-    flexSrink: 0,
-    boxSizing: "border-box",
-    [theme.breakpoints.down("lg")]: {
-      width: `calc(${theme.spacing(7)} + 1px)`,
-      overflowX: "hidden",
-    },
+    overflowX: "hidden",
     transition: theme.transitions.create("width", {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
     }),
     ...(!open && {
-      width: `calc(${theme.spacing(7)} + 1px)`,
       overflowX: "hidden",
+      width: theme.spacing(7),
       [theme.breakpoints.down("lg")]: {
-        width: sidebarWidth,
+        width: theme.spacing(7),
       },
       transition: theme.transitions.create("width", {
         easing: theme.transitions.easing.sharp,
@@ -47,6 +47,7 @@ export default function SideBar({ open, toggleSidebar, sidebarWidth }) {
   return (
     <Sidebar
       variant="permanent"
+      anchor="left"
       open={open}
       sidebarWidth={sidebarWidth}
       ModalProps={{
@@ -58,6 +59,8 @@ export default function SideBar({ open, toggleSidebar, sidebarWidth }) {
           display: "flex",
           alignItems: "center",
           justifyContent: "flex-end",
+          paddingLeft: "1em",
+          paddingRight: "1em",
         }}
       >
         <IconButton

@@ -1,6 +1,9 @@
-import * as React from 'react';
+import * as React from "react";
+import CssBaseline from "@mui/material/CssBaseline";
 import Grid from "@mui/material/Unstable_Grid2";
+import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
+
 import Navbar from "../components/NavBar";
 import Sidebar from "../components/Sidebar";
 import ExpensesDirectionStack from "../../components/dynamic/ExpensesStack";
@@ -13,9 +16,9 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import config from "../../resources/config.json";
 import data from "../../resources/data.json";
-import Stack from '@mui/material/Stack';
-import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
+import Stack from "@mui/material/Stack";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
 
 const fetchData = async (setState, setSumState, defaultState, endpoint) => {
   try {
@@ -54,9 +57,9 @@ function daysInThisMonth() {
 }
 
 export default function Dashboard() {
+  const sidebarWidth = "12em";
   const [errorMessageOpen, setErrorMessageOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("No error yet");
-  const sidebarWidth = 210;
   const [open, setOpen] = useState(true);
   const [expenses, setExpenses] = useState([]); // TODO provide as hook in each Stack
   const [incomes, setIncomes] = useState([]); // TODO provide as hook in each Stack
@@ -112,10 +115,10 @@ export default function Dashboard() {
 
   const handleErrorMessageOpen = () => {
     setErrorMessageOpen(true);
-  }
+  };
 
   const handleErrorMessageClose = (event, reason) => {
-    if (reason === 'clickaway') {
+    if (reason === "clickaway") {
       return;
     }
 
@@ -127,76 +130,105 @@ export default function Dashboard() {
   });
 
   return (
-    <Grid container>
-      <Grid xs="auto" sm="auto" md="auto" lg="auto">
-        <Sidebar
-          open={open}
-          toggleSidebar={toggleSidebar}
-          sidebarWidth={sidebarWidth}
-        />
-      </Grid>
-      <Grid xs sm md lg>
-        <Navbar
-          open={open}
-          toggleSidebar={toggleSidebar}
-          sidebarWidth={sidebarWidth}
-          onTargetSaving={calculateCostAnalytics}
-        />
+    <Box sx={{ display: "flex" }}>
+      <CssBaseline />
+      <Navbar
+        open={open}
+        toggleSidebar={toggleSidebar}
+        sidebarWidth={sidebarWidth}
+        onTargetSaving={calculateCostAnalytics}
+      />
 
-        <Grid xs={12} sm={12} md={12} lg={12}>
-          {/* Expense Stack */}
-          <Grid xs={12} sm={12} md={12} lg={12} sx={{ padding: "1em" }}>
+      <Sidebar
+        open={open}
+        toggleSidebar={toggleSidebar}
+        sidebarWidth={sidebarWidth}
+      />
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          marginTop: "4em",
+        }}
+      >
+        <Grid
+          container
+          spacing={1}
+          columns={{ xs: 1, sm: 1, md: 12, lg: 12, xl: 12 }}
+          disableEqualOverflow
+          sx={{ padding: "1em" }}
+        >
+          <Grid xs={1} sm={1} md={12} lg={12} xl={12}>
+            {/* Expense Stack */}
             <ExpensesDirectionStack expensesState={expenses} />
           </Grid>
 
-          <Divider />
-          {/* Savings Stack */}
-          <Grid xs={12} sm={12} md={12} lg={12} sx={{ padding: "1em" }}>
-            <SavingsDirectionStack handleErrorMessageOpen={handleErrorMessageOpen} errorMessage={setErrorMessage} />
+          <Grid xs={1} sm={1} md={12} lg={12} xl={12}>
+            <Divider />
           </Grid>
-          <Divider>Analytics</Divider>
+          <Grid xs={1} sm={1} md={2} lg={12} xl={12}>
+            {/* Savings Stack */}
+            <SavingsDirectionStack
+              handleErrorMessageOpen={handleErrorMessageOpen}
+              errorMessage={setErrorMessage}
+            />
+          </Grid>
+          <Grid xs={1} sm={1} md={12} lg={12} xl={12}>
+            <Divider>Analytics</Divider>
+          </Grid>
           {/* Analytic Stack */}
-          <Grid xs={12} sm={12} md={12} lg={12} sx={{ padding: "1em" }}>
+          <Grid xs={1} sm={1} md={12} lg={12} xl={12}>
             <CostAnalyticStack costAnalyticState={costAnalytics} />
           </Grid>
+
           {/* Statistics Stack */}
           <Grid
             container
-            xs={12}
-            sm={12}
+            xs={1}
+            sm={1}
             md={12}
             lg={12}
-            spacing={2}
-            sx={{ padding: "1em" }}
+            xl={12}
+            spacing={1}
+            disableEqualOverflow
+            sx={{ paddingTop: "1em" }}
           >
-            {/* Target */}
-            <Grid xs={12} md={3} lg={3}>
+            {/* Targets */}
+            <Grid xs={1} sm={1} md={2} lg={3} xl={3}>
               <Paper>
                 <TargetStack name={"HOUSE REPAIR"} target={5600} perc={87} />
               </Paper>
             </Grid>
-            <Grid xs={12} md={3} lg={3}>
+
+            <Grid xs={1} sm={1} md={2} lg={3} xl={3}>
               <Paper>
-                <TargetStack name={"NEW CAR"} target={15378} perc={38}/>
+                <TargetStack name={"NEW CAR"} target={15378} perc={38} />
               </Paper>
             </Grid>
 
             {/* ChartJs */}
-            <Grid xs={12} md={9} lg={6}>
-              <Paper sx={{ height: "22em" }}>
-                <StatisticChart />
-              </Paper>
+            <Grid xs={1} sm={1} md={2} lg={6} xl={6} sx={{ height: "22em" }}>
+              <StatisticChart />
             </Grid>
           </Grid>
+          {/* End statistics */}
         </Grid>
-      </Grid>
-      <Stack spacing={2} sx={{ width: '100%' }}>
-      <Snackbar open={errorMessageOpen} autoHideDuration={6000} onClose={handleErrorMessageClose}>
-        <Alert onClose={handleErrorMessageClose} severity="error" sx={{ width: '100%' }}>
-          {errorMessage}
-        </Alert>
-      </Snackbar>
-    </Stack>
-    </Grid>
+      </Box>
+      <Stack spacing={2} sx={{ width: "100%" }}>
+        <Snackbar
+          open={errorMessageOpen}
+          autoHideDuration={6000}
+          onClose={handleErrorMessageClose}
+        >
+          <Alert
+            onClose={handleErrorMessageClose}
+            severity="error"
+            sx={{ width: "100%" }}
+          >
+            {errorMessage}
+          </Alert>
+        </Snackbar>
+      </Stack>
+    </Box>
   );
 }
