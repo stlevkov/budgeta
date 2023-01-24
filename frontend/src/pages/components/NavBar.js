@@ -14,31 +14,26 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 const Navbar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open" && prop !== "sidebarWidth",
 })(({ theme, open, sidebarWidth }) => ({
-  // open is false
   zIndex: theme.zIndex.drawer + 1,
-  position: "relative",
-  width: `calc(100vw - ${sidebarWidth}px)`,
   transition: theme.transitions.create(["width", "margin"], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
   ...(open && {
     [theme.breakpoints.down("lg")]: {
-      width: "100vw",
-      marginLeft: `calc(0px - (${theme.spacing(7)} + 1px))`,
+      width: "100%",
+      marginLeft: theme.spacing(7),
     },
+    marginLeft: sidebarWidth,
+    width: `calc(100% - ${sidebarWidth})`,
     transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
     }),
   }),
   ...(!open && {
-    width: "100vw",
-    marginLeft: `calc(0px - (${theme.spacing(7)} + 1px))`,
-    [theme.breakpoints.down("lg")]: {
-      width: `calc(100vw - ${sidebarWidth}px)`,
-      marginLeft: 0,
-    },
+    width: "100%",
+    marginLeft: 0,
   }),
 }));
 
@@ -49,7 +44,7 @@ export default function NavBar({
   onTargetSaving,
 }) {
   return (
-    <Navbar open={open} sidebarWidth={sidebarWidth}>
+    <Navbar position="fixed" open={open} sidebarWidth={sidebarWidth}>
       <Toolbar
         sx={{
           display: "flex",
@@ -66,7 +61,7 @@ export default function NavBar({
             sx={(theme) => ({
               [theme.breakpoints.down("lg")]: {
                 display: "block",
-                ...(!open && { display: "none" }),
+                ...(!open && { display: "block" }),
               },
               ...(open && { display: "none" }),
             })}

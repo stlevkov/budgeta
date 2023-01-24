@@ -1,12 +1,8 @@
-// import { ThemeProvider, createTheme } from "@mui/material/styles";
-// import CssBaseline from "@mui/material/CssBaseline";
-
 import "./App.css";
 import Dashboard from "./pages/home/Dashboard";
 
 import React from "react";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import CssBaseline from "@mui/material/CssBaseline";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => {},
@@ -42,7 +38,6 @@ function App() {
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={defaultTheme}>
-        <CssBaseline />
         <Dashboard />
       </ThemeProvider>
     </ColorModeContext.Provider>
