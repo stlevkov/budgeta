@@ -2,7 +2,7 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from "@mui/material/Typography";
-import 'react-edit-text/dist/index.css';
+ 
 import Divider from "@mui/material/Divider";
 import CircularProgress from '@mui/material/CircularProgress';
 import { useState, useEffect } from "react";
