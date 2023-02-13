@@ -65,14 +65,7 @@ export default function InputTargetSaving({ calculateCostAnalytics }) {
     <div>
       <Grid container spacing={0}>
         <Grid xs={12} md={8}>
-          <Typography
-            component="p"
-            align="left"
-            color="yellow"
-            variant="standard"
-            fontSize="1em"
-            style={{ marginTop: 6, marginRight: 6 }}
-          >
+          <Typography component="p" align="left" color="yellow" variant="standard" fontSize="1em" style={{ marginTop: 6, marginRight: 6 }}>
             TARGET SAVING
           </Typography>
         </Grid>

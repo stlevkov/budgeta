@@ -37,21 +37,10 @@ const Navbar = styled(MuiAppBar, {
   }),
 }));
 
-export default function NavBar({
-  open,
-  toggleSidebar,
-  sidebarWidth,
-  onTargetSaving,
-}) {
+export default function NavBar({ open, toggleSidebar, sidebarWidth, onTargetSaving }) {
   return (
     <Navbar position="fixed" open={open} sidebarWidth={sidebarWidth}>
-      <Toolbar
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
+      <Toolbar sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <Box sx={{ display: "flex" }}>
           <IconButton
             size="large"
@@ -64,25 +53,10 @@ export default function NavBar({
                 ...(!open && { display: "block" }),
               },
               ...(open && { display: "none" }),
-            })}
-          >
+            })}>
             <MenuIcon />
           </IconButton>
-          <Typography
-            variant="h6"
-            noWrap
-            component="span"
-            sx={{
-              display: {
-                xs: "none",
-                sm: "block",
-                md: "block",
-                lg: "block",
-                xl: "block",
-              },
-              padding: "0.5em",
-            }}
-          >
+          <Typography variant="h6" noWrap component="span" sx={{ display: { xs: "none", sm: "block", md: "block", lg: "block", xl: "block" }, padding: "0.5em" }}>
             Dashboard
           </Typography>
         </Box>
@@ -91,11 +65,7 @@ export default function NavBar({
           <InputTargetSaving calculateCostAnalytics={onTargetSaving} />
 
           <Box sx={{ display: "flex" }}>
-            <IconButton
-              size="large"
-              aria-label="show 17 new notifications"
-              color="inherit"
-            >
+            <IconButton size="large" aria-label="show 17 new notifications" color="inherit">
               <Badge badgeContent={4} color="secondary">
                 <NotificationsIcon />
               </Badge>
