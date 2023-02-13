@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Unstable_Grid2";
 import Typography from "@mui/material/Typography";
-import config from "../../resources/config.json";
+import config from "../../../resources/config.json";
 
 export default function InputTargetSaving({ calculateCostAnalytics }) {
   const [targetSaving, setTargetSaving] = React.useState(0);
@@ -65,14 +65,7 @@ export default function InputTargetSaving({ calculateCostAnalytics }) {
     <div>
       <Grid container spacing={0}>
         <Grid xs={12} md={8}>
-          <Typography
-            component="p"
-            align="left"
-            color="yellow"
-            variant="standard"
-            fontSize="1em"
-            style={{ marginTop: 6, marginRight: 6 }}
-          >
+          <Typography component="p" align="left" color="yellow" variant="standard" fontSize="1em" style={{ marginTop: 6, marginRight: 6 }}>
             TARGET SAVING
           </Typography>
         </Grid>

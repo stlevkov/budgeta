@@ -3,22 +3,21 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Grid from "@mui/material/Unstable_Grid2";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
-
-import Navbar from "../components/NavBar";
-import Sidebar from "../components/Sidebar";
-import ExpensesDirectionStack from "../../components/dynamic/ExpensesStack";
-import SavingsDirectionStack from "../../components/dynamic/SavingsStack";
 import Divider from "@mui/material/Divider";
-import CostAnalyticStack from "../../components/dynamic/CostAnalyticStack";
-import StatisticChart from "../../components/charts/StatisticChart";
-import TargetStack from "../../components/dynamic/TargetStack";
 import axios from "axios";
 import { useState, useEffect } from "react";
-import config from "../../resources/config.json";
-import data from "../../resources/data.json";
 import Stack from "@mui/material/Stack";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
+import ExpensesDirectionStack from "../components/stacks/ExpensesStack/ExpensesStack.js";
+import SavingsStack from "../components/stacks/SavingsStack/SavingsStack";
+import CostAnalyticStack from "../components/stacks/CostAnalyticStack/CostAnalyticStack";
+import TargetStack from "../components/stacks/MonitoringStack/TargetStack";
+import config from "../resources/config.json";
+import data from "../resources/data.json";
+import Navbar from "./NavBar";
+import Sidebar from "./Sidebar";
+import StatisticChart from "../components/stacks/MonitoringStack/StatisticChart";
 
 const fetchData = async (setState, setSumState, defaultState, endpoint) => {
   try {
@@ -77,17 +76,12 @@ export default function Dashboard() {
    * @param {int} targetSaving Target Saving set by navbar field
    */
   const calculateCostAnalytics = (targetSaving) => {
-    let sumAllExpenses =
-      sumExpenses +
-      sumSavings +
-      parseFloat(targetSaving) +
-      parseFloat(costAnalytics.unexpected);
+    let sumAllExpenses = sumExpenses + sumSavings + parseFloat(targetSaving) + parseFloat(costAnalytics.unexpected);
     let daily = (sumIncomes - sumAllExpenses) / daysInThisMonth();
     let availableForSpend = sumIncomes - sumAllExpenses;
     const clone = structuredClone(costAnalytics);
     clone.dailyRecommended = Math.round((daily + Number.EPSILON) * 100) / 100;
-    clone.monthlyTarget =
-      Math.round((availableForSpend + Number.EPSILON) * 100) / 100;
+    clone.monthlyTarget = Math.round((availableForSpend + Number.EPSILON) * 100) / 100;
     setCostAnalytics(clone);
   };
 
@@ -95,12 +89,8 @@ export default function Dashboard() {
     fetchData(setExpenses, setSumExpenses, data.defaultExpenses, "expenses");
     fetchData(setIncomes, setSumIncomes, data.defaultIncomes, "incomes");
     fetchData(setSavings, setSumSavings, data.defaultSavings, "savings");
-    fetchData(
-      setCostAnalytics,
-      false,
-      data.defaultCostAnalytics,
-      "costAnalytics"
-    );
+    fetchData(setCostAnalytics, false, data.defaultCostAnalytics, "costAnalytics");
+
     return () => {
       setExpenses([]);
       setIncomes([]);
@@ -132,32 +122,11 @@ export default function Dashboard() {
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <Navbar
-        open={open}
-        toggleSidebar={toggleSidebar}
-        sidebarWidth={sidebarWidth}
-        onTargetSaving={calculateCostAnalytics}
-      />
+      <Navbar open={open} toggleSidebar={toggleSidebar} sidebarWidth={sidebarWidth} onTargetSaving={calculateCostAnalytics} />
 
-      <Sidebar
-        open={open}
-        toggleSidebar={toggleSidebar}
-        sidebarWidth={sidebarWidth}
-      />
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          marginTop: "4em",
-        }}
-      >
-        <Grid
-          container
-          spacing={1}
-          columns={{ xs: 1, sm: 1, md: 12, lg: 12, xl: 12 }}
-          disableEqualOverflow
-          sx={{ padding: "1em" }}
-        >
+      <Sidebar open={open} toggleSidebar={toggleSidebar} sidebarWidth={sidebarWidth} />
+      <Box component="main" sx={{ flexGrow: 1, marginTop: "4em" }}>
+        <Grid container spacing={1} columns={{ xs: 1, sm: 1, md: 12, lg: 12, xl: 12 }} disableEqualOverflow sx={{ padding: "1em" }}>
           <Grid xs={1} sm={1} md={12} lg={12} xl={12}>
             {/* Expense Stack */}
             <ExpensesDirectionStack expensesState={expenses} />
@@ -166,33 +135,23 @@ export default function Dashboard() {
           <Grid xs={1} sm={1} md={12} lg={12} xl={12}>
             <Divider />
           </Grid>
+
           <Grid xs={1} sm={1} md={2} lg={12} xl={12}>
             {/* Savings Stack */}
-            <SavingsDirectionStack
-              handleErrorMessageOpen={handleErrorMessageOpen}
-              errorMessage={setErrorMessage}
-            />
+            <SavingsStack handleErrorMessageOpen={handleErrorMessageOpen} errorMessage={setErrorMessage} />
           </Grid>
+
           <Grid xs={1} sm={1} md={12} lg={12} xl={12}>
             <Divider>Analytics</Divider>
           </Grid>
+
           {/* Analytic Stack */}
           <Grid xs={1} sm={1} md={12} lg={12} xl={12}>
             <CostAnalyticStack costAnalyticState={costAnalytics} />
           </Grid>
 
           {/* Statistics Stack */}
-          <Grid
-            container
-            xs={1}
-            sm={1}
-            md={12}
-            lg={12}
-            xl={12}
-            spacing={1}
-            disableEqualOverflow
-            sx={{ paddingTop: "1em" }}
-          >
+          <Grid container xs={1} sm={1} md={12} lg={12} xl={12} spacing={1} disableEqualOverflow sx={{ paddingTop: "1em" }}>
             {/* Targets */}
             <Grid xs={1} sm={1} md={2} lg={3} xl={3}>
               <Paper>
@@ -215,16 +174,8 @@ export default function Dashboard() {
         </Grid>
       </Box>
       <Stack spacing={2} sx={{ width: "100%" }}>
-        <Snackbar
-          open={errorMessageOpen}
-          autoHideDuration={6000}
-          onClose={handleErrorMessageClose}
-        >
-          <Alert
-            onClose={handleErrorMessageClose}
-            severity="error"
-            sx={{ width: "100%" }}
-          >
+        <Snackbar open={errorMessageOpen} autoHideDuration={6000} onClose={handleErrorMessageClose}>
+          <Alert onClose={handleErrorMessageClose} severity="error" sx={{ width: "100%" }}>
             {errorMessage}
           </Alert>
         </Snackbar>

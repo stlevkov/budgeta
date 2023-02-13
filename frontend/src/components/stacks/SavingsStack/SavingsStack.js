@@ -2,20 +2,20 @@ import * as React from "react";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import { styled } from "@mui/material/styles";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { useState, useEffect } from "react";
 import Typography from "@mui/material/Typography";
-import TextField from "@mui/material/TextField";
 import Tooltip from "@mui/material/Tooltip";
+import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Unstable_Grid2";
-import CloseIcon from '@mui/icons-material/Close';
-import IconButton from '@mui/material/IconButton';
 import PropTypes from 'prop-types';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
-import CreateExpenseDialog from "../../components/dialogs/CreateExpenseDialog";
-import config from '../../resources/config.json';
-import data from '../../resources/data.json';
+import CloseIcon from '@mui/icons-material/Close';
+import IconButton from '@mui/material/IconButton';
+import CreateSavingDialog from "../../dialogs/CreateSavingDialog";
+import config from '../../../resources/config.json';
+import data from '../../../resources/data.json';
 
 function CircularProgressWithLabel(props) {
   return (
@@ -40,7 +40,6 @@ function CircularProgressWithLabel(props) {
     </Box>
   );
 }
-
 CircularProgressWithLabel.propTypes = {
   /**
    * The value of the progress indicator for the determinate variant.
@@ -55,12 +54,27 @@ const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
   padding: theme.spacing(1),
   textAlign: "center",
-  width: "16em",
+  width: "12em",
   height: "6em",
   color: theme.palette.text.secondary,
 }));
 
-const ExpenseEditable = styled(TextField)(({ theme }) => ({
+async function fetchAllSavings() {
+  try {
+    const response = await axios.get(config.server.uri + "savings");
+    if (response.data !== "") {
+      return response.data;
+    } else {
+      console.log("Something is wrong");
+      return data.defaultSavings; // TODO This will not work in case of Edit, the ID must be equal
+    }
+  } catch (err) {
+    //console.log(err); TODO makes tests fail because of network delay response
+    return data.defaultSavings;
+  }
+}
+
+const SavingsEditable = styled(TextField)(({ theme }) => ({
   "& .MuiInput-root": {
     border: "none",
     overflow: "hidden",
@@ -76,79 +90,71 @@ const ExpenseEditable = styled(TextField)(({ theme }) => ({
   },
 }));
 
-const deleteExpense = (expense, expenses, setExpenses, event) => {
-  console.log("Will delete item with id: " + expense.id);
+const deleteSaving = (saving, savings, setSavings, event) => {
+  console.log("Will delete item with id: " + saving.id);
 
-  const removeExpenseRequest = async () => {
+  const removeSavingRequest = async () => {
     try {
-      const response = await axios.delete(config.server.uri + "expenses/" + expense.id);
+      const response = await axios.delete(config.server.uri + "savings/" + saving.id);
       if (response.data !== "") {
         removeItemFromState();
       } else {
         console.log("Something is wrong");
       }
     } catch (err) {
-      //console.log(err); TODO makes tests fail because of network delay response
-      setExpenses(data.defaultExpenses);
+      setSavings(data.defaultSavings);
     }
   };
 
   const removeItemFromState = () => {
-    var array = [...expenses];
-    var index = array.indexOf(expense)
+    var array = [...savings];
+    var index = array.indexOf(saving)
     if (index !== -1) {
       array.splice(index, 1);
-      setExpenses(array);
+      setSavings(array);
     }
   };
-  removeExpenseRequest();
+  removeSavingRequest();
 };
 
-const ExpensesDirectionStack = (expensesState) => {
-  const [expenses, setExpenses] = useState([]);
-  const [progress, setProgress] = useState(43); // TODO - Calculate & Update dynamically 
+export default function SavingsStack({handleErrorMessageOpen, errorMessage}) {
+  const [savings, setSavings] = useState([]);
+  const [progress, setProgress] = useState(30); // TODO - Calculate & Update dynamically 
 
   useEffect(() => {
-    const fetchAllExpenses = async () => {
-      try {
-        const response = await axios.get(config.server.uri + "expenses");
-        if (response.data !== "") {
-          setExpenses(response.data);
-        } else {
-          console.log("Something is wrong");
-        }
-      } catch (err) {
-        //console.log(err); TODO makes tests fail because of network delay response
-        setExpenses(data.defaultExpenses);
-      }
-    };
+    let fetched = fetchAllSavings();
+
+    fetched.then((result) => {
+      setSavings(result);
+    });
     setProgress(progress);
-    fetchAllExpenses();
     return () => {
       setProgress(0);
-      setExpenses([]);
+      setSavings([]);
     };
   }, []);
 
-  function addExpense(expense){
-    console.log("Will add expense: " + expense);
-    expenses.push(expense);
-    var array = [...expenses];
-    setExpenses(array);
+  function addSaving(saving){
+    console.log("Will add saving: " + saving);
+    savings.push(saving);
+    var copy = [...savings]; // make a copy to trigger the re-render
+    setSavings(copy);
   };
 
-  // edit expense
-  const handleKeyDown = (expense, event) => {
+  const handleKeyDown = (saving, event) => {
     if (event.key === "Enter") {
-      expense.value = event.target.value;
-      axios.put(config.server.uri + "expenses/" + expense.id, expense, {
+      saving.value = event.target.value;
+      axios
+        .put(config.server.uri + "savings/" + saving.id, saving, {
           headers: {
             "Content-Type": "application/json",
           },
-        }).then((response) => {
-          console.log("[ExpenseStack] RESPONSE OK: " + response.data);
-        }).catch((error) => {
-          console.log("[ExpenseStack] RESPONSE ERROR: " + error);
+        })
+        .then((response) => {
+          console.log("[SavingStack] RESPONSE OK " + response.data);
+        })
+        .catch((error) => {
+          console.log("[SavingsStack] RESPONSE ERROR: " + error);
         });
     }
   };
@@ -158,56 +164,58 @@ const ExpensesDirectionStack = (expensesState) => {
       direction={{ xs: "column", sm: "row" }}
       spacing={{ xs: 1, sm: 2, md: 2 }}
     >
-      {/* All Expenses */}
+      {/* All Savings */}
       <Item style={{ backgroundColor: '#00000000', width: 130, height: "auto" }}>
         <React.Fragment>
           <Grid container spacing={0}>
             <Grid xs={12} md={11}>
-              <Tooltip title="All expenses as a % of the Incomes" placement="top">
+              <Tooltip title="All savings as a % of the Incomes" placement="top">
                 <Typography
                   component="p"
                   align="left"
-                  color="#9ccc12"
+                  color="#9ccc65"
                   variant="standard"
                 >
-                  EXPENSES
+                  SAVINGS
                 </Typography>
               </Tooltip>
             </Grid>
             <Grid xs={12} md={1}>
-              <CreateExpenseDialog onCreate={addExpense} />
+              <CreateSavingDialog onCreate={addSaving} 
+              handleErrorMessageOpen={handleErrorMessageOpen}
+              errorMessage={errorMessage} />
             </Grid>
           </Grid>
           <CircularProgressWithLabel sx={{ mt: 1 }} value={progress} />
         </React.Fragment>
       </Item>
 
-      {expenses.map((expense) => {
+      {Object.values(savings).map((saving) => {
         return (
           <Grid container spacing={0}>
-            <Item key={expense.name} style={{width: 200, height: "auto"}} sx={{ display: "flex", flexWrap: "wrap" }}>
+            <Item key={saving.name} style={{width: 200, height: "auto"}} sx={{ display: "flex", flexWrap: "wrap" }}>
               <Grid xs={12} md={11}>
-                <Tooltip title={expense.description} placement="top">
+                <Tooltip title={saving.description} placement="top">
                   <Typography
                     component="p"
                     align="left"
-                    color="#9ccc12"
+                    color="#9ccc65"
                     variant="standard"
                   >
-                    {expense.name}
+                    {saving.name}
                   </Typography>
                 </Tooltip>
               </Grid>
               <Grid xs={12} md={1}>
-                <Tooltip title={"Remove " + expense.name} placement="top">
+                <Tooltip title={"Remove " + saving.name} placement="top">
                   <IconButton
                     sx={{ mt: -1.5 }}
                     color="primary"
-                    aria-label="remove expense"
+                    aria-label="remove saving"
                     size="small"
                     align="right"
                   >
-                    <CloseIcon fontSize="inherit" onClick={(event) => deleteExpense(expense, expenses, setExpenses, event)} />
+                    <CloseIcon fontSize="inherit" onClick={(event) => deleteSaving(saving, savings, setSavings, event)} />
                   </IconButton>
                 </Tooltip>
               </Grid>
@@ -221,14 +229,14 @@ const ExpensesDirectionStack = (expensesState) => {
                 </Typography>
               </Grid>
               <Grid xs={11} md={10}>
-                <ExpenseEditable
-                  id={`${expense.name}-input`}
+                <SavingsEditable
+                  id={`${saving.name}-input`}
                   variant="standard"
                   InputProps={{
                     disableUnderline: true,
                   }}
-                  onKeyDown={(event) => handleKeyDown(expense, event)}
-                  defaultValue={expense.value}
+                  onKeyDown={(event) => handleKeyDown(saving, event)}
+                  defaultValue={saving.value}
                 />
               </Grid>
             </Item>
@@ -237,6 +245,4 @@ const ExpensesDirectionStack = (expensesState) => {
       })}
     </Stack>
   );
-};
-
-export default ExpensesDirectionStack;
+}

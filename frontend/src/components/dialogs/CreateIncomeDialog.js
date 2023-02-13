@@ -58,13 +58,7 @@ export default function CreateIncomeDialog({onCreate}) {
   return (
     <div>
       <Tooltip title={"Add New Income"} placement="top">
-        <IconButton
-          sx={{ mt: -1.5, ml: -1.5 }}
-          color="primary"
-          aria-label="add income"
-          size="small"
-          align="right"
-        >
+        <IconButton sx={{ mt: -1.5, ml: -1.5 }} color="primary" aria-label="add income" size="small" align="right">
           <AddCardIcon fontSize="large" onClick={handleClickOpen} />
         </IconButton>
       </Tooltip>
@@ -74,51 +68,26 @@ export default function CreateIncomeDialog({onCreate}) {
         <DialogContent>
           <DialogContentText>Add new income, for example - salary, sales
           </DialogContentText>
-          <TextField
-            required
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Name"
-            type="text"
+          <TextField required autoFocus margin="dense" id="name" label="Name" type="text" variant="standard"
             value={itemName}
             onChange={(e) => {
               setItemName(e.target.value);
-            }}
-            //fullWidth
-            variant="standard"
-          />
-          <TextField
-            required
-            autoFocus
-            margin="dense"
-            id="desc"
-            label="Description"
-            type="text"
+            }} />
+          <TextField required fullWidth variant="standard" autoFocus margin="dense" id="desc" label="Description" type="text"
             value={itemDesc}
             onChange={(e) => {
               setItemDesc(e.target.value);
-            }}
-            fullWidth
-            variant="standard"
-          />
-          <FormControl
-            fullWidth
-            // sx={{ m: 1 }}
-            variant="filled"
-          >
+            }}/>
+          <FormControl fullWidth variant="filled" >
             <InputLabel htmlFor="amnt">Amount</InputLabel>
-            <FilledInput
-              required
-              id="amnt"
+            <FilledInput required id="amnt"
               value={itemAmount}
               onChange={(e) => {
                 setItemAmount(e.target.value);
               }}
               startAdornment={
                 <InputAdornment position="start">$</InputAdornment>
-              }
-            />
+              }/>
           </FormControl>
         </DialogContent>
         <DialogActions>

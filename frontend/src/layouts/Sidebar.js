@@ -8,7 +8,7 @@ import IconButton from "@mui/material/IconButton";
 import {
   sidebarMainLinkList,
   sidebarSecondLinkList,
-} from "../components/SidebarLinkList";
+} from "./SidebarLinkList";
 
 const Sidebar = styled(MuiDrawer, {
   shouldForwardProp: (prop) => prop !== "open" && prop !== "sidebarWidth",
