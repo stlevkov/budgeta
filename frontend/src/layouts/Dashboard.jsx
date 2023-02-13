@@ -9,7 +9,7 @@ import { useState, useEffect } from "react";
 import Stack from "@mui/material/Stack";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
-import ExpensesDirectionStack from "../components/stacks/ExpensesStack/ExpensesStack.js";
+import ExpensesDirectionStack from "../components/stacks/ExpensesStack/ExpensesStack";
 import SavingsStack from "../components/stacks/SavingsStack/SavingsStack";
 import CostAnalyticStack from "../components/stacks/CostAnalyticStack/CostAnalyticStack";
 import TargetStack from "../components/stacks/MonitoringStack/TargetStack";

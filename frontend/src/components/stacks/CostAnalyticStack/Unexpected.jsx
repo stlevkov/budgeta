@@ -6,8 +6,7 @@ import Grid from "@mui/material/Unstable_Grid2";
 import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
 import { useEffect } from "react";
-import { EditText, EditTextarea } from "react-edit-text";
-import "react-edit-text/dist/index.css";
+ 
 import config from "../../../resources/config.json";
 
 const defaultUnexpected = 900;
@@ -60,14 +59,14 @@ export default function InputUnexpected({ myData }) {
               </Typography>
             </Grid>
             <Grid xs={6} md={10}>
-              <EditText
+              {/* <EditText
                 id="unexpected-field"
                 defaultValue={defaultUnexpected}
                 value={unexpected}
                 onChange={handleUnexpectedChange}
                 onSave={handleKeyDown}
                 style={{ textAlign: "left", fontSize: "3em", color: "#b0b0b0", align: "left", marginTop: "5px", marginLeft: "-10px", borderRadius: "4px" }}
-              />
+              /> */}
             </Grid>
           </Grid>
         </FormControl>
