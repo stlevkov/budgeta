@@ -3,22 +3,21 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Grid from "@mui/material/Unstable_Grid2";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
-
-import Navbar from "../components/NavBar";
-import Sidebar from "../components/Sidebar";
-import ExpensesDirectionStack from "../../components/dynamic/ExpensesStack";
-import SavingsDirectionStack from "../../components/dynamic/SavingsStack";
 import Divider from "@mui/material/Divider";
-import CostAnalyticStack from "../../components/dynamic/CostAnalyticStack";
-import StatisticChart from "../../components/charts/StatisticChart";
-import TargetStack from "../../components/dynamic/TargetStack";
 import axios from "axios";
 import { useState, useEffect } from "react";
-import config from "../../resources/config.json";
-import data from "../../resources/data.json";
 import Stack from "@mui/material/Stack";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
+import ExpensesDirectionStack from "../components/stacks/ExpensesStack/ExpensesStack.js";
+import SavingsStack from "../components/stacks/SavingsStack/SavingsStack";
+import CostAnalyticStack from "../components/stacks/CostAnalyticStack/CostAnalyticStack";
+import TargetStack from "../components/stacks/MonitoringStack/TargetStack";
+import config from '../resources/config.json';
+import data from '../resources/data.json';
+import Navbar from "./NavBar";
+import Sidebar from "./Sidebar";
+import StatisticChart from "../components/stacks/MonitoringStack/StatisticChart";
 
 const fetchData = async (setState, setSumState, defaultState, endpoint) => {
   try {
@@ -168,7 +167,7 @@ export default function Dashboard() {
           </Grid>
           <Grid xs={1} sm={1} md={2} lg={12} xl={12}>
             {/* Savings Stack */}
-            <SavingsDirectionStack
+            <SavingsStack
               handleErrorMessageOpen={handleErrorMessageOpen}
               errorMessage={setErrorMessage}
             />
@@ -182,17 +181,7 @@ export default function Dashboard() {
           </Grid>
 
           {/* Statistics Stack */}
-          <Grid
-            container
-            xs={1}
-            sm={1}
-            md={12}
-            lg={12}
-            xl={12}
-            spacing={1}
-            disableEqualOverflow
-            sx={{ paddingTop: "1em" }}
-          >
+          <Grid container xs={1} sm={1} md={12} lg={12} xl={12} spacing={1} disableEqualOverflow sx={{ paddingTop: "1em" }}>
             {/* Targets */}
             <Grid xs={1} sm={1} md={2} lg={3} xl={3}>
               <Paper>

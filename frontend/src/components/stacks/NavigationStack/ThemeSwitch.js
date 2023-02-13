@@ -2,7 +2,7 @@ import React from "react";
 
 import { styled, useTheme } from "@mui/material/styles";
 import Switch from "@mui/material/Switch";
-import { ColorModeContext } from "../App";
+import { ColorModeContext } from "../../../App";
 
 export default function ThemeSwitch() {
   const theme = useTheme();

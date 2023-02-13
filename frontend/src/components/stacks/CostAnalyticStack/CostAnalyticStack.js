@@ -6,14 +6,14 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
-import ViewIncomeDialog from "../dialogs/ViewIncomesDialog";
+import ViewIncomeDialog from "../../dialogs/ViewIncomesDialog";
 import IconButton from '@mui/material/IconButton';
 import Grid from '@mui/material/Unstable_Grid2';
-import InputUnexpected from "./Unexpected";
-import config from '../../resources/config.json';
-import data from '../../resources/data.json';
-import CreateIncomeDialog from "../../components/dialogs/CreateIncomeDialog";
-import WithdrawSavingsDialog from "../dialogs/WithdrawSavingsDialog";
+import InputUnexpected from "./CostAnalyticStack";
+import config from '../../../resources/config.json';
+import data from '../../../resources/data.json';
+import CreateIncomeDialog from "../../dialogs/CreateIncomeDialog";
+import WithdrawSavingsDialog from "../../dialogs/WithdrawSavingsDialog";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -59,9 +59,6 @@ async function fetchCostAnalytics() {
 }
 
 export default function CostAnalyticStack({costAnalyticState}) {
-  const [costAnalytic, setCostAnalytics] = useState(data.defaultCostAnalytics);
-  const [incomes, setIncomes] = useState([]);
-  const [sumIncomes, setSumIncomes] = useState(0);
 
   useEffect(() => {
     let fetchedCostAnalytics = fetchCostAnalytics();
@@ -106,13 +103,7 @@ export default function CostAnalyticStack({costAnalyticState}) {
           <Grid container spacing={0}>
             <Grid xs={6} md={11}>
             <Tooltip  title={<Typography fontSize="1.3em">All Collected Incomes each month</Typography>} placement="top">
-                <Typography
-                  component="p"
-                  color="orange"
-                  fontSize="1.5em"
-                  variant="standard"
-                  align="left"
-                >
+                <Typography component="p" color="orange" feontSiz="1.5em" variant="standard" align="left" >
                   INCOMES
                 </Typography>
               </Tooltip>
@@ -182,25 +173,25 @@ export default function CostAnalyticStack({costAnalyticState}) {
        {/* Monthly Target */}
        <Item>
         <React.Fragment>
-          <Tooltip  title={<Typography fontSize="1.3em">All the money from target saving each month</Typography>} placement="top">
-            <Typography
-              component="p"
-              align="left"
-              color="orange"
-              fontSize="1.5em"
-              variant="standard"
-            >
+          <Tooltip  title={
+            <Typography fontSize="1.3em">
+              All the money from target saving each month
+            </Typography>} placement="top">
+            <Typography component="p" align="left" color="orange" fontSize="1.5em" variant="standard" >
+              User user = New User();
+              user.withName("Yosif")
+              .withAge(15)
+              .withHear("peruka").withColor("")
+              .withHeight(120)
+              .canWalk(true)
+              .build()
+
+
               SAVINGS ACCOUNT
             </Typography>
           </Tooltip>
-          <Typography
-            sx={{ mt: 1 }}
-            component="p"
-            color="#b0b0b0"
-            fontSize="3em"
-            align="left"
-          >
-            $ 3900
+          <Typography sx={{ mt: 1 }} component="p" color="#b0b0b0" fontSize="3em" align="left">
+            $ {costAnalytic.savingAccountBalance}
           </Typography>
           <Grid container spacing={0}>
             <Grid xs={8} md={10}>
@@ -209,15 +200,8 @@ export default function CostAnalyticStack({costAnalyticState}) {
                 </Typography>
               </Grid>
               <Grid xs={4} md={2}>
-                <IconButton
-                  sx={{ mt: -1.5 }}
-                  color="primary"
-                  aria-label="add another income"
-                  size="large"
-                  align="right"
-                >
-                  <WithdrawSavingsDialog onCreate={addIncome} />
-                
+                <IconButton sx={{ mt: -1.5 }} color="primary" aria-label="add another income" size="large" align="right">
+                  <WithdrawSavingsDialog  onCreate={addIncome}  currentBallance={costAnalytic.savingAccountBalance} />
                 </IconButton>
               </Grid>
             </Grid>
@@ -227,23 +211,11 @@ export default function CostAnalyticStack({costAnalyticState}) {
       <Item style={{backgroundColor: "#07233e"}}>
         <React.Fragment>
         <Tooltip  title={<Typography fontSize="1.3em">Daily recommended - try not to exceed</Typography>} placement="top">
-            <Typography
-              component="p"
-              align="left"
-              color="orange"
-              fontSize="1.5em"
-              variant="standard"
-            >
+            <Typography component="p" align="left" color="orange" fontSize="1.5em" variant="standard">
               DAILY RECOMMENDED
             </Typography>
           </Tooltip>
-          <Typography
-            sx={{ mt: 1 }}
-            component="p"
-            color="#b0b0b0"
-            fontSize="3em"
-            align="left"
-          >
+          <Typography sx={{ mt: 1 }} component="p" color="#b0b0b0" fontSize="3em" align="left" >
             {/* $ {costAnalytic.dailyRecommended} */}
           $ {costAnalyticState.dailyRecommended}
           </Typography>

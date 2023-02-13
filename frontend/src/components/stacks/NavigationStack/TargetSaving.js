@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Unstable_Grid2";
 import Typography from "@mui/material/Typography";
-import config from "../../resources/config.json";
+import config from "../../../resources/config.json";
 
 export default function InputTargetSaving({ calculateCostAnalytics }) {
   const [targetSaving, setTargetSaving] = React.useState(0);

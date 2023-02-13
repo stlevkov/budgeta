@@ -74,7 +74,8 @@ public class CostAnalyticController {
             return new ResponseEntity<>(costAnalytic, HttpStatus.OK);
         } catch (ValidationCollectionException e) {
             // TODO: 29.10.22 г. Remove this, its redundant
-            return new ResponseEntity<>("CostAnalytic with id " + costAnalytics.get(0).getId() + " is not found.", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("CostAnalytic with id " + costAnalytics.get(0).getId() + " is not found.",
+                    HttpStatus.NOT_FOUND);
         }
 
     }

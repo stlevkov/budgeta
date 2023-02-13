@@ -8,7 +8,7 @@ import Tooltip from "@mui/material/Tooltip";
 import { useEffect } from "react";
 import { EditText, EditTextarea } from 'react-edit-text';
 import 'react-edit-text/dist/index.css';
-import config from '../../resources/config.json';
+import config from '../../..//config.json';
 
 const defaultUnexpected = 900;
 

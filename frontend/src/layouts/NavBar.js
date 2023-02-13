@@ -1,7 +1,5 @@
 import * as React from "react";
 import MuiAppBar from "@mui/material/AppBar";
-import SettingsButton from "../../components/SettingsButton";
-import InputTargetSaving from "../../components/dynamic/TargetSaving";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -10,6 +8,8 @@ import Typography from "@mui/material/Typography";
 import Badge from "@mui/material/Badge";
 import MenuIcon from "@mui/icons-material/Menu";
 import NotificationsIcon from "@mui/icons-material/Notifications";
+import SettingsButton from "../components/stacks/NavigationStack/SettingsButton";
+import InputTargetSaving from "../components/stacks/NavigationStack/TargetSaving";
 
 const Navbar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open" && prop !== "sidebarWidth",
