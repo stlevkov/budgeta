@@ -1,7 +1,6 @@
 import * as React from "react";
 import Paper from "@mui/material/Paper";
-import Stack from "@mui/material/Stack";
-
+import Box from '@mui/material/Box';
 import { styled } from "@mui/material/styles";
 import axios from "axios";
 import { useState, useEffect } from "react";
@@ -15,15 +14,32 @@ import config from "../../../resources/config.json";
 import data from "../../../resources/data.json";
 import CreateIncomeDialog from "../../dialogs/CreateIncomeDialog";
 import WithdrawSavingsDialog from "../../dialogs/WithdrawSavingsDialog";
+import Devider from '@mui/material/Divider';
+import { shadows } from '@mui/system';
+
 
 const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
+  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
   ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: "center",
-  width: "20em",
-  height: "10em",
+  padding: 6,
+  textAlign: 'center',
   color: theme.palette.text.secondary,
+}));
+
+const AnalyticsTextField = styled(Typography)(({ theme }) => ({
+  "& .MuiInput-root": {
+    border: "none",
+    overflow: "hidden",
+    fontSize: "2rem ",
+    backgroundColor: "transparent",
+    "&:hover": {
+      backgroundColor: "transparent",
+    },
+    "&.Mui-focused": {
+      backgroundColor: "transparent",
+      border: "none",
+    },
+  },
 }));
 
 async function fetchIncomes() {
@@ -94,95 +110,90 @@ export default function CostAnalyticStack({ costAnalyticState }) {
   }
 
   return (
-    <Stack direction={{ xs: "column", sm: "row" }} spacing={{ xs: 2, sm: 3, md: 3 }} justify="space-between">
-      {/* All Incomes */}
+    <Box sx={{ flexGrow: 1}}>
+    <Grid container disableEqualOverflow spacing={{ xs: 2, md: 2 }} columns={{ xs: 12, sm: 12, md: 12, lg: 12, xl: 12 }}>
+      <Grid xs={12} sm={6} md={4} lg={2.3}>
+        <Item style={{ height: '120px'}}>
 
-      <Item>
-        <React.Fragment>
-          <Grid container spacing={0}>
-            <Grid xs={6} md={11}>
-              <Tooltip title={<Typography fontSize="1.3em">All Collected Incomes each month</Typography>} placement="top">
-                <Typography component="p" color="orange" fontSize="1.5em" variant="standard" align="left">
-                  INCOMES
-                </Typography>
-              </Tooltip>
-            </Grid>
-            <Grid xs={6} md={12}>
-              <Typography sx={{ mt: 1 }} component="p" color="#b0b0b0" fontSize="3em" align="left">
-                ${sumIncomes}
-              </Typography>
-            </Grid>
-            <Grid xs={6} md={10}>
-              <Typography sx={{ mt: 0 }} fontSize="1.3em" align="left">
-                <ViewIncomeDialog myData={incomes} />
-              </Typography>
-            </Grid>
-            <Grid xs={6} md={2}>
-              <IconButton sx={{ mt: -1.5 }} color="primary" aria-label="add another income" size="large" align="right">
-                <CreateIncomeDialog onCreate={addIncome} />
-              </IconButton>
-            </Grid>
-          </Grid>
-        </React.Fragment>
-      </Item>
-      {/* Unexpected for month */}
-      <Item>
-        <React.Fragment>
-          <InputUnexpected myData={costAnalytic.unexpected} />
-        </React.Fragment>
-      </Item>
-      {/* Monthly Target */}
-      <Item>
-        <React.Fragment>
-          <Tooltip title={<Typography fontSize="1.3em">Monthly money left for spendings - try not to exceed</Typography>} placement="top">
-            <Typography component="p" align="left" color="orange" fontSize="1.5em" variant="standard">
-              MONTHLY TARGET
+          <Tooltip title={<Typography fontSize="1.3em">All Collected Incomes each month</Typography>} placement="top">
+            <Typography style={{float: 'left'}} component="p" color="orange" fontSize="1.5em" variant="standard" align="left">
+              INCOMES
             </Typography>
           </Tooltip>
 
-          <Typography sx={{ mt: 1 }} component="p" color="#b0b0b0" fontSize="3em" align="left">
-            $ {costAnalyticState.monthlyTarget}
+          <ViewIncomeDialog myData={incomes} />
+          <Devider style={{width: "100%",marginTop: '8px', marginBottom: '8px'}} />
+          <Typography style={{marginTop: "20px", width: "fit-content"}} variant="standard" component="p" color="#b0b0b0" fontSize="3.3em" align="left">
+            {sumIncomes}
           </Typography>
-        </React.Fragment>
-      </Item>
-      {/* Monthly Target */}
-      <Item>
-        <React.Fragment>
-          <Tooltip title={<Typography fontSize="1.3em">All the money from target saving each month</Typography>} placement="top">
-            <Typography component="p" align="left" color="orange" fontSize="1.5em" variant="standard">
-              SAVINGS ACCOUNT
+        
+         <CreateIncomeDialog onCreate={addIncome} />
+
+        </Item>
+      </Grid>
+
+      <Grid xs={12} sm={6} md={4} lg={2.3}>
+        <Item style={{ height: '120px' }}>
+        <Tooltip title={<Typography fontSize="1.3em">All expenses each month</Typography>} placement="top">
+            <Typography style={{float: 'left'}} component="p" color="orange" fontSize="1.5em" variant="standard" align="left">
+              ALL EXPENSES
             </Typography>
           </Tooltip>
-          <Typography sx={{ mt: 1 }} component="p" color="#b0b0b0" fontSize="3em" align="left">
-            $ {costAnalytic.savingAccountBalance}
+          <Devider style={{width: "100%",marginTop: '8px', marginBottom: '8px'}} />
+          <Typography style={{ marginTop: "20px",width: "fit-content"}} component="p" color="#b0b0b0" fontSize="3.3em" align="left">
+              5543
+            </Typography>
+        </Item>
+      </Grid>
+
+      <Grid xs={12} sm={6} md={4} lg={2.3}>
+        <Item style={{ height: '120px' }}>
+        <Tooltip title={<Typography fontSize="1.3em">All savings at one place</Typography>} placement="top">
+          <Typography style={{float: 'left'}} component="p" color="orange" fontSize="1.5em" variant="standard" align="left">
+            SAVE BALLANCE
           </Typography>
-          <Grid container spacing={0}>
-            <Grid xs={8} md={10}>
-              <Typography sx={{ mt: 0 }} fontSize="1.3em" align="left">
-                <ViewIncomeDialog myData={incomes} />
+        </Tooltip>
+
+        <ViewIncomeDialog myData={incomes} />
+        <Devider style={{width: "100%",marginTop: '8px', marginBottom: '8px'}} />
+        <Typography style={{ marginTop: "20px",width: "fit-content"}} variant="standard" component="p" color="#b0b0b0" fontSize="3.3em" align="left">
+          {sumIncomes}
+        </Typography>
+
+        <CreateIncomeDialog onCreate={addIncome} />
+
+        </Item>
+      </Grid>
+
+      <Grid xs={12} sm={6} md={4} lg={2.3}>
+        <Item style={{ height: "120px"}}>
+        <Tooltip title={<Typography fontSize="1.3em">Savings each month</Typography>} placement="top">
+            <Typography style={{float: 'left'}} component="p" color="orange" fontSize="1.5em" variant="standard" align="left">
+              TARGET SAVING
+            </Typography>
+          </Tooltip>
+          <Devider style={{width: "100%",marginTop: '8px', marginBottom: '8px'}} />
+            <Typography style={{ marginTop: "20px",width: "fit-content"}} component="p" color="#b0b0b0" fontSize="3.3em" align="left">
+              2500
+            </Typography>
+        </Item>
+      </Grid>
+
+      <Grid xs={12} sm={6} md={4} lg={2.8}>
+        <Item style={{ height: "120px", backgroundColor: "#07233e" }}>
+            <Tooltip title={<Typography fontSize="1.3em">Daily recommended - try not to exceed</Typography>} placement="top">
+              <Typography component="p" align="left" color="orange" fontSize="1.5em" variant="standard">
+                DAILY TARGET
               </Typography>
-            </Grid>
-            <Grid xs={4} md={2}>
-              <IconButton sx={{ mt: -1.5 }} color="primary" aria-label="add another income" size="large" align="right">
-                <WithdrawSavingsDialog onCreate={addIncome} currentBallance={costAnalytic.savingAccountBalance} />
-              </IconButton>
-            </Grid>
-          </Grid>
-        </React.Fragment>
-      </Item>
-      {/* Daily Recommended */}
-      <Item style={{ backgroundColor: "#07233e" }}>
-        <React.Fragment>
-          <Tooltip title={<Typography fontSize="1.3em">Daily recommended - try not to exceed</Typography>} placement="top">
-            <Typography component="p" align="left" color="orange" fontSize="1.5em" variant="standard">
-              DAILY RECOMMENDED
+            </Tooltip>
+            <Devider style={{width: "100%",marginTop: '0px', marginBottom: '8px'}} />
+
+            <Typography style={{ marginTop: "20px",width: "100%"}} component="p" color="#b0b0b0" fontSize="3.3em" align="center">
+              {costAnalyticState.dailyRecommended}
             </Typography>
-          </Tooltip>
-          <Typography sx={{ mt: 1 }} component="p" color="#b0b0b0" fontSize="3em" align="left">
-            $ {costAnalyticState.dailyRecommended}
-          </Typography>
-        </React.Fragment>
-      </Item>
-    </Stack>
+        </Item>
+      </Grid>
+  </Grid>
+  </Box>
   );
 }

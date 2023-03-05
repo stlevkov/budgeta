@@ -19,16 +19,21 @@ const data = [
   },
   {
     name: "1",
-    uv: 300,
+    uv: 500,
     amt: 221,
   },
   {
     name: "2",
+    uv: 300,
+    amt: 221,
+  },
+  {
+    name: "3",
     uv: 200,
     amt: 229,
   },
   {
-    name: "3",
+    name: "4",
     uv: 278,
     amt: 200,
   },
@@ -57,24 +62,24 @@ export default function StatisticChart() {
         data={data}
         syncId="anyId"
         margin={{
-          top: 10,
-          right: 30,
-          left: 0,
-          bottom: 0,
+          top: 0,
+          right: 0,
+          left: -20,
+          bottom: -10,
         }}
       >
         <defs>
           <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="#99aa66" stopOpacity={0.8} />
-            <stop offset="95%" stopColor="#99aa66" stopOpacity={0} />
+          <stop offset="20%" stopColor="#61d129" stopOpacity={1} />
+          <stop offset="95%" stopColor="#1A2027" stopOpacity={0.5} />
           </linearGradient>
         </defs>
         <XAxis dataKey="name" />
-        <YAxis />
-        <CartesianGrid strokeDasharray="3 3" />
+        <YAxis  />
+        <CartesianGrid horizontal={false} vertical={false} />
         <Tooltip />
         <Area
-          type="monotone"
+          type="linear"
           dataKey="uv"
           stroke={theme.palette.primary.main}
           fillOpacity={1}
