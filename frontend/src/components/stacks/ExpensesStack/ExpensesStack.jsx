@@ -17,22 +17,12 @@ import CreateExpenseDialog from "../../dialogs/CreateExpenseDialog";
 import config from '../../../resources/config.json';
 import data from '../../../resources/data.json';
 
+
 function CircularProgressWithLabel(props) {
   return (
-    <Box sx={{ position: 'relative', display: 'inline-flex' }}>
+    <Box sx={{ position: 'relative', display: 'inline-flex'}}>
       <CircularProgress variant="determinate" {...props} />
-      <Box
-        sx={{
-          top: 0,
-          left: 0,
-          bottom: 0,
-          right: 0,
-          position: 'absolute',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
+      <Box sx={{ top: 0, left: 0, bottom: 0, right: 0, position: 'absolute', display: 'flex', alignItems: 'center', justifyContent: 'center',}}>
         <Typography sx={{ mt: 1 }} variant="caption" component="div" color="text.secondary">
           {`${Math.round(props.value)}%`}
         </Typography>
@@ -51,12 +41,10 @@ CircularProgressWithLabel.propTypes = {
 };
 
 const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
+  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
   ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: "center",
-  width: "16em",
-  height: "6em",
+  padding: 6,
+  textAlign: 'center',
   color: theme.palette.text.secondary,
 }));
 
@@ -153,90 +141,59 @@ const ExpensesDirectionStack = (expensesState) => {
     }
   };
 
+  /*
+    Default breakpoints
+    Each breakpoint (a key) matches with a fixed screen width (a value):
+        xs, extra-small: 0px
+        sm, small: 600px
+        md, medium: 900px
+        lg, large: 1200px
+        xl, extra-large: 1536px
+  */
   return (
-    <Stack
-      direction={{ xs: "column", sm: "row" }}
-      spacing={{ xs: 1, sm: 2, md: 2 }}
-    >
-      {/* All Expenses */}
-      <Item style={{ backgroundColor: '#00000000', width: 130, height: "auto" }}>
-        <React.Fragment>
-          <Grid container spacing={0}>
-            <Grid xs={12} md={11}>
-              <Tooltip title="All expenses as a % of the Incomes" placement="top">
-                <Typography
-                  component="p"
-                  align="left"
-                  color="#9ccc12"
-                  variant="standard"
-                >
-                  EXPENSES
-                </Typography>
-              </Tooltip>
-            </Grid>
-            <Grid xs={12} md={1}>
-              <CreateExpenseDialog onCreate={addExpense} />
-            </Grid>
-          </Grid>
-          <CircularProgressWithLabel sx={{ mt: 1 }} value={progress} />
-        </React.Fragment>
-      </Item>
-
-      {expenses.map((expense) => {
-        return (
-          <Grid container spacing={0}>
-            <Item key={expense.name} style={{width: 200, height: "auto"}} sx={{ display: "flex", flexWrap: "wrap" }}>
-              <Grid xs={12} md={11}>
-                <Tooltip title={expense.description} placement="top">
-                  <Typography
-                    component="p"
-                    align="left"
-                    color="#9ccc12"
-                    variant="standard"
-                  >
-                    {expense.name}
+      <Box sx={{ flexGrow: 1 }}>
+        <Grid container disableEqualOverflow spacing={{ xs: 2, md: 2 }}>
+          <Grid xs={6} sm={4} md={3} lg={2} xl={1.5}>
+            <Item style={{ backgroundColor: '#00000000', height: "70px" }}>
+          
+                <Tooltip title="All Monthly Expenses as a % from the Incomes" placement="top">
+                  <Typography style={{float: 'left'}} component="p" align="left" color="#9ccc12" variant="standard" >
+                    REGULAR EXPENSES
                   </Typography>
                 </Tooltip>
-              </Grid>
-              <Grid xs={12} md={1}>
-                <Tooltip title={"Remove " + expense.name} placement="top">
-                  <IconButton
-                    sx={{ mt: -1.5 }}
-                    color="primary"
-                    aria-label="remove expense"
-                    size="small"
-                    align="right"
-                  >
-                    <CloseIcon fontSize="inherit" onClick={(event) => deleteExpense(expense, expenses, setExpenses, event)} />
-                  </IconButton>
-                </Tooltip>
-              </Grid>
-              <Grid xs={1} md={2}>
-                <Typography
-                  sx={{ paddingRight: "1rem", fontSize: "2rem" }}
-                  component="p"
-                  align="center"
-                >
-                  $
-                </Typography>
-              </Grid>
-              <Grid xs={11} md={10}>
-                <ExpenseEditable
-                  id={`${expense.name}-input`}
-                  variant="standard"
-                  InputProps={{
-                    disableUnderline: true,
-                  }}
-                  onKeyDown={(event) => handleKeyDown(expense, event)}
-                  defaultValue={expense.value}
-                />
-              </Grid>
+                <CreateExpenseDialog onCreate={addExpense} />
+                <br/>
+                <CircularProgressWithLabel sx={{ mt: 1 }} align="center" value={progress} />
             </Item>
           </Grid>
-        );
-      })}
-    </Stack>
-  );
-};
+          {expenses.map((expense) => {
+            return (
+              <Grid xs={6} sm={4} md={3} lg={2} xl={1.5} key={expense.name}>
+                <Item style={{ height: '70px' }}>
+                    <Tooltip title={expense.description} placement="top">
+                      <Typography style={{float: 'left'}} component="p" align="left" color="#9ccc12" variant="standard" >
+                        {expense.name}
+                      </Typography>
+                    </Tooltip>
+
+                    <Tooltip title={"Remove " + expense.name} placement="top">
+                        <IconButton sx={{mt: -1, mr: -1, float: 'right'}} color="primary" aria-label="remove expense" size="small" align="right">
+                          <CloseIcon fontSize="inherit" onClick={(event) => deleteExpense(expense, expenses, setExpenses, event)} />
+                        </IconButton>
+                    </Tooltip>
+
+                    <ExpenseEditable id={`${expense.name}-input`} variant="standard"
+                      InputProps={{
+                        disableUnderline: true,
+                      }}
+                      onKeyDown={(event) => handleKeyDown(expense, event)} defaultValue={expense.value}/>
+                </Item>
+              </Grid>
+            )
+        })}
+        </Grid>
+      </Box>
+    )
+}
 
 export default ExpensesDirectionStack;

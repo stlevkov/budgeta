@@ -3,13 +3,15 @@ import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import Link from '@mui/material/Link';
 import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import { useEffect } from "react";
+import InfoIcon from '@mui/icons-material/Info';
+import Tooltip from "@mui/material/Tooltip";
+import IconButton from '@mui/material/IconButton';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -84,15 +86,13 @@ export default function ViewIncomeDialog({ myData }) {
 
   return (
     <div>
-      <Link
-        href="#"
-        color="inherit"
-        fontSize="inherit"
-        onClick={handleClickOpen}
-        variant="inherit"
-        >
-        See Details
-      </Link>
+
+      <Tooltip title={"See Details"} placement="top">
+          <IconButton sx={{mt: -1, mr: -1, float: 'right'}} color="primary" aria-label="See Details" size="small" align="right">
+            <InfoIcon fontSize="inherit" onClick={handleClickOpen} />
+          </IconButton>
+      </Tooltip>
+
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>All Incomes Details</DialogTitle>
         <DialogContent>

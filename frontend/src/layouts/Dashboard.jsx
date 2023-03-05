@@ -1,23 +1,23 @@
 import * as React from "react";
-import CssBaseline from "@mui/material/CssBaseline";
-import Grid from "@mui/material/Unstable_Grid2";
-import Box from "@mui/material/Box";
-import Paper from "@mui/material/Paper";
-import Divider from "@mui/material/Divider";
 import axios from "axios";
 import { useState, useEffect } from "react";
-import Stack from "@mui/material/Stack";
-import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
-import ExpensesDirectionStack from "../components/stacks/ExpensesStack/ExpensesStack";
-import SavingsStack from "../components/stacks/SavingsStack/SavingsStack";
-import CostAnalyticStack from "../components/stacks/CostAnalyticStack/CostAnalyticStack";
-import TargetStack from "../components/stacks/MonitoringStack/TargetStack";
 import config from "../resources/config.json";
 import data from "../resources/data.json";
-import Navbar from "./NavBar";
-import Sidebar from "./Sidebar";
+import ResponsiveGrid from "./Test";
+import { experimentalStyled as styled } from '@mui/material/styles';
+import Box from '@mui/material/Box';
+import Paper from '@mui/material/Paper';
+import Grid from '@mui/material/Unstable_Grid2';
+import Devider from '@mui/material/Divider';
+import ExpensesStack from "../components/stacks/ExpensesStack/ExpensesStack"
+import SavingsStack from "../components/stacks/SavingsStack/SavingsStack"
+import CostAnalyticStack from "../components/stacks/CostAnalyticStack/CostAnalyticStack";
 import StatisticChart from "../components/stacks/MonitoringStack/StatisticChart";
+import TargetSavingChart from "../components/stacks/MonitoringStack/TargetSavingChart";
+import Typography from "@mui/material/Typography";
+
+import Tooltip from "@mui/material/Tooltip";
 
 const fetchData = async (setState, setSumState, defaultState, endpoint) => {
   try {
@@ -119,67 +119,70 @@ export default function Dashboard() {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
   });
 
+  const Item = styled(Paper)(({ theme }) => ({
+    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+    ...theme.typography.body2,
+    padding: 6,
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
+  }));
+
   return (
-    <Box sx={{ display: "flex" }}>
-      <CssBaseline />
-      <Navbar open={open} toggleSidebar={toggleSidebar} sidebarWidth={sidebarWidth} onTargetSaving={calculateCostAnalytics} />
+     <>
+      {/* <ResponsiveGrid/> */} {/* Use this for reference if you broke the dashboard layout */}
 
-      <Sidebar open={open} toggleSidebar={toggleSidebar} sidebarWidth={sidebarWidth} />
-      <Box component="main" sx={{ flexGrow: 1, marginTop: "4em" }}>
-        <Grid container spacing={1} columns={{ xs: 1, sm: 1, md: 12, lg: 12, xl: 12 }} disableEqualOverflow sx={{ padding: "1em" }}>
-          <Grid xs={1} sm={1} md={12} lg={12} xl={12}>
-            {/* Expense Stack */}
-            <ExpensesDirectionStack expensesState={expenses} />
+    <ExpensesStack />
+    <Devider style={{width: "100%",marginTop: '8px', marginBottom: '8px'}} />
+    <SavingsStack/>
+    <Devider>Analytics & Summary</Devider>
+    <CostAnalyticStack costAnalyticState={costAnalytics} />
+
+    <Box sx={{ flexGrow: 1 }} style={{marginTop: '12px', marginBottom: '12px'}}>
+    <Grid container rowSpacing={2} columns={{ xs: 2, sm: 4, md: 12, lg: 12, xl: 12 }}>
+      
+        <Grid xs={2} sm={6} md={6} >
+        <Box sx={{ flexGrow: 1 }}>
+          <Grid container spacing={{ xs: 3, md: 3 }} columns={{ xs:2, sm: 4, md: 12, lg: 12, xl: 12 }}>
+            {Array.from(Array(3)).map((_, index) => (
+              <Grid xs={2} sm={4} md={4} key={index}>
+                <Item style={{ height: '375px' }}>
+                  <Tooltip title={<Typography fontSize="1.3em">Test Description</Typography>} placement="top">
+                  <Typography component="p" align="left" color="orange" fontSize="1.5em" variant="standard">
+                    VACANCY
+                  </Typography>
+                </Tooltip>
+                <br/>
+                <Typography component="p" align="left" color="gray" fontSize="1.1em" variant="standard">
+                    {"Estimated Date: 06/09/2023"}
+                  </Typography>
+                  <br/>
+                <Box sx={{ flexGrow: 1 }}>
+                    <TargetSavingChart/>
+                </Box>
+                <br/>
+                  <Typography component="p" align="left" color="gray" fontSize="1.1em" variant="standard">
+                    {"Earnings per day: 25"}
+                  </Typography>
+                </Item>
+              </Grid>
+            ))}
           </Grid>
-
-          <Grid xs={1} sm={1} md={12} lg={12} xl={12}>
-            <Divider />
-          </Grid>
-
-          <Grid xs={1} sm={1} md={2} lg={12} xl={12}>
-            {/* Savings Stack */}
-            <SavingsStack handleErrorMessageOpen={handleErrorMessageOpen} errorMessage={setErrorMessage} />
-          </Grid>
-
-          <Grid xs={1} sm={1} md={12} lg={12} xl={12}>
-            <Divider>Analytics</Divider>
-          </Grid>
-
-          {/* Analytic Stack */}
-          <Grid xs={1} sm={1} md={12} lg={12} xl={12}>
-            <CostAnalyticStack costAnalyticState={costAnalytics} />
-          </Grid>
-
-          {/* Statistics Stack */}
-          <Grid container xs={1} sm={1} md={12} lg={12} xl={12} spacing={1} disableEqualOverflow sx={{ paddingTop: "1em" }}>
-            {/* Targets */}
-            <Grid xs={1} sm={1} md={2} lg={3} xl={3}>
-              <Paper>
-                <TargetStack name={"HOUSE REPAIR"} target={5600} perc={87} />
-              </Paper>
-            </Grid>
-
-            <Grid xs={1} sm={1} md={2} lg={3} xl={3}>
-              <Paper>
-                <TargetStack name={"NEW CAR"} target={15378} perc={38} />
-              </Paper>
-            </Grid>
-
-            {/* ChartJs */}
-            <Grid xs={1} sm={1} md={2} lg={6} xl={6} sx={{ height: "22em" }}>
-              <StatisticChart />
-            </Grid>
-          </Grid>
-          {/* End statistics */}
+          </Box>
         </Grid>
-      </Box>
-      <Stack spacing={2} sx={{ width: "100%" }}>
-        <Snackbar open={errorMessageOpen} autoHideDuration={6000} onClose={handleErrorMessageClose}>
-          <Alert onClose={handleErrorMessageClose} severity="error" sx={{ width: "100%" }}>
-            {errorMessage}
-          </Alert>
-        </Snackbar>
-      </Stack>
+
+        <Grid  xs={2} sm={6} md={6} >
+          <Box sx={{ flexGrow: 1 }}>
+            <Grid pl={3} container columns={{ xs: 2, sm: 4, md: 12, lg: 12, xl: 12 }}>
+              <Grid xs={2} sm={12} md={12} >
+                <Item style={{ height: '376px' }}>
+                  <StatisticChart />
+                </Item>
+              </Grid>
+            </Grid>
+          </Box>
+        </Grid>
+    </Grid>
     </Box>
+     </>
   );
 }

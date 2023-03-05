@@ -56,9 +56,9 @@ export default function CreateIncomeDialog({onCreate}) {
   };
 
   return (
-    <div>
+    <>
       <Tooltip title={"Add New Income"} placement="top">
-        <IconButton sx={{ mt: -1.5, ml: -1.5 }} color="primary" aria-label="add income" size="small" align="right">
+        <IconButton style={{float: "right", marginTop: "-40px"}} color="primary" aria-label="add income" size="small">
           <AddCardIcon fontSize="large" onClick={handleClickOpen} />
         </IconButton>
       </Tooltip>
@@ -95,6 +95,6 @@ export default function CreateIncomeDialog({onCreate}) {
           <Button onClick={handleClose}>Finish</Button>
         </DialogActions>
       </Dialog>
-    </div>
+    </>
   );
 }

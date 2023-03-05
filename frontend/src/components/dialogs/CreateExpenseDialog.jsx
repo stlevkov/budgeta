@@ -62,13 +62,7 @@ export default function CreateExpenseDialog({onCreate}) {
   return (
     <div>
       <Tooltip title={"Create New Expense"} placement="top">
-        <IconButton
-          sx={{ mt: -1.5, ml: -1.5 }}
-          color="primary"
-          aria-label="add expense"
-          size="small"
-          align="right"
-        >
+        <IconButton sx={{mt: -1, mr: -1, float: 'right'}} align="right" color="primary" aria-label="add expense" size="small" >
           <AddIcon fontSize="inherit" onClick={handleClickOpen} />
         </IconButton>
       </Tooltip>

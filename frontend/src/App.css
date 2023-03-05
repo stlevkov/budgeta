@@ -1,11 +1,37 @@
 .App {
- /**/
-}
 
- 
+}
 
 @media (prefers-reduced-motion: no-preference) {
  
 }
- 
- 
+
+/* Use this to make auto-fit at resolutions above FullHD
+Resolution	Pixels
+540p / qHD	960×540 pixels
+720p / HD	1280×720 pixels
+1080p / Full HD / FHD	19201080 pixels
+2K	2048×1080 pixels
+1440p / QHD / QuadHD / WQHD	2560×1440 pixels
+2160p / UHD	3840×2160 pixels
+4K	4096×2160 pixels
+5K	5120×2880 pixels
+8K / 8K UHD	7680×4320 pixels
+*/
+@media screen and (min-width: 1920px) and (min-height: 1080px) {
+    html {
+       transform: scale(1);   
+    }
+ }
+
+ @media screen and (min-width: 2048px) and (min-height: 1080px) {
+    html {
+       transform: scale(1.3);   
+    }
+ }
+
+ @media screen and (min-width: 2560px) and (min-height: 1440px) {
+    html {
+       transform: scale(1.5);   
+    }
+ }
