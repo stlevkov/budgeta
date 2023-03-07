@@ -7,15 +7,11 @@ import { useState, useEffect } from "react";
 import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
 import ViewIncomeDialog from "../../dialogs/ViewIncomesDialog";
-import IconButton from "@mui/material/IconButton";
 import Grid from "@mui/material/Unstable_Grid2";
-import InputUnexpected from "./Unexpected";
 import config from "../../../resources/config.json";
 import data from "../../../resources/data.json";
 import CreateIncomeDialog from "../../dialogs/CreateIncomeDialog";
-import WithdrawSavingsDialog from "../../dialogs/WithdrawSavingsDialog";
 import Devider from '@mui/material/Divider';
-import { shadows } from '@mui/system';
 
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -141,7 +137,7 @@ export default function CostAnalyticStack({ costAnalyticState }) {
           </Tooltip>
           <Devider style={{width: "100%",marginTop: '8px', marginBottom: '8px'}} />
           <Typography style={{ marginTop: "20px",width: "fit-content"}} component="p" color="#b0b0b0" fontSize="3.3em" align="left">
-              5543
+              {costAnalytic.allExpenses}
             </Typography>
         </Item>
       </Grid>
