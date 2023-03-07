@@ -28,15 +28,13 @@ import java.math.BigDecimal;
 @Document(collection = "cost_analytics")
 public class CostAnalytic {
 
-    public CostAnalytic(BigDecimal targetSaving, BigDecimal unexpected){
+    public CostAnalytic(BigDecimal targetSaving){
         this.targetSaving = targetSaving;
-        this.unexpected = unexpected;
     }
     
-    public CostAnalytic(String id, BigDecimal targetSaving, BigDecimal unexpected){
+    public CostAnalytic(String id, BigDecimal targetSaving){
         this.id = id;
         this.targetSaving = targetSaving;
-        this.unexpected = unexpected;
     }
 
     @Id
@@ -49,15 +47,6 @@ public class CostAnalytic {
      */
     @NotNull
     private BigDecimal targetSaving;
-
-    /**
-     * Unexpected are the amount of money which needs to be spend for the current month.
-     * They are not intent to be regular (e.g. monthly), but just one time spending.
-     * The user must update this value.
-     * TODO - Can be improved as List of object to hold history.
-     */
-    @NotNull
-    private BigDecimal unexpected;
 
     /**
      * Daily recommended is the amount of money which is calculated based on the:
