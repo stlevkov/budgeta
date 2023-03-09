@@ -1,6 +1,5 @@
 import * as React from "react";
 import Paper from "@mui/material/Paper";
-import Stack from "@mui/material/Stack";
 import { styled } from "@mui/material/styles";
 import axios from "axios";
 import { useState, useEffect } from "react";
@@ -8,58 +7,23 @@ import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Unstable_Grid2";
-import PropTypes from 'prop-types';
-import CircularProgress from '@mui/material/CircularProgress';
-import Box from '@mui/material/Box';
-import CloseIcon from '@mui/icons-material/Close';
-import IconButton from '@mui/material/IconButton';
+import PropTypes from "prop-types";
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
+import CloseIcon from "@mui/icons-material/Close";
+import IconButton from "@mui/material/IconButton";
 import CreateSavingDialog from "../../dialogs/CreateSavingDialog";
-import config from '../../../resources/config.json';
-import data from '../../../resources/data.json';
-
-function CircularProgressWithLabel(props) {
-  return (
-    <Box sx={{ position: 'relative', display: 'inline-flex'}}>
-      <CircularProgress variant="determinate" {...props} />
-      <Box sx={{ top: 0, left: 0, bottom: 0, right: 0, position: 'absolute',display: 'flex', alignItems: 'center', justifyContent: 'center',}}>
-        <Typography sx={{ mt: 1 }} variant="caption" component="div" color="text.secondary">
-          {`${Math.round(props.value)}%`}
-        </Typography>
-      </Box>
-    </Box>
-  );
-}
-CircularProgressWithLabel.propTypes = {
-  /**
-   * The value of the progress indicator for the determinate variant.
-   * Value between 0 and 100.
-   * @default 0
-   */
-  value: PropTypes.number.isRequired,
-};
+import config from "../../../resources/config.json";
+import data from "../../../resources/data.json";
+import { toast } from "material-react-toastify";
 
 const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
   ...theme.typography.body2,
   padding: 6,
-  textAlign: 'center',
+  textAlign: "center",
   color: theme.palette.text.secondary,
 }));
-
-async function fetchAllSavings() {
-  try {
-    const response = await axios.get(config.server.uri + "savings");
-    if (response.data !== "") {
-      return response.data;
-    } else {
-      console.log("Something is wrong");
-      return data.defaultSavings; // TODO This will not work in case of Edit, the ID must be equal
-    }
-  } catch (err) {
-    //console.log(err); TODO makes tests fail because of network delay response
-    return data.defaultSavings;
-  }
-}
 
 const SavingsEditable = styled(TextField)(({ theme }) => ({
   "& .MuiInput-root": {
@@ -77,25 +41,68 @@ const SavingsEditable = styled(TextField)(({ theme }) => ({
   },
 }));
 
+function CircularProgressWithLabel(props) {
+  return (
+    <Box sx={{ position: "relative", display: "inline-flex" }}>
+      <CircularProgress variant="determinate" {...props} />
+      <Box sx={{ top: 0, left: 0, bottom: 0, right: 0, position: "absolute", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <Typography sx={{ mt: 1 }} variant="caption" component="div" color="text.secondary">
+          {`${Math.round(props.value)}%`}
+        </Typography>
+      </Box>
+    </Box>
+  );
+}
+
+CircularProgressWithLabel.propTypes = {
+  /**
+   * The value of the progress indicator for the determinate variant.
+   * Value between 0 and 100.
+   * @default 0
+   */
+  value: PropTypes.number.isRequired,
+};
+
+async function fetchAllSavings() {
+  try {
+    const response = await axios.get(config.server.uri + "savings");
+    if (response.data !== "") {
+      return response.data;
+    } else {
+      console.log("[SavingsStack]: response data on fetchAll is empty!");
+      return data.defaultSavings; // TODO This will not work in case of Edit, the ID must be equal
+    }
+  } catch (err) {
+    //console.log(err); TODO makes tests fail because of network delay response
+    console.log("[SavingsStack]: fetchAllSavings failed with err: ", err.message);
+    toast.error("Fetching all savings failed!");
+    return data.defaultSavings;
+  }
+}
+
 const deleteSaving = (saving, savings, setSavings, event) => {
-  console.log("Will delete item with id: " + saving.id);
+  console.log("[SavingStack]: Will delete item with id: " + saving.id);
 
   const removeSavingRequest = async () => {
     try {
       const response = await axios.delete(config.server.uri + "savings/" + saving.id);
       if (response.data !== "") {
         removeItemFromState();
+        toast.success("Saving removed!");
       } else {
-        console.log("Something is wrong");
+        console.log("[SavingsStack]: response data on remove saving is empty");
+        toast.error("Removing of this saving failed!");
       }
     } catch (err) {
+      console.log("[SavingsStack]: removeSaving failed with err: ", err.message);
+      toast.error("Removing of this saving failed!");
       setSavings(data.defaultSavings);
     }
   };
 
   const removeItemFromState = () => {
     var array = [...savings];
-    var index = array.indexOf(saving)
+    var index = array.indexOf(saving);
     if (index !== -1) {
       array.splice(index, 1);
       setSavings(array);
@@ -104,9 +111,9 @@ const deleteSaving = (saving, savings, setSavings, event) => {
   removeSavingRequest();
 };
 
-export default function SavingsStack({handleErrorMessageOpen, errorMessage}) {
+export default function SavingsStack({ handleErrorMessageOpen, errorMessage }) {
   const [savings, setSavings] = useState([]);
-  const [progress, setProgress] = useState(30); // TODO - Calculate & Update dynamically 
+  const [progress, setProgress] = useState(30); // TODO - Calculate & Update dynamically
 
   useEffect(() => {
     let fetched = fetchAllSavings();
@@ -121,12 +128,12 @@ export default function SavingsStack({handleErrorMessageOpen, errorMessage}) {
     };
   }, []);
 
-  function addSaving(saving){
-    console.log("Will add saving: " + saving);
+  function addSaving(saving) {
+    console.log("[SavingStack]: Will add saving: " + saving);
     savings.push(saving);
     var copy = [...savings]; // make a copy to trigger the re-render
     setSavings(copy);
-  };
+  }
 
   const handleKeyDown = (saving, event) => {
     if (event.key === "Enter") {
@@ -138,10 +145,12 @@ export default function SavingsStack({handleErrorMessageOpen, errorMessage}) {
           },
         })
         .then((response) => {
-          console.log("[SavingStack] RESPONSE OK " + response.data);
+          console.log("[SavingStack] RESPONSE OK " + response);
+          toast.success("Edited saving stored!");
         })
         .catch((error) => {
           console.log("[SavingsStack] RESPONSE ERROR: " + error);
+          toast.error("Edited saving not stored!");
         });
     }
   };
@@ -150,44 +159,47 @@ export default function SavingsStack({handleErrorMessageOpen, errorMessage}) {
     <Box sx={{ flexGrow: 1 }}>
       <Grid container disableEqualOverflow spacing={{ xs: 2, md: 2 }}>
         <Grid xs={6} sm={4} md={3} lg={2} xl={1.5}>
-          <Item style={{ backgroundColor: '#00000000', height: "70px" }}>
-              <Tooltip title="Unexpected expenses for this month as a % from the Incomes" placement="top">
-                <Typography style={{float: 'left'}} component="p" align="left" color="#9ccc12" variant="standard" >
-                  UNEXPECTED
-                </Typography>
-              </Tooltip>
-              <CreateSavingDialog onCreate={addSaving} />
-              <br/>
-              <CircularProgressWithLabel sx={{ mt: 1 }} align="center" value={progress} />
+          <Item style={{ backgroundColor: "#00000000", height: "70px" }}>
+            <Tooltip title="Unexpected expenses for this month as a % from the Incomes" placement="top">
+              <Typography style={{ float: "left" }} component="p" align="left" color="#9ccc12" variant="standard">
+                UNEXPECTED
+              </Typography>
+            </Tooltip>
+            <CreateSavingDialog onCreate={addSaving} />
+            <br />
+            <CircularProgressWithLabel sx={{ mt: 1 }} align="center" value={progress} />
           </Item>
         </Grid>
         {savings.map((saving) => {
           return (
             <Grid xs={6} sm={4} md={3} lg={2} xl={1.5} key={saving.name}>
-              <Item style={{ height: '70px' }}>
-                  <Tooltip title={saving.description} placement="top">
-                    <Typography style={{float: 'left'}} component="p" align="left" color="#9ccc12" variant="standard" >
-                      {saving.name}
-                    </Typography>
-                  </Tooltip>
+              <Item style={{ height: "70px" }}>
+                <Tooltip title={saving.description} placement="top">
+                  <Typography style={{ float: "left" }} component="p" align="left" color="#9ccc12" variant="standard">
+                    {saving.name}
+                  </Typography>
+                </Tooltip>
 
-                  <Tooltip title={"Remove " + saving.name} placement="top">
-                      <IconButton sx={{mt: -1, mr: -1, float: 'right'}} color="primary" aria-label="remove saving" size="small" align="right">
-                        <CloseIcon fontSize="inherit" onClick={(event) => deleteExpense(saving, savings, setSavings, event)} />
-                      </IconButton>
-                  </Tooltip>
+                <Tooltip title={"Remove " + saving.name} placement="top">
+                  <IconButton sx={{ mt: -1, mr: -1, float: "right" }} color="primary" aria-label="remove saving" size="small" align="right">
+                    <CloseIcon fontSize="inherit" onClick={(event) => deleteSaving(saving, savings, setSavings, event)} />
+                  </IconButton>
+                </Tooltip>
 
-                  <SavingsEditable id={`${saving.name}-input`} variant="standard"
-                    InputProps={{
-                      disableUnderline: true,
-                    }}
-                    onKeyDown={(event) => handleKeyDown(saving, event)} 
-                    defaultValue={saving.value}/>
+                <SavingsEditable
+                  id={`${saving.name}-input`}
+                  variant="standard"
+                  InputProps={{
+                    disableUnderline: true,
+                  }}
+                  onKeyDown={(event) => handleKeyDown(saving, event)}
+                  defaultValue={saving.value}
+                />
               </Item>
             </Grid>
-          )
-      })}
+          );
+        })}
       </Grid>
     </Box>
-  )
+  );
 }
