@@ -12,6 +12,7 @@ import config from "../../../resources/config.json";
 import data from "../../../resources/data.json";
 import CreateIncomeDialog from "../../dialogs/CreateIncomeDialog";
 import Devider from '@mui/material/Divider';
+import TextField from "@mui/material/TextField";
 
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -57,36 +58,58 @@ async function fetchIncomes() {
 // TODO pass the value from parent instead of fetching it
 async function fetchCostAnalytics() {
   try {
+    console.log("[CostAnalytics] Fetching costAnalytics...");
     const response = await axios.get(config.server.uri + "costAnalytics");
     if (response.data !== "") {
-      console.log(response.data); //Prints out my three objects in an array in my console. works great
+      console.log("[CostAnalytics] Response: OK"); //Prints out my three objects in an array in my console. works great
       return response.data;
     } else {
-      console.log("Something is wrong getting the costAnalytics");
-      return data.defaultCostAnalytics;
+      console.log("[CostAnalytics] Response: Error");
+      return "error";
     }
   } catch (err) {
-    //console.log(err); TODO makes tests fail because of network delay response
-    return data.defaultCostAnalytics;
+    console.log("[CostAnalytics] " + err);
+    return "error";
   }
 }
 
+const TargetSavingEditable = styled(TextField)(({ theme }) => ({
+  "& .MuiInput-root": {
+    border: "none",
+    overflow: "hidden",
+    fontSize: "3.3rem ",
+    align: "center",
+    marginTop: "10px",
+    backgroundColor: "transparent",
+    "&:hover": {
+      backgroundColor: "transparent",
+    },
+    "&.Mui-focused": {
+      backgroundColor: "transparent",
+      border: "none",
+  },
+  "& .MuiInputBase-root": {
+    height: "3.5rem",
+  }
+}
+}));
+
 export default function CostAnalyticStack({ costAnalyticState }) {
-  const [costAnalytic, setCostAnalytics] = useState(data.defaultCostAnalytics);
+  console.log("[CostAnalytics] Initializing component.");
+  const [costAnalytic, setCostAnalytic] = useState({});
+  const [targetSaving, setTargetSaving] = useState(0);
   const [incomes, setIncomes] = useState([]);
   const [sumIncomes, setSumIncomes] = useState(0);
 
   useEffect(() => {
-    let fetchedCostAnalytics = fetchCostAnalytics();
-    fetchedCostAnalytics.then((resultCostAnalytic) => {
-      setCostAnalytics(resultCostAnalytic);
-    });
+    console.log("[CostAnalytics] useEffect. Candidate targetSaving: " + costAnalyticState.targetSaving);
+    setTargetSaving(costAnalyticState.targetSaving);
     let fetchedIncomes = fetchIncomes();
     fetchedIncomes.then((result) => {
       setIncomes(result);
       calculateSumIncomes(result);
     });
-  }, []);
+  }, [costAnalyticState]);
 
   function addIncome(income) {
     incomes.push(income);
@@ -104,6 +127,23 @@ export default function CostAnalyticStack({ costAnalyticState }) {
       setSumIncomes(incomes[0].value);
     }
   }
+
+    // edit target saving
+    const handleKeyDown = (targetSaving, event) => {
+      if (event.key === "Enter") {
+        console.log("[AnalyticStack] Going to edit Target Saving. Value candidate: " + event.target.value)
+        axios.put(config.server.uri + "costAnalytics/targetSaving", event.target.value, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }).then((response) => {
+            console.log("[AnalyticStack] RESPONSE OK: " + response.data);
+            setTargetSaving(event.target.value);
+          }).catch((error) => {
+            console.log("[AnalyticStack] RESPONSE ERROR: " + error);
+          });
+      }
+    };
 
   return (
     <Box sx={{ flexGrow: 1}}>
@@ -169,9 +209,12 @@ export default function CostAnalyticStack({ costAnalyticState }) {
             </Typography>
           </Tooltip>
           <Devider style={{width: "100%",marginTop: '8px', marginBottom: '8px'}} />
-            <Typography style={{ marginTop: "20px",width: "fit-content"}} component="p" color="#b0b0b0" fontSize="3.3em" align="left">
-              2500
-            </Typography>
+          <TargetSavingEditable variant="standard" 
+                onKeyDown={(event) => handleKeyDown(targetSaving, event)} 
+                InputProps={{ disableUnderline: true }} 
+                value={targetSaving}
+                onChange={(e) => {setTargetSaving(e.target.value)}}
+                />
         </Item>
       </Grid>
 

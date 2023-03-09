@@ -2,8 +2,6 @@ import * as React from "react";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import config from "../resources/config.json";
-import data from "../resources/data.json";
-import ResponsiveGrid from "./Test";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
@@ -19,26 +17,20 @@ import Tooltip from "@mui/material/Tooltip";
 import { ToastContainer } from "material-react-toastify";
 import "material-react-toastify/dist/ReactToastify.css";
 
-const fetchData = async (setState, setSumState, defaultState, endpoint) => {
+const fetchData = async (endpoint) => {
+  console.log("[Dashboard] Fetching " + endpoint);
   try {
     const response = await axios.get(config.server.uri + endpoint);
     if (response.data !== "") {
-      setState(response.data);
-      if (setSumState) {
-        setSumState(sumValues(response.data));
-      }
+      console.log("[Dashboard] Response OK");
+      return response.data;
     } else {
       console.log("Something is wrong");
-      setState(defaultState);
-      if (setSumState) {
-        setSumState(sumValues(defaultState));
-      }
+      return "error";
     }
   } catch (err) {
-    setState(defaultState);
-    if (setSumState) {
-      setSumState(sumValues(defaultState));
-    }
+    console.log("Something is wrong: " + err);
+    return "error";
   }
 };
 
@@ -86,17 +78,15 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
-    fetchData(setExpenses, setSumExpenses, data.defaultExpenses, "expenses");
-    fetchData(setIncomes, setSumIncomes, data.defaultIncomes, "incomes");
-    fetchData(setSavings, setSumSavings, data.defaultSavings, "savings");
-    fetchData(setCostAnalytics, false, data.defaultCostAnalytics, "costAnalytics");
+    // fetchData("expenses");
+    // fetchData("incomes");
+    // fetchData("savings");
 
-    return () => {
-      setExpenses([]);
-      setIncomes([]);
-      setSavings([]);
-      setCostAnalytics({});
-    };
+    let fetchedCostAnalytic = fetchData("costAnalytics");
+    fetchedCostAnalytic.then((result) => {
+      console.log("[Dashboard][CostAnalytic] Candidate: " + JSON.stringify(result));
+      setCostAnalytics(result);
+    });
   }, []);
 
   const toggleSidebar = () => {
