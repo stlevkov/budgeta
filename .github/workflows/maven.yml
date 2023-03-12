@@ -15,7 +15,7 @@ defaults:
 
 jobs:
   build:
-
+    name: Spring
     runs-on: ubuntu-latest
 
     steps:
