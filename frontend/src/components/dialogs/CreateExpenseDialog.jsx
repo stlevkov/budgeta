@@ -11,13 +11,14 @@ import InputLabel from "@mui/material/InputLabel";
 import InputAdornment from "@mui/material/InputAdornment";
 import FormControl from "@mui/material/FormControl";
 import axios from "axios";
-import AddIcon from '@mui/icons-material/Add';
-import IconButton from '@mui/material/IconButton';
-import Button from '@mui/material/Button';
+import AddIcon from "@mui/icons-material/Add";
+import IconButton from "@mui/material/IconButton";
+import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import config from "../../resources/config.json";
+import { toast } from "material-react-toastify";
 
-export default function CreateExpenseDialog({onCreate}) {
+export default function CreateExpenseDialog({ onCreate }) {
   const [open, setOpen] = React.useState(false);
   const [itemName, setItemName] = React.useState("");
   const [itemDesc, setItemDesc] = React.useState("");
@@ -27,8 +28,8 @@ export default function CreateExpenseDialog({onCreate}) {
     name: itemName,
     description: itemDesc,
     value: itemCost,
-    purporse: "unknown",
-    location: "unknown"
+    purpose: "unknown",
+    location: "unknown",
   };
 
   const handleClickOpen = () => {
@@ -43,15 +44,17 @@ export default function CreateExpenseDialog({onCreate}) {
   };
 
   const handleClose = () => {
-    console.log("Sending POST request");
+    console.log("[CrateExpenseDialog]: Sending POST request");
     axios
       .post(config.server.uri + "expenses", state)
       .then((response) => {
-        console.log("RESPONSE OK: " + response.data);
+        console.log("[CrateExpenseDialog]: RESPONSE OK: " + response.data);
         onCreate(response.data);
+        toast.success("Expense created!");
       })
       .catch((error) => {
-        console.log("RESPONSE ERROR: " + error);
+        console.log("[CrateExpenseDialog]: RESPONSE ERROR: " + error);
+        toast.error("Expense with provided name, already exists!");
       });
     setItemName("");
     setItemDesc("");
@@ -62,17 +65,15 @@ export default function CreateExpenseDialog({onCreate}) {
   return (
     <div>
       <Tooltip title={"Create New Expense"} placement="top">
-        <IconButton sx={{mt: -1, mr: -1, float: 'right'}} align="right" color="primary" aria-label="add expense" size="small" >
-          <AddIcon fontSize="inherit" onClick={handleClickOpen} />
+        <IconButton sx={{ mt: -1, mr: -1, float: "right" }} onClick={handleClickOpen} align="right" color="primary" aria-label="add expense" size="small">
+          <AddIcon fontSize="inherit" />
         </IconButton>
       </Tooltip>
 
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>New Expense</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            Add regular monthly Expense, for example - Loan, TV, GSM, Car Taxes
-          </DialogContentText>
+          <DialogContentText>Add regular monthly Expense, for example - Loan, TV, GSM, Car Taxes</DialogContentText>
           <TextField
             required
             autoFocus
@@ -104,8 +105,7 @@ export default function CreateExpenseDialog({onCreate}) {
           <FormControl
             fullWidth
             // sx={{ m: 1 }}
-            variant="filled"
-          >
+            variant="filled">
             <InputLabel htmlFor="cost">Cost</InputLabel>
             <FilledInput
               required
@@ -114,15 +114,13 @@ export default function CreateExpenseDialog({onCreate}) {
               onChange={(e) => {
                 setItemCost(e.target.value);
               }}
-              startAdornment={
-                <InputAdornment position="start">$</InputAdornment>
-              }
+              startAdornment={<InputAdornment position="start">$</InputAdornment>}
             />
           </FormControl>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCancel}>Cancel</Button>
-          <Button onClick={handleClose}>SAVE</Button>
+          <Button onClick={handleClose}>Save</Button>
         </DialogActions>
       </Dialog>
     </div>
