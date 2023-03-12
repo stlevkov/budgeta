@@ -15,7 +15,7 @@ defaults:
 
 jobs:
   build:
-
+    name: Node.js
     runs-on: ubuntu-latest
 
     strategy:
