@@ -64,8 +64,8 @@ export default function CreateSavingDialog({ onCreate }) {
   return (
     <div>
       <Tooltip title="Add new Unexpected for this month" placement="top">
-        <IconButton sx={{ mt: -1, mr: -1, float: "right" }} align="right" color="primary" aria-label="add unexpected" size="small">
-          <AddIcon fontSize="inherit" onClick={handleClickOpen} />
+        <IconButton onClick={handleClickOpen} sx={{ mt: -1, mr: -1, float: "right" }} align="right" color="primary" aria-label="add unexpected" size="small">
+          <AddIcon fontSize="inherit" />
         </IconButton>
       </Tooltip>
 
