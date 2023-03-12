@@ -5,9 +5,6 @@ import { PieChart, Pie, Sector } from 'recharts';
 const renderActiveShape = (props) => {
 
     const { cx, cy, startAngle, endAngle, payload, innerRadius, outerRadius, z, cornerRadius } = props;
-    console.log("*****************************************")
-    console.log(startAngle, endAngle)
-    console.log("*****************************************")
 
     return (
         <>
