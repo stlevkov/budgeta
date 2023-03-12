@@ -76,7 +76,7 @@ export default function ViewIncomeDialog({ myData }) {
   const tabPanels = [];
   for (let i = 0; i < incomes.length; i++) {
       tabPanels.push(
-        <TabPanel key={''+i} value={value} index={i}>
+        <TabPanel key={i} value={value} index={i}>
             <Typography variant="h4" gutterBottom>{incomes[i].description}</Typography>
             <Typography variant="h2" gutterBottom>{incomes[i].value}</Typography>
             <Typography variant="h5" gutterBottom>Last updated: {incomes[i].updatedAt}</Typography>
