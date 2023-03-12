@@ -181,8 +181,9 @@ export default function SavingsStack({ handleErrorMessageOpen, errorMessage }) {
                 </Tooltip>
 
                 <Tooltip title={"Remove " + saving.name} placement="top">
-                  <IconButton sx={{ mt: -1, mr: -1, float: "right" }} color="primary" aria-label="remove saving" size="small" align="right">
-                    <CloseIcon fontSize="inherit" onClick={(event) => deleteSaving(saving, savings, setSavings, event)} />
+                  <IconButton sx={{ mt: -1, mr: -1, float: "right" }} color="primary" aria-label="remove saving" size="small" align="right"
+                    onClick={(event) => deleteSaving(saving, savings, setSavings, event)}>
+                    <CloseIcon fontSize="inherit" />
                   </IconButton>
                 </Tooltip>
 

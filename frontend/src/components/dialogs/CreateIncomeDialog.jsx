@@ -58,8 +58,8 @@ export default function CreateIncomeDialog({onCreate}) {
   return (
     <>
       <Tooltip title={"Add New Income"} placement="top">
-        <IconButton style={{float: "right", marginTop: "-40px"}} color="primary" aria-label="add income" size="small">
-          <AddCardIcon fontSize="large" onClick={handleClickOpen} />
+        <IconButton onClick={handleClickOpen} style={{float: "right", marginTop: "-40px"}} color="primary" aria-label="add income" size="small">
+          <AddCardIcon fontSize="large" />
         </IconButton>
       </Tooltip>
 

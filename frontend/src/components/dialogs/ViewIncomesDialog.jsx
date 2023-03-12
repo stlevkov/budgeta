@@ -88,8 +88,8 @@ export default function ViewIncomeDialog({ myData }) {
     <div>
 
       <Tooltip title={"See Details"} placement="top">
-          <IconButton sx={{mt: -1, mr: -1, float: 'right'}} color="primary" aria-label="See Details" size="small" align="right">
-            <InfoIcon fontSize="inherit" onClick={handleClickOpen} />
+          <IconButton onClick={handleClickOpen} sx={{mt: -1, mr: -1, float: 'right'}} color="primary" aria-label="See Details" size="small" align="right">
+            <InfoIcon fontSize="inherit" />
           </IconButton>
       </Tooltip>
 
