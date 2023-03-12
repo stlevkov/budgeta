@@ -26,7 +26,6 @@ const renderActiveShape = (props) => {
                 outerRadius={outerRadius + 2}
                 startAngle={startAngle}
                 endAngle={endAngle}
-                fill={"#12A4ED"}
                 cornerRadius={0}
                 fill="url(#colorUvPie)"
             />
