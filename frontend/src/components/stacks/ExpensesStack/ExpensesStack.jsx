@@ -1,8 +1,7 @@
-import * as React from "react";
-import Paper from "@mui/material/Paper";
+import { useState, useEffect } from "react";
 import { styled } from "@mui/material/styles";
 import axios from "axios";
-import { useState, useEffect } from "react";
+import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Tooltip from "@mui/material/Tooltip";
@@ -112,7 +111,7 @@ const deleteExpense = (expense, expenses, setExpenses, event) => {
   removeExpenseRequest();
 };
 
-const ExpensesDirectionStack = (expensesState) => {
+const ExpensesDirectionStack = () => {
   const [expenses, setExpenses] = useState([]);
   const [progress, setProgress] = useState(43); // TODO - Calculate & Update dynamically
 
@@ -128,13 +127,6 @@ const ExpensesDirectionStack = (expensesState) => {
       setExpenses([]);
     };
   }, []);
-
-  function addExpense(expense) {
-    console.log("[ExpensesStack]: Will add expense: " + expense);
-    expenses.push(expense);
-    var array = [...expenses];
-    setExpenses(array);
-  }
 
   // edit expense
   const handleKeyDown = (expense, event) => {
@@ -176,7 +168,7 @@ const ExpensesDirectionStack = (expensesState) => {
                 REGULAR EXPENSES
               </Typography>
             </Tooltip>
-            <CreateExpenseDialog onCreate={addExpense} />
+            <CreateExpenseDialog expenses={expenses} setExpenses={setExpenses} />
             <br />
             <CircularProgressWithLabel sx={{ mt: 1 }} align="center" value={progress} />
           </Item>
@@ -192,8 +184,8 @@ const ExpensesDirectionStack = (expensesState) => {
                 </Tooltip>
 
                 <Tooltip title={"Remove " + expense.name} placement="top">
-                  <IconButton sx={{ mt: -1, mr: -1, float: "right" }} color="primary" aria-label="remove expense" size="small" align="right">
-                    <CloseIcon fontSize="inherit" onClick={(event) => deleteExpense(expense, expenses, setExpenses, event)} />
+                  <IconButton sx={{ mt: -1, mr: -1, float: "right" }} onClick={(event) => deleteExpense(expense, expenses, setExpenses, event)} color="primary" aria-label="remove expense" size="small" align="right">
+                    <CloseIcon fontSize="inherit" />
                   </IconButton>
                 </Tooltip>
 

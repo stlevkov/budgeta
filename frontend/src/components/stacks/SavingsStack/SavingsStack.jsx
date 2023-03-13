@@ -1,8 +1,7 @@
-import * as React from "react";
-import Paper from "@mui/material/Paper";
+import { useState, useEffect } from "react";
 import { styled } from "@mui/material/styles";
 import axios from "axios";
-import { useState, useEffect } from "react";
+import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
 import TextField from "@mui/material/TextField";
@@ -111,7 +110,7 @@ const deleteSaving = (saving, savings, setSavings, event) => {
   removeSavingRequest();
 };
 
-export default function SavingsStack({ handleErrorMessageOpen, errorMessage }) {
+export default function SavingsStack() {
   const [savings, setSavings] = useState([]);
   const [progress, setProgress] = useState(30); // TODO - Calculate & Update dynamically
 
@@ -127,13 +126,6 @@ export default function SavingsStack({ handleErrorMessageOpen, errorMessage }) {
       setSavings([]);
     };
   }, []);
-
-  function addSaving(saving) {
-    console.log("[SavingStack]: Will add saving: " + saving);
-    savings.push(saving);
-    var copy = [...savings]; // make a copy to trigger the re-render
-    setSavings(copy);
-  }
 
   const handleKeyDown = (saving, event) => {
     if (event.key === "Enter") {
@@ -165,7 +157,7 @@ export default function SavingsStack({ handleErrorMessageOpen, errorMessage }) {
                 UNEXPECTED
               </Typography>
             </Tooltip>
-            <CreateSavingDialog onCreate={addSaving} />
+            <CreateSavingDialog savings={savings} setSavings={setSavings} />
             <br />
             <CircularProgressWithLabel sx={{ mt: 1 }} align="center" value={progress} />
           </Item>
@@ -181,8 +173,7 @@ export default function SavingsStack({ handleErrorMessageOpen, errorMessage }) {
                 </Tooltip>
 
                 <Tooltip title={"Remove " + saving.name} placement="top">
-                  <IconButton sx={{ mt: -1, mr: -1, float: "right" }} color="primary" aria-label="remove saving" size="small" align="right"
-                    onClick={(event) => deleteSaving(saving, savings, setSavings, event)}>
+                  <IconButton sx={{ mt: -1, mr: -1, float: "right" }} color="primary" aria-label="remove saving" size="small" align="right" onClick={(event) => deleteSaving(saving, savings, setSavings, event)}>
                     <CloseIcon fontSize="inherit" />
                   </IconButton>
                 </Tooltip>
