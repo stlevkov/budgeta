@@ -1,4 +1,5 @@
-import * as React from "react";
+import { useState } from "react";
+import axios from "axios";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
@@ -10,26 +11,32 @@ import FilledInput from "@mui/material/FilledInput";
 import InputLabel from "@mui/material/InputLabel";
 import InputAdornment from "@mui/material/InputAdornment";
 import FormControl from "@mui/material/FormControl";
-import axios from "axios";
 import AddIcon from "@mui/icons-material/Add";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import config from "../../resources/config.json";
 import { toast } from "material-react-toastify";
 
-export default function CreateSavingDialog({ onCreate }) {
-  const [open, setOpen] = React.useState(false);
-  const [itemName, setItemName] = React.useState(""); // TODO can be property of Object
-  const [itemDesc, setItemDesc] = React.useState(""); // TODO can be property of object
-  const [itemAmount, setItemAmount] = React.useState(0); // TODO can be property of Object
+export default function CreateSavingDialog(props) {
+  const { savings, setSavings } = props;
+  const [open, setOpen] = useState(false);
+  const [itemName, setItemName] = useState(""); // TODO can be property of Object
+  const [itemDesc, setItemDesc] = useState(""); // TODO can be property of object
+  const [itemAmount, setItemAmount] = useState(0); // TODO can be property of Object
 
-  let state = {
+  let savingPayload = {
     name: itemName,
     description: itemDesc,
     value: itemAmount,
     purpose: "unknown",
     location: "unknown",
   };
+
+  function addSaving(saving) {
+    console.log("[SavingStack]: Will add saving: " + saving);
+
+    setSavings([...savings, saving]);
+  }
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -43,12 +50,21 @@ export default function CreateSavingDialog({ onCreate }) {
   };
 
   const handleClose = () => {
+    if (!itemName) {
+      toast.warning("Name is required");
+      return 0;
+    }
+    if (!itemAmount) {
+      toast.warning("Amount is required");
+      return 0;
+    }
+
     console.log("[CreateSavingDialog]: Sending POST request");
     axios
-      .post(config.server.uri + "savings", state)
+      .post(config.server.uri + "savings", savingPayload)
       .then((response) => {
         console.log("[CreateSavingDialog]: RESPONSE OK: " + response.data);
-        onCreate(response.data);
+        addSaving(response.data);
         toast.success("Saving created!");
       })
       .catch((error) => {
@@ -69,7 +85,7 @@ export default function CreateSavingDialog({ onCreate }) {
         </IconButton>
       </Tooltip>
 
-      <Dialog open={open} onClose={handleClose}>
+      <Dialog open={open}>
         <DialogTitle>New Saving</DialogTitle>
         <DialogContent>
           <DialogContentText>Add new regular saving, for example - car repairs, clothes, kitchen stuffs</DialogContentText>
