@@ -102,8 +102,11 @@ export default function CostAnalyticStack({ costAnalyticState }) {
   const [sumIncomes, setSumIncomes] = useState(0);
 
   useEffect(() => {
-    console.log("[CostAnalytics] useEffect. Candidate targetSaving: " + costAnalyticState.targetSaving);
-    setTargetSaving(costAnalyticState.targetSaving);
+    if(typeof costAnalyticState.targetSaving != "undefined"){
+      console.log("Will set undefiend");
+      setTargetSaving(costAnalyticState.targetSaving);
+    }
+    setCostAnalytic(costAnalyticState);
     let fetchedIncomes = fetchIncomes();
     fetchedIncomes.then((result) => {
       setIncomes(result);
@@ -190,7 +193,7 @@ export default function CostAnalyticStack({ costAnalyticState }) {
           </Typography>
         </Tooltip>
 
-        <ViewIncomeDialog myData={incomes} />
+        {/* <ViewIncomeDialog myData={incomes} /> */}
         <Devider style={{width: "100%",marginTop: '8px', marginBottom: '8px'}} />
         <Typography style={{ marginTop: "20px",width: "fit-content"}} variant="standard" component="p" color="#b0b0b0" fontSize="3.3em" align="left">
           {sumIncomes}
