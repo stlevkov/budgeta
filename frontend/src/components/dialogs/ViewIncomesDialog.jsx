@@ -19,6 +19,7 @@ function TabPanel(props) {
   return (
     <div
       role="tabpanel"
+      key={index}
       hidden={value !== index}
       id={`simple-tabpanel-${index}`}
       aria-labelledby={`simple-tab-${index}`}
@@ -26,7 +27,7 @@ function TabPanel(props) {
     >
       {value === index && (
         <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
+          <Typography component={'div'}>{children}</Typography>
         </Box>
       )}
     </div>
@@ -70,16 +71,16 @@ export default function ViewIncomeDialog({ myData }) {
 
   const tabs = [];
   for (let i = 0; i < incomes.length; i++) {
-      tabs.push(<Tab label={incomes[i].name} {...a11yProps(i)} />);
+      tabs.push(<Tab key={"a" +i} label={incomes[i].name} {...a11yProps(i)} />);
   }
 
   const tabPanels = [];
   for (let i = 0; i < incomes.length; i++) {
       tabPanels.push(
         <TabPanel key={i} value={value} index={i}>
-            <Typography variant="h4" gutterBottom>{incomes[i].description}</Typography>
-            <Typography variant="h2" gutterBottom>{incomes[i].value}</Typography>
-            <Typography variant="h5" gutterBottom>Last updated: {incomes[i].updatedAt}</Typography>
+            <Typography component={'div'} variant="h4" gutterBottom>{incomes[i].description}</Typography>
+            <Typography component={'div'} variant="h2" gutterBottom>{incomes[i].value}</Typography>
+            <Typography component={'div'} variant="h5" gutterBottom>Last updated: {incomes[i].updatedAt}</Typography>
         </TabPanel>
       );
   }

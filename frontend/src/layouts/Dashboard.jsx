@@ -22,7 +22,7 @@ const fetchData = async (endpoint) => {
   try {
     const response = await axios.get(config.server.uri + endpoint);
     if (response.data !== "") {
-      console.log("[Dashboard] Response OK");
+      console.log("[Dashboard][FETCH]["+ endpoint +"] Response OK");
       return response.data;
     } else {
       console.log("Something is wrong");
@@ -56,7 +56,6 @@ export default function Dashboard() {
   const [incomes, setIncomes] = useState([]); // TODO provide as hook in each Stack
   const [savings, setSavings] = useState([]); // TODO provide as hook in each Stack
   const [costAnalytics, setCostAnalytics] = useState({});
-
   const [sumExpenses, setSumExpenses] = useState(0);
   const [sumIncomes, setSumIncomes] = useState(0);
   const [sumSavings, setSumSavings] = useState(0);
@@ -78,6 +77,7 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
+    console.log("[Dashboard][UseEffect] Initializing Component.")
     // fetchData("expenses");
     // fetchData("incomes");
     // fetchData("savings");
