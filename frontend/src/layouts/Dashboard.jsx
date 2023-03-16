@@ -22,7 +22,7 @@ const fetchData = async (endpoint) => {
   try {
     const response = await axios.get(config.server.uri + endpoint);
     if (response.data !== "") {
-      console.log("[Dashboard][FETCH]["+ endpoint +"] Response OK");
+      console.log("[Dashboard][FETCH][" + endpoint + "] Response OK");
       return response.data;
     } else {
       console.log("Something is wrong");
@@ -77,7 +77,7 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
-    console.log("[Dashboard][UseEffect] Initializing Component.")
+    console.log("[Dashboard][UseEffect] Initializing Component.");
     // fetchData("expenses");
     // fetchData("incomes");
     // fetchData("savings");
@@ -113,10 +113,10 @@ export default function Dashboard() {
         <Grid container rowSpacing={2} columns={{ xs: 2, sm: 4, md: 12, lg: 12, xl: 12 }}>
           <Grid xs={2} sm={6} md={6}>
             <Box sx={{ flexGrow: 1 }}>
-              <Grid container spacing={{ xs: 3, md: 3 }} columns={{ xs: 2, sm: 4, md: 12, lg: 12, xl: 12 }}>
+              <Grid container spacing={{ xs: 2, md: 2 }} columns={{ xs: 2, sm: 4, md: 12, lg: 12, xl: 12 }}>
                 {Array.from(Array(3)).map((_, index) => (
                   <Grid xs={2} sm={4} md={4} key={index}>
-                    <Item style={{ height: "375px" }}>
+                    <Item>
                       <Tooltip title={<Typography fontSize="1.3em">Test Description</Typography>} placement="top">
                         <Typography component="p" align="left" color="orange" fontSize="1.5em" variant="standard">
                           VACANCY
@@ -127,9 +127,7 @@ export default function Dashboard() {
                         {"Estimated Date: 06/09/2023"}
                       </Typography>
                       <br />
-                      <Box sx={{ flexGrow: 1 }}>
-                        <TargetSavingChart />
-                      </Box>
+                      <TargetSavingChart id={index} />
                       <br />
                       <Typography component="p" align="left" color="gray" fontSize="1.1em" variant="standard">
                         {"Earnings per day: 25"}
