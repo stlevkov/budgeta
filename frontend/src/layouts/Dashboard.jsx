@@ -22,7 +22,7 @@ const fetchData = async (endpoint) => {
   try {
     const response = await axios.get(config.server.uri + endpoint);
     if (response.data !== "") {
-      console.log("[Dashboard][FETCH][" + endpoint + "] Response OK");
+      console.log("[Dashboard][FETCH]["+ endpoint +"] Response OK");
       return response.data;
     } else {
       console.log("Something is wrong");
@@ -37,7 +37,7 @@ const fetchData = async (endpoint) => {
 function sumValues(array) {
   let sum = 0;
   array.forEach((obj) => {
-    sum += obj.value;
+    sum += Number(obj.value);
   });
   return sum;
 }
@@ -55,7 +55,7 @@ export default function Dashboard() {
   const [expenses, setExpenses] = useState([]); // TODO provide as hook in each Stack
   const [incomes, setIncomes] = useState([]); // TODO provide as hook in each Stack
   const [savings, setSavings] = useState([]); // TODO provide as hook in each Stack
-  const [costAnalytics, setCostAnalytics] = useState({});
+
   const [sumExpenses, setSumExpenses] = useState(0);
   const [sumIncomes, setSumIncomes] = useState(0);
   const [sumSavings, setSumSavings] = useState(0);
@@ -66,27 +66,56 @@ export default function Dashboard() {
    *
    * @param {int} targetSaving Target Saving set by navbar field
    */
-  const calculateCostAnalytics = (targetSaving) => {
-    let sumAllExpenses = sumExpenses + sumSavings + parseFloat(targetSaving) + parseFloat(costAnalytics.unexpected);
-    let daily = (sumIncomes - sumAllExpenses) / daysInThisMonth();
-    let availableForSpend = sumIncomes - sumAllExpenses;
-    const clone = structuredClone(costAnalytics);
-    clone.dailyRecommended = Math.round((daily + Number.EPSILON) * 100) / 100;
-    clone.monthlyTarget = Math.round((availableForSpend + Number.EPSILON) * 100) / 100;
-    setCostAnalytics(clone);
-  };
+  // const calculateCostAnalytics = (targetSaving = costAnalytics.targetSaving, expenses) => {
+  //   let localSumExpenses = sumExpenses;
+  //   if(typeof expenses != "undefined"){
+  //     console.log("Expenses is provided, will calculate based on that: " + expenses);
+  //     console.log("[OLD] SumExpenses: " + sumExpenses);
+  //   //  setSumExpenses(sumValues(expenses)); // we dont set the local state, only the variable for this function call
+  //     localSumExpenses = sumValues(expenses);
+  //   }
+    
+  //   console.log("tempSumExpenses: " + localSumExpenses);
+  //   console.log("sumIncomes: " + sumIncomes);
+  //   console.log("sumSavings: " + sumSavings);
+  //   console.log("targetSaving: " + targetSaving);
+  //   let sumAllExpenses = localSumExpenses + sumSavings + parseFloat(targetSaving);
+  //   console.log("sumAllExpenses: " + sumAllExpenses);
+  //   let daily = (sumIncomes - sumAllExpenses) / daysInThisMonth();
+  //   let availableForSpend = sumIncomes - sumAllExpenses; // TODO  MONTHLY TARGET - add this to Daily Recommended box
+    
+  //   const clone = structuredClone(costAnalytics);
+  //   // set the variable and then the state
+  //   clone.allExpenses = localSumExpenses + sumSavings;
+  //   clone.dailyRecommended = Math.round((daily + Number.EPSILON) * 100) / 100;
+  //   setCostAnalytics(clone); // React is tracing the instances
+  //   console.log("Daily recommended: " + clone.dailyRecommended);
+  // };
 
   useEffect(() => {
-    console.log("[Dashboard][UseEffect] Initializing Component.");
-    // fetchData("expenses");
-    // fetchData("incomes");
-    // fetchData("savings");
+    console.log("[Dashboard][UseEffect] Initializing Component.")
 
-    let fetchedCostAnalytic = fetchData("costAnalytics");
-    fetchedCostAnalytic.then((result) => {
-      console.log("[Dashboard][CostAnalytic] Candidate: " + JSON.stringify(result));
-      setCostAnalytics(result);
-    });
+    let fetchedExpenses = fetchData("expenses");
+    fetchedExpenses.then((result) => {
+     // console.log("[Dashboard][Expenses] Candidate: " + JSON.stringify(result));
+      setExpenses(result);
+      setSumExpenses(sumValues(result));
+    });  
+
+    let fetchedIncomes = fetchData("incomes");
+    fetchedIncomes.then((result) => {
+    //  console.log("[Dashboard][Incomes] Candidate: " + JSON.stringify(result));
+      setIncomes(result);
+      setSumIncomes(sumValues(result));
+    });  
+
+    let fetchedSavings = fetchData("savings");
+    fetchedSavings.then((result) => {
+     // console.log("[Dashboard][Savings] Candidate: " + JSON.stringify(result));
+      setSavings(result);
+      setSumSavings(sumValues(result));
+    });  
+
   }, []);
 
   const toggleSidebar = () => {
@@ -104,11 +133,11 @@ export default function Dashboard() {
   return (
     <>
       {/* <ResponsiveGrid/> */} {/* Use this for reference if you broke the dashboard layout */}
-      <ExpensesStack />
+      <ExpensesStack  />
       <Divider style={{ width: "100%", marginTop: "8px", marginBottom: "8px" }} />
       <SavingsStack />
       <Divider>Analytics & Summary</Divider>
-      <CostAnalyticStack costAnalyticState={costAnalytics} />
+      <CostAnalyticStack />
       <Box sx={{ flexGrow: 1 }} style={{ marginTop: "12px", marginBottom: "12px" }}>
         <Grid container rowSpacing={2} columns={{ xs: 2, sm: 4, md: 12, lg: 12, xl: 12 }}>
           <Grid xs={2} sm={6} md={6}>
@@ -116,7 +145,7 @@ export default function Dashboard() {
               <Grid container spacing={{ xs: 2, md: 2 }} columns={{ xs: 2, sm: 4, md: 12, lg: 12, xl: 12 }}>
                 {Array.from(Array(3)).map((_, index) => (
                   <Grid xs={2} sm={4} md={4} key={index}>
-                    <Item>
+                    <Item style={{ height: "375px" }}>
                       <Tooltip title={<Typography fontSize="1.3em">Test Description</Typography>} placement="top">
                         <Typography component="p" align="left" color="orange" fontSize="1.5em" variant="standard">
                           VACANCY
@@ -127,7 +156,7 @@ export default function Dashboard() {
                         {"Estimated Date: 06/09/2023"}
                       </Typography>
                       <br />
-                      <TargetSavingChart id={index} />
+                        <TargetSavingChart id={index} />
                       <br />
                       <Typography component="p" align="left" color="gray" fontSize="1.1em" variant="standard">
                         {"Earnings per day: 25"}
