@@ -15,6 +15,8 @@ import CreateExpenseDialog from "../../dialogs/CreateExpenseDialog";
 import config from "../../../resources/config.json";
 import data from "../../../resources/data.json";
 import { toast } from "material-react-toastify";
+import { useContext } from 'react';
+import { CostAnalyticContext } from "../../../utils/AppUtil";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -111,9 +113,16 @@ const deleteExpense = (expense, expenses, setExpenses, event) => {
   removeExpenseRequest();
 };
 
-const ExpensesDirectionStack = () => {
+export default function ExpensesDirectionStack() {
   const [expenses, setExpenses] = useState([]);
   const [progress, setProgress] = useState(43); // TODO - Calculate & Update dynamically
+  const costAnalyticState = useContext(CostAnalyticContext);
+
+  const handleCostAnalyticStateChange = (newState) => {
+    // Do something with the new state
+    console.log('DO SOMETHING Analytic in EXPENSES has changed:', newState);
+     
+  };
 
   useEffect(() => {
     let fetched = fetchAllExpenses();
@@ -122,11 +131,28 @@ const ExpensesDirectionStack = () => {
       setExpenses(result);
     });
     setProgress(progress);
-    return () => {
-      setProgress(0);
-      setExpenses([]);
-    };
-  }, []);
+
+    costAnalyticState.addListener(handleCostAnalyticStateChange);
+    console.log("--------------------------- EXPENSES USE EFFECT -------------");
+
+        return () => {
+          setProgress(0);
+          setExpenses([]);
+          costAnalyticState.removeListener(handleCostAnalyticStateChange);
+        };
+  }, [costAnalyticState]);
+
+  const onExpenseChange = (expense, event) => {
+     console.log("Event targe value: " + event.target.value);
+     expense.value = event.target.value;
+
+     const updatedExpenses = expenses.map((item) => {
+         return (item.id === expense.id ? expense : item);
+     });
+     let costAnalytic = costAnalyticState.getState();
+     costAnalytic.dailyRecommended -= 10;
+     costAnalyticState.setState(costAnalytic);
+  };
 
   // edit expense
   const handleKeyDown = (expense, event) => {
@@ -189,13 +215,9 @@ const ExpensesDirectionStack = () => {
                   </IconButton>
                 </Tooltip>
 
-                <ExpenseEditable
-                  id={`${expense.name}-input`}
-                  variant="standard"
-                  InputProps={{
-                    disableUnderline: true,
-                  }}
+                <ExpenseEditable id={`${expense.name}-input`} variant="standard" InputProps={{ disableUnderline: true, }}
                   onKeyDown={(event) => handleKeyDown(expense, event)}
+                  onChange={(e) => onExpenseChange(expense, e)}
                   defaultValue={expense.value}
                 />
               </Item>
@@ -206,5 +228,3 @@ const ExpensesDirectionStack = () => {
     </Box>
   );
 };
-
-export default ExpensesDirectionStack;

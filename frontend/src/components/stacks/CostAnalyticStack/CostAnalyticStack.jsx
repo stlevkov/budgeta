@@ -13,7 +13,9 @@ import data from "../../../resources/data.json";
 import CreateIncomeDialog from "../../dialogs/CreateIncomeDialog";
 import Devider from '@mui/material/Divider';
 import TextField from "@mui/material/TextField";
-
+import { toast } from "material-react-toastify";
+import { useContext } from 'react';
+import { CostAnalyticContext } from "../../../utils/AppUtil";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -94,24 +96,44 @@ const TargetSavingEditable = styled(TextField)(({ theme }) => ({
 }
 }));
 
-export default function CostAnalyticStack({ costAnalyticState }) {
+
+/**
+ * CostAnalyticState is provided by the parent. In this component, the daily recommended
+ * is changed by the targetSaving upon change in realtime.
+ * 
+ * @param {costAnalyticState analyticState is provided by the Parent! No local state.}
+ * @param {recalculateCostAnalytic function to recalculate the costAnalytic}
+ * @returns 
+ */
+export default function CostAnalyticStack() {
   console.log("[CostAnalytics] Initializing component.");
+  const costAnalyticState = useContext(CostAnalyticContext);
   const [costAnalytic, setCostAnalytic] = useState({});
   const [targetSaving, setTargetSaving] = useState(0);
   const [incomes, setIncomes] = useState([]);
   const [sumIncomes, setSumIncomes] = useState(0);
 
+  const handleCostAnalyticStateChange = (newState) => {
+    // Do something with the new state
+    console.log('DO SOMETHING CostAnalytic in CostAnalyticSTACK has changed:', newState);
+    setTargetSaving(newState.targetSaving);
+    setCostAnalytic(newState);
+  };
+
   useEffect(() => {
-    if(typeof costAnalyticState.targetSaving != "undefined"){
-      console.log("Will set undefiend");
-      setTargetSaving(costAnalyticState.targetSaving);
-    }
-    setCostAnalytic(costAnalyticState);
     let fetchedIncomes = fetchIncomes();
     fetchedIncomes.then((result) => {
       setIncomes(result);
       calculateSumIncomes(result);
     });
+
+    // Add a listener to the costAnalyticState to track changes
+    costAnalyticState.addListener(handleCostAnalyticStateChange);
+    console.log("--------------------------- DASHBOARD USE EFFECT -------------");
+            // Cleanup function to remove the listener when the component unmounts
+            return () => {
+              costAnalyticState.removeListener(handleCostAnalyticStateChange);
+        };
   }, [costAnalyticState]);
 
   function addIncome(income) {
@@ -142,10 +164,19 @@ export default function CostAnalyticStack({ costAnalyticState }) {
           }).then((response) => {
             console.log("[AnalyticStack] RESPONSE OK: " + response.data);
             setTargetSaving(event.target.value);
+            toast.success("Target Saving saved successfully!");
           }).catch((error) => {
             console.log("[AnalyticStack] RESPONSE ERROR: " + error);
+            toast.error("Unable to save Target Saving. Try again, or check your internet connection!");
           });
       }
+    };
+
+    const onTargetSavingChange = (e) => {
+        setTargetSaving(e.target.value);
+        costAnalytic.targetSaving = e.target.value;
+        costAnalytic.dailyRecommended += 5;
+        costAnalyticState.setState(costAnalytic);
     };
 
   return (
@@ -216,7 +247,7 @@ export default function CostAnalyticStack({ costAnalyticState }) {
                 onKeyDown={(event) => handleKeyDown(targetSaving, event)} 
                 InputProps={{ disableUnderline: true }} 
                 value={targetSaving}
-                onChange={(e) => {setTargetSaving(e.target.value)}}
+                onChange={(e) => onTargetSavingChange(e)}
                 />
         </Item>
       </Grid>
@@ -231,7 +262,7 @@ export default function CostAnalyticStack({ costAnalyticState }) {
             <Devider style={{width: "100%",marginTop: '0px', marginBottom: '8px'}} />
 
             <Typography style={{ marginTop: "20px",width: "100%"}} component="p" color="#b0b0b0" fontSize="3.3em" align="center">
-              {costAnalyticState.dailyRecommended}
+              {costAnalytic.dailyRecommended}
             </Typography>
         </Item>
       </Grid>

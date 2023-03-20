@@ -65,9 +65,11 @@ public class CostAnalyticServiceImpl implements CostAnalyticService {
         // At this point Unexpected and TargetSaving are already set in the object by the caller
         List<CostAnalytic> costAnalytics = costAnalyticRepository.findAll();
         System.out.println("Is the CostAnalytic already present? " + (costAnalytics.size() == 1));
+
         if(costAnalytics.size() < 1){
             throw new ValidationCollectionException("CostAnalytic not found. You should create it first.");
         }
+
         System.out.println("Updating CostAnalytic from the service");
         BigDecimal sumExpenses = ArithmeticUtils.sumExpenses(expenseRepository.findAll());
         BigDecimal sumIncomes = ArithmeticUtils.sumIncomes(incomeRepository.findAll());
@@ -77,7 +79,7 @@ public class CostAnalyticServiceImpl implements CostAnalyticService {
         BigDecimal monthlyTarget = calculateMonthlyTarget(sumExpenses, sumIncomes, sumSavings, targetSaving);
         BigDecimal dailyRecommended = calculateDailyRecommended(targetSaving, sumExpenses, sumIncomes, sumSavings);
 
-        costAnalytic.setAllExpenses(sumExpenses);
+        costAnalytic.setAllExpenses(sumExpenses.add(sumSavings));
         costAnalytic.setDailyRecommended(dailyRecommended);
         costAnalytic.setMonthlyTarget(monthlyTarget);
         return costAnalyticRepository.save(costAnalytic);
