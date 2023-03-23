@@ -11,12 +11,13 @@ import InputLabel from "@mui/material/InputLabel";
 import InputAdornment from "@mui/material/InputAdornment";
 import FormControl from "@mui/material/FormControl";
 import axios from "axios";
-import IconButton from '@mui/material/IconButton';
+import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
-import config from '../../resources/config.json';
-import AddCardIcon from '@mui/icons-material/AddCard';
+import config from "../../resources/config.json";
+import AddCardIcon from "@mui/icons-material/AddCard";
+import { toast } from "material-react-toastify";
 
-export default function CreateIncomeDialog({onCreate}) {
+export default function CreateIncomeDialog({ onCreate }) {
   const [open, setOpen] = React.useState(false);
   const [itemName, setItemName] = React.useState(""); // TODO can be property of Object
   const [itemDesc, setItemDesc] = React.useState(""); // TODO can be property of object
@@ -40,14 +41,25 @@ export default function CreateIncomeDialog({onCreate}) {
   };
 
   const handleClose = () => {
-    console.log("Sending POST request");
+    if (!itemName) {
+      toast.warning("Name is required");
+      return 0;
+    }
+    if (!itemAmount) {
+      toast.warning("Amount is required");
+      return 0;
+    }
+    console.log("[CreateIncomeDialog] Sending POST request");
     axios
       .post(config.server.uri + "incomes", state)
       .then((response) => {
-        console.log("RESPONSE OK: " + response.data);
+        console.log("[CreateIncomeDialog] RESPONSE OK: " + response.data);
         onCreate(response.data);
-      }).catch((error) => {
-        console.log("Catch ERROR: " + error);
+        toast.success("New Income created.");
+      })
+      .catch((error) => {
+        console.log("[CreateIncomeDialog] Catch ERROR: " + error);
+        toast.error("Income creation failed, or Income with same name already exist.");
       });
     setItemName("");
     setItemDesc("");
@@ -58,7 +70,7 @@ export default function CreateIncomeDialog({onCreate}) {
   return (
     <>
       <Tooltip title={"Add New Income"} placement="top">
-        <IconButton onClick={handleClickOpen} style={{float: "right", marginTop: "-40px"}} color="primary" aria-label="add income" size="small">
+        <IconButton onClick={handleClickOpen} style={{ float: "right", marginTop: "-40px" }} color="primary" aria-label="add income" size="small">
           <AddCardIcon fontSize="large" />
         </IconButton>
       </Tooltip>
@@ -66,28 +78,45 @@ export default function CreateIncomeDialog({onCreate}) {
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>New income</DialogTitle>
         <DialogContent>
-          <DialogContentText>Add new income, for example - salary, sales
-          </DialogContentText>
-          <TextField required autoFocus margin="dense" id="name" label="Name" type="text" variant="standard"
+          <DialogContentText>Add new income, for example - salary, sales</DialogContentText>
+          <TextField
+            required
+            autoFocus
+            margin="dense"
+            id="name"
+            label="Name"
+            type="text"
+            variant="standard"
             value={itemName}
             onChange={(e) => {
               setItemName(e.target.value);
-            }} />
-          <TextField required fullWidth variant="standard" autoFocus margin="dense" id="desc" label="Description" type="text"
+            }}
+          />
+          <TextField
+            required
+            fullWidth
+            variant="standard"
+            autoFocus
+            margin="dense"
+            id="desc"
+            label="Description"
+            type="text"
             value={itemDesc}
             onChange={(e) => {
               setItemDesc(e.target.value);
-            }}/>
-          <FormControl fullWidth variant="filled" >
+            }}
+          />
+          <FormControl fullWidth variant="filled">
             <InputLabel htmlFor="amnt">Amount</InputLabel>
-            <FilledInput required id="amnt"
+            <FilledInput
+              required
+              id="amnt"
               value={itemAmount}
               onChange={(e) => {
                 setItemAmount(e.target.value);
               }}
-              startAdornment={
-                <InputAdornment position="start">$</InputAdornment>
-              }/>
+              startAdornment={<InputAdornment position="start">$</InputAdornment>}
+            />
           </FormControl>
         </DialogContent>
         <DialogActions>
