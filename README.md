@@ -5,4 +5,4 @@ WEB Application that monitors the availability of the family budget and helps sa
 ---
 
 # UI Preview
-![demo image not available](https://github.com/stlevkov/budgeta/blob/main/budgeta_demo_preview_unreleased.jpg?raw=true)
+![demo image not available](https://github.com/stlevkov/budgeta/blob/main/resources/budgeta_demo_preview_unreleased.jpg?raw=true)
