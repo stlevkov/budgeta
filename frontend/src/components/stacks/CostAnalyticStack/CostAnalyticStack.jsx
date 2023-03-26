@@ -15,6 +15,7 @@ import Divider from "@mui/material/Divider";
 import TextField from "@mui/material/TextField";
 import { toast } from "material-react-toastify";
 import { CostAnalyticContext } from "../../../utils/AppUtil";
+import { ExpensesContext } from "../../../utils/AppUtil";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -22,22 +23,6 @@ const Item = styled(Paper)(({ theme }) => ({
   padding: 6,
   textAlign: "center",
   color: theme.palette.text.secondary,
-}));
-
-const AnalyticsTextField = styled(Typography)(({ theme }) => ({
-  "& .MuiInput-root": {
-    border: "none",
-    overflow: "hidden",
-    fontSize: "2rem ",
-    backgroundColor: "transparent",
-    "&:hover": {
-      backgroundColor: "transparent",
-    },
-    "&.Mui-focused": {
-      backgroundColor: "transparent",
-      border: "none",
-    },
-  },
 }));
 
 async function fetchIncomes() {
@@ -53,24 +38,6 @@ async function fetchIncomes() {
   } catch (err) {
     // console.log(err); // TODO makes tests fail because of network delay response
     return data.defaultIncomes;
-  }
-}
-
-// TODO pass the value from parent instead of fetching it
-async function fetchCostAnalytics() {
-  try {
-    console.log("[CostAnalytics] Fetching costAnalytics...");
-    const response = await axios.get(config.server.uri + "costAnalytics");
-    if (response.data !== "") {
-      console.log("[CostAnalytics] Response: OK"); //Prints out my three objects in an array in my console. works great
-      return response.data;
-    } else {
-      console.log("[CostAnalytics] Response: Error");
-      return "error";
-    }
-  } catch (err) {
-    console.log("[CostAnalytics] " + err);
-    return "error";
   }
 }
 
@@ -106,6 +73,7 @@ const TargetSavingEditable = styled(TextField)(({ theme }) => ({
 export default function CostAnalyticStack() {
   console.log("[CostAnalytics] Initializing component.");
   const costAnalyticState = useContext(CostAnalyticContext);
+  const expensesState = useContext(ExpensesContext);
   const [costAnalytic, setCostAnalytic] = useState({});
   const [targetSaving, setTargetSaving] = useState(0);
   const [incomes, setIncomes] = useState([]);
@@ -127,7 +95,6 @@ export default function CostAnalyticStack() {
 
     // Add a listener to the costAnalyticState to track changes
     costAnalyticState.addListener(handleCostAnalyticStateChange);
-    console.log("--------------------------- DASHBOARD USE EFFECT -------------");
     // Cleanup function to remove the listener when the component unmounts
     return () => {
       costAnalyticState.removeListener(handleCostAnalyticStateChange);
@@ -210,7 +177,7 @@ export default function CostAnalyticStack() {
             </Tooltip>
             <Divider style={{ width: "100%", marginTop: "8px", marginBottom: "8px" }} />
             <Typography style={{ marginTop: "20px", width: "fit-content" }} component="p" color="#b0b0b0" fontSize="3.3em" align="left">
-              {costAnalytic.allExpenses}
+              {expensesState.getSumExpenses()}
             </Typography>
           </Item>
         </Grid>
