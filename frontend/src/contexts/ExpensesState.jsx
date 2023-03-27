@@ -4,7 +4,7 @@ export default class ExpensesState {
   constructor() {
     this.state = [];
     this.listeners = [];
-    this.sumExpenses = undefined;  // TODO make them private with #
+    this.sumExpenses = undefined; // TODO make them private with #
 
     getExpenses().then((data) => {
       this.setState(data);
@@ -17,7 +17,7 @@ export default class ExpensesState {
    */
   setState(newState) {
     console.log("[ExpensesState] Setting the state to new state...", newState);
-    this.sumExpenses = newState.map(newState => newState.value).reduce((a, b) => a + b);
+    this.sumExpenses = newState.map((newState) => parseInt(newState.value, 10)).reduce((a, b) => a + b);
     this.state = [...newState];
     this.listeners.forEach((listener) => listener(this.state)); // Notify all listeners that the state has changed
   }
@@ -26,7 +26,7 @@ export default class ExpensesState {
     return this.state;
   }
 
-  getSumExpenses(){
+  getSumExpenses() {
     return this.sumExpenses;
   }
 

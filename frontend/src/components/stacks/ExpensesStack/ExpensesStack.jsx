@@ -1,6 +1,5 @@
 import { useState, useEffect, useContext } from "react";
 import { styled } from "@mui/material/styles";
-import axios from "axios";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
@@ -8,15 +7,13 @@ import Tooltip from "@mui/material/Tooltip";
 import Grid from "@mui/material/Unstable_Grid2";
 import CloseIcon from "@mui/icons-material/Close";
 import IconButton from "@mui/material/IconButton";
-import PropTypes from "prop-types";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
+import Divider from "@mui/material/Divider";
 import CreateExpenseDialog from "../../dialogs/CreateExpenseDialog";
-import config from "../../../resources/config.json";
-import data from "../../../resources/data.json";
-import { toast } from "material-react-toastify";
-import { Divider } from "@mui/material";
 import { CostAnalyticContext, ExpensesContext } from "../../../utils/AppUtil";
+import { deleteExpense, editExpense } from "../../../api/RestClient";
+import PropTypes from "prop-types";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -63,51 +60,10 @@ CircularProgressWithLabel.propTypes = {
    */
   value: PropTypes.number.isRequired,
 };
-function calcSumAllExpenses(expenses_) {
-  let tempSum = 0;
-  console.log(expenses_);
-  for (const expense in expenses_) {
-    tempSum += parseInt(expenses_[expense].value, 10);
-  }
-
-  return tempSum;
-}
-const deleteExpense = (expense, expenses, setExpenses, event) => {
-  console.log("[ExpensesStack]: Will delete item with id: " + expense.id);
-
-  const removeExpenseRequest = async () => {
-    try {
-      const response = await axios.delete(config.server.uri + "expenses/" + expense.id);
-      if (response.data !== "") {
-        removeItemFromState();
-        toast.success("Expense removed!");
-      } else {
-        console.log("[ExpensesStack]: response data on remove expense is empty");
-        toast.error("Removing of this expense failed!");
-      }
-    } catch (err) {
-      //console.log(err); TODO makes tests fail because of network delay response
-      console.log("[ExpensesStack]: removeExpense failed with err: ", err.message);
-      toast.error("Removing of this expense failed!");
-      setExpenses(data.defaultExpenses);
-    }
-  };
-
-  const removeItemFromState = () => {
-    var array = [...expenses];
-    var index = array.indexOf(expense);
-    if (index !== -1) {
-      array.splice(index, 1);
-      setExpenses(array);
-    }
-  };
-  removeExpenseRequest();
-};
 
 export default function ExpensesDirectionStack() {
   const [expenses, setExpenses] = useState([]);
   const [progress, setProgress] = useState(43); // TODO - Calculate & Update dynamically
-  const [sumAllExpenses, setSumAllExpenses] = useState(0);
   const costAnalyticState = useContext(CostAnalyticContext);
   const expensesState = useContext(ExpensesContext);
 
@@ -120,7 +76,6 @@ export default function ExpensesDirectionStack() {
     // Do something with the new state
     console.log("DO SOMETHING Expenses in EXPENSES has changed:", newState);
     setExpenses(newState);
-    setSumAllExpenses(calcSumAllExpenses(newState));
   };
 
   useEffect(() => {
@@ -139,36 +94,35 @@ export default function ExpensesDirectionStack() {
   }, [costAnalyticState, expensesState]);
 
   const onExpenseChange = (expense, event) => {
-    console.log("Event targe value: " + event.target.value);
     expense.value = event.target.value;
 
     const updatedExpenses = expenses.map((item) => {
       return item.id === expense.id ? expense : item;
     });
     let costAnalytic = costAnalyticState.getState();
-    costAnalytic.dailyRecommended -= 10;
+    costAnalytic.dailyRecommended -= 10; // TODO remove/fix this when dynamic update of daily recommended is fixed
     costAnalyticState.setState(costAnalytic);
     expensesState.setState(updatedExpenses);
   };
 
-  // edit expense
+  // Edit expense event
   const handleKeyDown = (expense, event) => {
     if (event.key === "Enter") {
       expense.value = event.target.value;
-      axios
-        .put(config.server.uri + "expenses/" + expense.id, expense, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
-        .then((response) => {
-          console.log("[ExpensesStack]: RESPONSE OK: " + response.data);
-          toast.success("Edited expense stored!");
-        })
-        .catch((error) => {
-          console.log("[ExpensesStack]: RESPONSE ERROR: " + error);
-          toast.error("Edited expense not stored!");
-        });
+      editExpense(expense);
+    }
+  };
+
+  const removeExpense = (expense, event) => {
+    console.log("[ExpensesStack]: Will delete item with id: " + expense.id);
+    deleteExpense(expense);
+
+    var array = [...expenses];
+    var index = array.indexOf(expense);
+    if (index !== -1) {
+      array.splice(index, 1);
+      setExpenses(array);
+      expensesState.setState(array);
     }
   };
 
@@ -192,11 +146,11 @@ export default function ExpensesDirectionStack() {
                   EXPENSES
                 </Typography>
               </Tooltip>
-              <CreateExpenseDialog expenses={expenses} setExpenses={setExpenses} />
+              <CreateExpenseDialog />
             </Box>
             <Box width={"100%"} height={"75%"} sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
               <Typography component="h4" align="center" variant="standard" style={{ width: "49%", fontSize: "1rem", color: "#78909c" }}>
-                {sumAllExpenses}
+                {expensesState.getSumExpenses()}
               </Typography>
               <Divider orientation="vertical" variant="middle" flexItem />
               <CircularProgressWithLabel sx={{ w: "49%" }} align="right" value={progress} />
@@ -214,7 +168,7 @@ export default function ExpensesDirectionStack() {
                 </Tooltip>
 
                 <Tooltip title={"Remove " + expense.name} placement="top">
-                  <IconButton sx={{ mt: -1, mr: -1, float: "right" }} onClick={(event) => deleteExpense(expense, expenses, setExpenses, event)} color="primary" aria-label="remove expense" size="small" align="right">
+                  <IconButton sx={{ mt: -1, mr: -1, float: "right" }} onClick={(event) => removeExpense(expense, event)} color="primary" aria-label="remove expense" size="small" align="right">
                     <CloseIcon fontSize="inherit" />
                   </IconButton>
                 </Tooltip>
