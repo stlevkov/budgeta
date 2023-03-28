@@ -11,6 +11,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import CloseIcon from "@mui/icons-material/Close";
 import IconButton from "@mui/material/IconButton";
+import Divider from "@mui/material/Divider";
 import CreateSavingDialog from "../../dialogs/CreateSavingDialog";
 import config from "../../../resources/config.json";
 import data from "../../../resources/data.json";
@@ -42,10 +43,10 @@ const SavingsEditable = styled(TextField)(({ theme }) => ({
 
 function CircularProgressWithLabel(props) {
   return (
-    <Box sx={{ position: "relative", display: "inline-flex" }}>
-      <CircularProgress variant="determinate" {...props} />
-      <Box sx={{ top: 0, left: 0, bottom: 0, right: 0, position: "absolute", display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <Typography sx={{ mt: 1 }} variant="caption" component="div" color="text.secondary">
+    <Box sx={{ position: "relative", display: "inline-block", width: props.sx.w, textAlign: "center" }}>
+      <CircularProgress size={"2.4em"} variant="determinate" {...props} />
+      <Box sx={{ top: -5, left: 0, bottom: 0, right: 0, position: "absolute", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <Typography variant="caption" fontSize="0.8em" component="div" color="text.secondary" sx={{ top: -5, left: 0, bottom: 0, right: 0, position: "absolute", display: "flex", alignItems: "center", justifyContent: "center" }}>
           {`${Math.round(props.value)}%`}
         </Typography>
       </Box>
@@ -152,14 +153,21 @@ export default function SavingsStack() {
       <Grid container disableEqualOverflow spacing={{ xs: 2, md: 2 }}>
         <Grid xs={6} sm={4} md={3} lg={2} xl={1.5}>
           <Item style={{ backgroundColor: "#00000000", height: "70px" }}>
-            <Tooltip title="Unexpected expenses for this month as a % from the Incomes" placement="top">
-              <Typography style={{ float: "left" }} component="p" align="left" color="#9ccc12" variant="standard">
-                UNEXPECTED
+            <Box width={"100%"} height={"12%"}>
+              <Tooltip title="Unexpected expenses for this month as a % from the Incomes" placement="top">
+                <Typography style={{ float: "left" }} component="p" align="left" color="#9ccc12" variant="standard">
+                  UNEXPECTED
+                </Typography>
+              </Tooltip>
+              <CreateSavingDialog savings={savings} setSavings={setSavings} />
+            </Box>
+            <Box width={"100%"} height={"75%"} sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <Typography component="h4" align="center" variant="standard" style={{ width: "49%", fontSize: "1rem", color: "#78909c" }}>
+                0
               </Typography>
-            </Tooltip>
-            <CreateSavingDialog savings={savings} setSavings={setSavings} />
-            <br />
-            <CircularProgressWithLabel sx={{ mt: 1 }} align="center" value={progress} />
+              <Divider orientation="vertical" variant="middle" flexItem />
+              <CircularProgressWithLabel sx={{ w: "49%" }} align="right" value={progress} />
+            </Box>
           </Item>
         </Grid>
         {savings.map((saving) => {
@@ -178,15 +186,7 @@ export default function SavingsStack() {
                   </IconButton>
                 </Tooltip>
 
-                <SavingsEditable
-                  id={`${saving.name}-input`}
-                  variant="standard"
-                  InputProps={{
-                    disableUnderline: true,
-                  }}
-                  onKeyDown={(event) => handleKeyDown(saving, event)}
-                  defaultValue={saving.value}
-                />
+                <SavingsEditable id={`${saving.name}-input`} variant="standard" InputProps={{ disableUnderline: true }} onKeyDown={(event) => handleKeyDown(saving, event)} defaultValue={saving.value} />
               </Item>
             </Grid>
           );
