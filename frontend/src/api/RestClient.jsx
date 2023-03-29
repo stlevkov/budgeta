@@ -6,6 +6,7 @@ export function getCostAnalytic() {
   return genericFetch(config.api.costAnalyticEndpoint);
 }
 
+/* Incomes */
 export function getIncomes() {
   return genericFetch(config.api.incomesEndpoint);
 }
@@ -18,6 +19,11 @@ export function createIncome(income) {
   genericCreate(config.api.incomesEndpoint, income);
 }
 
+export function deleteIncome(income) {
+  genericDelete(config.api.incomesEndpoint, income);
+}
+
+/* Expenses */
 export function getExpenses() {
   return genericFetch(config.api.expensesEndpoint);
 }
@@ -30,6 +36,11 @@ export function createExpense(expense) {
   genericCreate(config.api.expensesEndpoint, expense);
 }
 
+export function deleteExpense(expense) {
+  genericDelete(config.api.expensesEndpoint, expense);
+}
+
+/* Unexpected */
 export function getUnexpected() {
   return genericFetch(config.api.unexpectedEndpoint);
 }
@@ -39,7 +50,11 @@ export function editUnexpected(unexpected) {
 }
 
 export function createUnexpected(unexpected) {
-  genericCreate(config.api.expensesEndpoint, unexpected);
+  genericCreate(config.api.unexpectedEndpoint, unexpected);
+}
+
+export function deleteUnexpected(unexpected) {
+  genericDelete(config.api.unexpectedEndpoint, unexpected);
 }
 
 /**
@@ -83,9 +98,7 @@ async function genericEdit(endpoint, dto) {
     })
     .catch((error) => {
       console.log("[EDIT][" + endpoint + "]: RESPONSE ERROR: " + error);
-      toast.error(
-        `Unable to edit ${dto.name}. Try again, or check your internet connection!`
-      );
+      toast.error(`Unable to edit ${dto.name}. Try again, or check your internet connection!`);
     });
 }
 
@@ -95,19 +108,38 @@ async function genericEdit(endpoint, dto) {
  */
 async function genericCreate(endpoint, dto) {
   axios
-    .post(`${config.server.uri}${endpoint}/${dto.id}`, dto, {
+    .post(`${config.server.uri}${endpoint}`, dto, {
       headers: {
         "Content-Type": "application/json",
       },
     })
     .then((response) => {
-      console.log("[EDIT][" + endpoint + "]: RESPONSE OK: ", response.data);
+      console.log("[POST][" + endpoint + "]: RESPONSE OK: ", response.data);
       toast.success(dto.name + " created successfully!");
     })
     .catch((error) => {
-      console.log("[EDIT][" + endpoint + "]: RESPONSE ERROR: " + error);
-      toast.error(
-        `Unable to create ${dto.name}. Try again, or check your internet connection!`
-      );
+      console.log("[POST][" + endpoint + "]: RESPONSE ERROR: " + error);
+      toast.error(`Unable to create ${dto.name}. Try again, or check your internet connection!`);
+    });
+}
+
+/**
+ * Generic Delete, serves all DELETE operations to the back-end for DTOs, which implements TransactionType Interface.
+ * The function is fire and forget and does not require callback.
+ */
+async function genericDelete(endpoint, dto) {
+  axios
+    .delete(`${config.server.uri}${endpoint}/${dto.id}`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => {
+      console.log("[DELETE][" + endpoint + "]: RESPONSE OK: ", response.data);
+      toast.success(dto.name + " deleted successfully!");
+    })
+    .catch((error) => {
+      console.log("[DELETE][" + endpoint + "]: RESPONSE ERROR: " + error);
+      toast.error(`Unable to delete ${dto.name}. Try again, or check your internet connection!`);
     });
 }

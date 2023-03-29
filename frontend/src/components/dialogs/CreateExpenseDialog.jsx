@@ -1,5 +1,4 @@
-import { useState } from "react";
-import axios from "axios";
+import { useState, useContext } from "react";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -14,11 +13,13 @@ import AddIcon from "@mui/icons-material/Add";
 import IconButton from "@mui/material/IconButton";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
-import config from "../../resources/config.json";
 import { toast } from "material-react-toastify";
+import { createExpense } from "../../api/RestClient";
+import { ExpensesContext } from "../../utils/AppUtil";
 
-export default function CreateExpenseDialog(props) {
-  const { expenses, setExpenses } = props;
+export default function CreateExpenseDialog() {
+  const expensesState = useContext(ExpensesContext);
+
   const [open, setOpen] = useState(false);
   const [itemName, setItemName] = useState("");
   const [itemDesc, setItemDesc] = useState("");
@@ -34,7 +35,8 @@ export default function CreateExpenseDialog(props) {
 
   function addExpense(expense) {
     console.log("[CrateExpenseDialog]: Will add expense: ", expense);
-    setExpenses([...expenses, expense]);
+    let expenses = expensesState.getState();
+    expensesState.setState([...expenses, expense]);
   }
 
   const handleClickOpen = () => {
@@ -58,18 +60,9 @@ export default function CreateExpenseDialog(props) {
       return 0;
     }
 
-    console.log("[CrateExpenseDialog]: Sending POST request");
-    axios
-      .post(config.server.uri + "expenses", expensePayload)
-      .then((response) => {
-        console.log("[CrateExpenseDialog]: RESPONSE OK: " + response.data);
-        addExpense(response.data);
-        toast.success("Expense created!");
-      })
-      .catch((error) => {
-        console.log("[CrateExpenseDialog]: RESPONSE ERROR: " + error);
-        toast.error("Expense with provided name, already exists!");
-      });
+    createExpense(expensePayload);
+    addExpense(expensePayload);
+
     setItemName("");
     setItemDesc("");
     setItemCost(0);
