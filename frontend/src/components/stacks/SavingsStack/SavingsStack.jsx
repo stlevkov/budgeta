@@ -1,6 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { styled } from "@mui/material/styles";
-import axios from "axios";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
@@ -13,9 +12,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import IconButton from "@mui/material/IconButton";
 import Divider from "@mui/material/Divider";
 import CreateSavingDialog from "../../dialogs/CreateSavingDialog";
-import config from "../../../resources/config.json";
-import data from "../../../resources/data.json";
-import { toast } from "material-react-toastify";
+import { UnexpectedContext } from "../../../utils/AppUtil";
+import { deleteUnexpected, editUnexpected } from "../../../api/RestClient";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -63,88 +61,55 @@ CircularProgressWithLabel.propTypes = {
   value: PropTypes.number.isRequired,
 };
 
-async function fetchAllSavings() {
-  try {
-    const response = await axios.get(config.server.uri + "savings");
-    if (response.data !== "") {
-      return response.data;
-    } else {
-      console.log("[SavingsStack]: response data on fetchAll is empty!");
-      return data.defaultSavings; // TODO This will not work in case of Edit, the ID must be equal
-    }
-  } catch (err) {
-    //console.log(err); TODO makes tests fail because of network delay response
-    console.log("[SavingsStack]: fetchAllSavings failed with err: ", err.message);
-    toast.error("Fetching all savings failed!");
-    return data.defaultSavings;
-  }
-}
+export default function SavingsStack() {
+  const [savings, setSavings] = useState([]);
+  const [progress, setProgress] = useState(30); // TODO - Calculate & Update dynamically
+  const unexpectedState = useContext(UnexpectedContext);
 
-const deleteSaving = (saving, savings, setSavings, event) => {
-  console.log("[SavingStack]: Will delete item with id: " + saving.id);
+  const handleUnexpectedStateChange = (newState) => {
+    // Do something with the new state
+    console.log("DO SOMETHING Unexpected in UNEXPECTED has changed:", newState);
+    setSavings(newState);
+  };
 
-  const removeSavingRequest = async () => {
-    try {
-      const response = await axios.delete(config.server.uri + "savings/" + saving.id);
-      if (response.data !== "") {
-        removeItemFromState();
-        toast.success("Saving removed!");
-      } else {
-        console.log("[SavingsStack]: response data on remove saving is empty");
-        toast.error("Removing of this saving failed!");
-      }
-    } catch (err) {
-      console.log("[SavingsStack]: removeSaving failed with err: ", err.message);
-      toast.error("Removing of this saving failed!");
-      setSavings(data.defaultSavings);
+  useEffect(() => {
+    setSavings(unexpectedState.getState());
+    setProgress(progress);
+
+    unexpectedState.addListener(handleUnexpectedStateChange);
+    return () => {
+      setProgress(0);
+      setSavings([]);
+      unexpectedState.removeListener(handleUnexpectedStateChange);
+    };
+  }, [unexpectedState]);
+
+  const onUnexpectedChange = (saving, event) => {
+    saving.value = event.target.value;
+
+    const updatedUnexpected = savings.map((item) => {
+      return item.id === saving.id ? saving : item;
+    });
+    unexpectedState.setState(updatedUnexpected);
+  };
+
+  const handleKeyDown = (saving, event) => {
+    if (event.key === "Enter") {
+      saving.value = event.target.value;
+      editUnexpected(saving);
     }
   };
 
-  const removeItemFromState = () => {
+  const deleteSaving = (saving, event) => {
+    console.log("[SavingStack]: Will delete item with id: " + saving.id);
+    deleteUnexpected(saving);
+
     var array = [...savings];
     var index = array.indexOf(saving);
     if (index !== -1) {
       array.splice(index, 1);
       setSavings(array);
-    }
-  };
-  removeSavingRequest();
-};
-
-export default function SavingsStack() {
-  const [savings, setSavings] = useState([]);
-  const [progress, setProgress] = useState(30); // TODO - Calculate & Update dynamically
-
-  useEffect(() => {
-    let fetched = fetchAllSavings();
-
-    fetched.then((result) => {
-      setSavings(result);
-    });
-    setProgress(progress);
-    return () => {
-      setProgress(0);
-      setSavings([]);
-    };
-  }, []);
-
-  const handleKeyDown = (saving, event) => {
-    if (event.key === "Enter") {
-      saving.value = event.target.value;
-      axios
-        .put(config.server.uri + "savings/" + saving.id, saving, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
-        .then((response) => {
-          console.log("[SavingStack] RESPONSE OK " + response);
-          toast.success("Edited saving stored!");
-        })
-        .catch((error) => {
-          console.log("[SavingsStack] RESPONSE ERROR: " + error);
-          toast.error("Edited saving not stored!");
-        });
+      unexpectedState.setState(array);
     }
   };
 
@@ -163,7 +128,7 @@ export default function SavingsStack() {
             </Box>
             <Box width={"100%"} height={"75%"} sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
               <Typography component="h4" align="center" variant="standard" style={{ width: "49%", fontSize: "1rem", color: "#78909c" }}>
-                0
+                {unexpectedState.getSumUnexpected()}
               </Typography>
               <Divider orientation="vertical" variant="middle" flexItem />
               <CircularProgressWithLabel sx={{ w: "49%" }} align="right" value={progress} />
@@ -186,7 +151,7 @@ export default function SavingsStack() {
                   </IconButton>
                 </Tooltip>
 
-                <SavingsEditable id={`${saving.name}-input`} variant="standard" InputProps={{ disableUnderline: true }} onKeyDown={(event) => handleKeyDown(saving, event)} defaultValue={saving.value} />
+                <SavingsEditable id={`${saving.name}-input`} variant="standard" InputProps={{ disableUnderline: true }} onKeyDown={(event) => handleKeyDown(saving, event)} onChange={(e) => onUnexpectedChange(saving, e)} defaultValue={saving.value} />
               </Item>
             </Grid>
           );
