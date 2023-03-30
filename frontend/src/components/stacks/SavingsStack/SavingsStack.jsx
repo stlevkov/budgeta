@@ -77,6 +77,7 @@ export default function SavingsStack() {
     setProgress(progress);
 
     unexpectedState.addListener(handleUnexpectedStateChange);
+
     return () => {
       setProgress(0);
       setSavings([]);
@@ -87,10 +88,7 @@ export default function SavingsStack() {
   const onUnexpectedChange = (saving, event) => {
     saving.value = event.target.value;
 
-    const updatedUnexpected = savings.map((item) => {
-      return item.id === saving.id ? saving : item;
-    });
-    unexpectedState.setState(updatedUnexpected);
+    unexpectedState.updateUnexpected(saving);
   };
 
   const handleKeyDown = (saving, event) => {
@@ -103,14 +101,8 @@ export default function SavingsStack() {
   const deleteSaving = (saving, event) => {
     console.log("[SavingStack]: Will delete item with id: " + saving.id);
     deleteUnexpected(saving);
-
-    var array = [...savings];
-    var index = array.indexOf(saving);
-    if (index !== -1) {
-      array.splice(index, 1);
-      setSavings(array);
-      unexpectedState.setState(array);
-    }
+    unexpectedState.removeUnexpected(saving);
+    setSavings(unexpectedState.getState());
   };
 
   return (
@@ -124,7 +116,7 @@ export default function SavingsStack() {
                   UNEXPECTED
                 </Typography>
               </Tooltip>
-              <CreateSavingDialog savings={savings} setSavings={setSavings} />
+              <CreateSavingDialog />
             </Box>
             <Box width={"100%"} height={"75%"} sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
               <Typography component="h4" align="center" variant="standard" style={{ width: "49%", fontSize: "1rem", color: "#78909c" }}>
