@@ -96,13 +96,11 @@ export default function ExpensesDirectionStack() {
   const onExpenseChange = (expense, event) => {
     expense.value = event.target.value;
 
-    const updatedExpenses = expenses.map((item) => {
-      return item.id === expense.id ? expense : item;
-    });
+    expensesState.updateExpense(expense);
+
     let costAnalytic = costAnalyticState.getState();
     costAnalytic.dailyRecommended -= 10; // TODO remove/fix this when dynamic update of daily recommended is fixed
     costAnalyticState.setState(costAnalytic);
-    expensesState.setState(updatedExpenses);
   };
 
   // Edit expense event
@@ -116,14 +114,8 @@ export default function ExpensesDirectionStack() {
   const removeExpense = (expense, event) => {
     console.log("[ExpensesStack]: Will delete item with id: " + expense.id);
     deleteExpense(expense);
-
-    var array = [...expenses];
-    var index = array.indexOf(expense);
-    if (index !== -1) {
-      array.splice(index, 1);
-      setExpenses(array);
-      expensesState.setState(array);
-    }
+    expensesState.removeExpense(expense);
+    setExpenses(expensesState.getState());
   };
 
   /*
