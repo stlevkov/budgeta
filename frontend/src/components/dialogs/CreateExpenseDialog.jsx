@@ -35,8 +35,7 @@ export default function CreateExpenseDialog() {
 
   function addExpense(expense) {
     console.log("[CrateExpenseDialog]: Will add expense: ", expense);
-    let expenses = expensesState.getState();
-    expensesState.setState([...expenses, expense]);
+    expensesState.addExpense(expense);
   }
 
   const handleClickOpen = () => {
