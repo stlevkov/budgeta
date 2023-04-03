@@ -1,4 +1,4 @@
-import { getCostAnalytic } from "../api/RestClient";
+import { getCostAnalytic, editCostAnalytic } from "../api/RestClient";
 
 export default class CostAnalyticState {
   constructor() {
@@ -8,6 +8,14 @@ export default class CostAnalyticState {
     getCostAnalytic().then((data) => {
       this.setState(data);
     });
+  }
+
+  /**
+   * Save the state to DB. This will make a Rest Call to the backend.
+   */
+  saveState() {
+    console.log(`[CostAnalyticState] Saving the state to backend: ${this.state}`);
+    editCostAnalytic(this.state);
   }
 
   setState(newState) {

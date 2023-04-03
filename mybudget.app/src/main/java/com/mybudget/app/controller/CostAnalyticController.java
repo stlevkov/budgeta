@@ -14,7 +14,6 @@
  */
 package com.mybudget.app.controller;
 
-import com.mybudget.app.exception.ValidationCollectionException;
 import com.mybudget.app.model.CostAnalytic;
 import com.mybudget.app.repository.CostAnalyticRepository;
 import com.mybudget.app.service.CostAnalyticService;
@@ -25,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class CostAnalyticController {
@@ -44,33 +44,45 @@ public class CostAnalyticController {
         return new ResponseEntity<>("No CostAnalytics available", HttpStatus.NO_CONTENT);
     }
 
-    @PutMapping("/api/costAnalytics/targetSaving")
-    public ResponseEntity<?> updateCostAnalytic(@RequestBody BigDecimal targetSaving){
-        System.out.println("Updating CostAnalytic - targetSaving");
-        List<CostAnalytic> costAnalytics = costAnalyticRepository.findAll();
-        if(costAnalytics.size() < 1){
-            System.out.println("Unable to update the CostAnalytic, there is no one created yet. Creating...");
-            // creating
-            try {
-                costAnalyticService.createCostAnalytic(new CostAnalytic(targetSaving));
-                System.out.println("Created.");
-                return new ResponseEntity<>(targetSaving, HttpStatus.OK);
-            } catch (ValidationCollectionException e) {
-                return new ResponseEntity<>("Unable to create CostAnalytic. Reason: " + e.getMessage(),
+    @PutMapping("/api/costAnalytics/{id}")
+    public ResponseEntity<?> updateCostAnalytic(@PathVariable String id, @RequestBody CostAnalytic costAnalytic){
+        System.out.println("Updating CostAnalytic");
+        Optional<CostAnalytic> costAnalyticOptional = costAnalyticRepository.findById(id);
+        if(costAnalyticOptional.isPresent()){
+            CostAnalytic costAnalyticUpdate = costAnalyticOptional.get();
+            costAnalyticUpdate.setBalanceAccount(costAnalytic.getBalanceAccount());
+            costAnalyticUpdate.setTargetSaving(costAnalytic.getTargetSaving());
+            costAnalyticUpdate.setMonthlyTarget(costAnalytic.getMonthlyTarget());
+            costAnalyticUpdate.setAllExpenses(costAnalytic.getAllExpenses());
+            costAnalyticUpdate.setName(costAnalytic.getName());
+            try{
+                costAnalyticRepository.save(costAnalyticUpdate);
+                return new ResponseEntity<>(costAnalyticUpdate, HttpStatus.OK);
+            } catch (Exception e) {
+                return new ResponseEntity<>("Unable to create costAnalytic. Reason: " + e.getMessage(),
                         HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
-        // updating
-        try {
-            CostAnalytic costAnalytic = costAnalyticService.updateCostAnalytic(
-                    new CostAnalytic(costAnalytics.get(0).getId(), targetSaving));
-            System.out.println("Updated.");
-            return new ResponseEntity<>(costAnalytic, HttpStatus.OK);
-        } catch (ValidationCollectionException e) {
-            // TODO: 29.10.22 г. Remove this, its redundant
-            return new ResponseEntity<>("CostAnalytic with id " + costAnalytics.get(0).getId() + " is not found.", HttpStatus.NOT_FOUND);
-        }
-
+        return new ResponseEntity<>("Unable to update CostAnalytic with id " + id +
+                ". Reason: CostAnalytic with this ID not found.", HttpStatus.NOT_FOUND);
     }
 
+    @PutMapping("/api/costAnalytics/targetSaving") // TODO Remove this and use the generic update
+    public ResponseEntity<?> updateCostAnalytic(@RequestBody BigDecimal targetSaving){
+        System.out.println("Updating CostAnalytic - targetSaving");
+        List<CostAnalytic> costAnalytics = costAnalyticRepository.findAll();
+        // TODO - Removed create snipped! Handle the creation of the initial CostAnalytic differently!
+        // TODO - Just create regular create api path!
+        // updating
+        CostAnalytic costAnalytic = costAnalytics.get(0);
+        if(costAnalytic != null) {
+            costAnalytic.setTargetSaving(targetSaving);
+            costAnalyticRepository.save(costAnalytic);
+            System.out.println("Updated.");
+            return new ResponseEntity<>(costAnalytic, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Unable to update CostAnalytic . " +
+                    "Reason: CostAnalytic not found or not created yet.", HttpStatus.NOT_FOUND);
+        }
+    }
 }
