@@ -61,6 +61,15 @@ export default class UnexpectedState {
   }
 
   /**
+   * Add new value to the state
+   *
+   * @param unexpected single expense
+   */
+  addUnexpected(unexpected) {
+    this.setState([...this.state, unexpected]);
+  }
+
+  /**
    * Removing value from the state
    *
    * @param unexpected single unexpected

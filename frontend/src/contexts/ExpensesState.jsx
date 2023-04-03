@@ -61,6 +61,15 @@ export default class ExpensesState {
   }
 
   /**
+   * Add new value to the state
+   *
+   * @param expense single expense
+   */
+  addExpense(expense) {
+    this.setState([...this.state, expense]);
+  }
+
+  /**
    * Removing value from the state
    *
    * @param expense single expense

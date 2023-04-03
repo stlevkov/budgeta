@@ -36,8 +36,7 @@ export default function CreateSavingDialog() {
 
   function addSaving(saving) {
     console.log("[SavingStack]: Will add saving: " + saving);
-    let savings = unexpectedState.getState();
-    unexpectedState.setState([...savings, saving]);
+    unexpectedState.addUnexpected(saving);
   }
 
   const handleClickOpen = () => {
