@@ -15,8 +15,8 @@
 package com.mybudget.app.service;
 
 import com.mybudget.app.exception.ValidationCollectionException;
+import com.mybudget.app.model.BalanceTransaction;
 import com.mybudget.app.model.CostAnalytic;
-
 import com.mybudget.app.repository.CostAnalyticRepository;
 import com.mybudget.app.repository.ExpenseRepository;
 import com.mybudget.app.repository.IncomeRepository;
@@ -83,6 +83,25 @@ public class CostAnalyticServiceImpl implements CostAnalyticService {
         costAnalytic.setDailyRecommended(dailyRecommended);
         costAnalytic.setMonthlyTarget(monthlyTarget);
         return costAnalyticRepository.save(costAnalytic);
+    }
+
+    @Override
+    public void updateCostAnalytic(BalanceTransaction transaction) throws ValidationCollectionException {
+        List<CostAnalytic> costAnalytics = costAnalyticRepository.findAll();
+        System.out.println("Is the CostAnalytic already present? " + (costAnalytics.size() == 1));
+
+        if(costAnalytics.size() < 1){
+            throw new ValidationCollectionException("CostAnalytic not found. You should create it first.");
+        }
+
+        CostAnalytic costAnalytic = costAnalytics.get(0);
+
+        if(transaction.getType().equals(BalanceTransaction.BalanceTransactionType.WITHDRAW)){
+            costAnalytic.setBalanceAccount(costAnalytic.getBalanceAccount().subtract(transaction.getValue()));
+        } else { // deposit
+            costAnalytic.setBalanceAccount(costAnalytic.getBalanceAccount().add(transaction.getValue()));
+        }
+        costAnalyticRepository.save(costAnalytic);
     }
 
     private BigDecimal calculateMonthlyTarget(BigDecimal sumExpenses, BigDecimal sumIncomes, BigDecimal sumSavings, BigDecimal targetSaving) {

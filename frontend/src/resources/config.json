@@ -6,7 +6,8 @@
         "costAnalyticEndpoint" : "costAnalytics",
         "incomesEndpoint" : "incomes",
         "expensesEndpoint" : "expenses",
-        "unexpectedEndpoint" : "savings"
+        "unexpectedEndpoint" : "savings",
+        "balanceTransactionEndpoint" : "balanceAccount"
     }
 
 }

@@ -16,6 +16,7 @@ import TextField from "@mui/material/TextField";
 import { toast } from "material-react-toastify";
 import { CostAnalyticContext } from "../../../utils/AppUtil";
 import { ExpensesContext } from "../../../utils/AppUtil";
+import CreateBalanceTransactionDialog from "../../dialogs/CreateBalanceTransactionDialog";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -119,7 +120,7 @@ export default function CostAnalyticStack() {
   }
 
   // edit target saving
-  const handleKeyDown = (targetSaving, event) => {
+  const handleKeyDown = (targetSaving, event) => { // TODO - move this to the state and use genericUpdate of DTO
     if (event.key === "Enter") {
       console.log("[AnalyticStack] Going to edit Target Saving. Value candidate: " + event.target.value);
       axios
@@ -186,17 +187,16 @@ export default function CostAnalyticStack() {
           <Item style={{ height: "120px" }}>
             <Tooltip title={<Typography fontSize="1.3em">All savings at one place</Typography>} placement="top">
               <Typography style={{ float: "left" }} component="p" color="orange" fontSize="1.5em" variant="standard" align="left">
-                SAVE BALLANCE
+                BALANCE ACCOUNT
               </Typography>
             </Tooltip>
 
-            {/* <ViewIncomeDialog myData={incomes} /> */}
             <Divider style={{ width: "100%", marginTop: "8px", marginBottom: "8px" }} />
             <Typography style={{ marginTop: "20px", width: "fit-content" }} variant="standard" component="p" color="#b0b0b0" fontSize="3.3em" align="left">
-              {sumIncomes}
+              {costAnalytic.balanceAccount}
             </Typography>
 
-            <CreateIncomeDialog onCreate={addIncome} />
+            <CreateBalanceTransactionDialog costAnalytic={costAnalyticState}/>
           </Item>
         </Grid>
 

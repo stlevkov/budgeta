@@ -24,21 +24,19 @@ import java.math.BigDecimal;
 @Setter
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 @ToString
 @Document(collection = "cost_analytics")
 public class CostAnalytic {
 
-    public CostAnalytic(BigDecimal targetSaving){
-        this.targetSaving = targetSaving;
-    }
-    
-    public CostAnalytic(String id, BigDecimal targetSaving){
-        this.id = id;
-        this.targetSaving = targetSaving;
-    }
-
     @Id
     private String id;
+
+    /**
+     * Basically it holds the CostAnalytic name, representing the DTO itself.
+     */
+    @NotNull
+    private String name;
 
     /**
      * Target saving is the amount of money which must be, or marked to be saved for the month.
@@ -72,4 +70,7 @@ public class CostAnalytic {
      */
     @NotNull
     private BigDecimal allExpenses;
+
+    @NotNull
+    private BigDecimal balanceAccount;
 }

@@ -16,14 +16,9 @@ package com.mybudget.app.service;
 
 import com.mybudget.app.exception.ValidationCollectionException;
 import com.mybudget.app.model.BalanceTransaction;
-import com.mybudget.app.model.CostAnalytic;
 
 import javax.validation.ConstraintViolationException;
 
-public interface CostAnalyticService {
-    void createCostAnalytic(CostAnalytic costAnalytic) throws ConstraintViolationException, ValidationCollectionException;
-
-    CostAnalytic updateCostAnalytic(CostAnalytic costAnalytic) throws ConstraintViolationException, ValidationCollectionException;
-
-    void updateCostAnalytic(BalanceTransaction balanceTransaction) throws ValidationCollectionException;
+public interface BalanceService {
+    void createBalanceTransaction(BalanceTransaction balanceTransaction) throws ConstraintViolationException, ValidationCollectionException;
 }

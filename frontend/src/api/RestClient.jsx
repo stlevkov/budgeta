@@ -2,8 +2,15 @@ import config from "../resources/config.json";
 import axios from "axios";
 import { toast } from "material-react-toastify";
 
+// TODO - Separate each of the Stacks in different Rest Client Child
+
+/* CostAnalytic */
 export function getCostAnalytic() {
   return genericFetch(config.api.costAnalyticEndpoint);
+}
+
+export function editCostAnalytic(costAnalytic) {
+  return genericEdit(config.api.costAnalyticEndpoint, costAnalytic);
 }
 
 /* Incomes */
@@ -55,6 +62,11 @@ export function createUnexpected(unexpected) {
 
 export function deleteUnexpected(unexpected) {
   genericDelete(config.api.unexpectedEndpoint, unexpected);
+}
+
+/* BalanceTransaction */
+export function getBalanceTransactions() {
+  return genericFetch(config.api.balanceTransactionEndpoint);
 }
 
 /**
