@@ -1,6 +1,4 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
-import config from "../../resources/config.json";
+import { useEffect, useState, useContext } from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -16,7 +14,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
 import TextField from "@mui/material/TextField";
 import { styled } from "@mui/material/styles";
-import { toast } from "material-react-toastify";
+import { IncomesContext } from "../../utils/AppUtil";
+import { deleteIncome, editIncome } from "../../api/RestClient";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -65,16 +64,13 @@ const IncomeEditable = styled(TextField)(({ theme }) => ({
   },
 }));
 
-export default function ViewIncomeDialog({ myData, calculateSumIncomes }) {
+export default function ViewIncomeDialog() {
   const [open, setOpen] = useState(false);
   const [incomes, setIncomes] = useState([]);
   const [value, setValue] = useState(0);
+  const incomesState = useContext(IncomesContext);
 
-  useEffect(() => {
-    setIncomes(myData);
-  }, [myData]);
-
-  const handleChange = (event, newValue) => {
+  const handleTabChange = (event, newValue) => {
     setValue(newValue);
   };
 
@@ -86,71 +82,30 @@ export default function ViewIncomeDialog({ myData, calculateSumIncomes }) {
     setOpen(false);
   };
 
-  // edit target saving
+  useEffect(() => {
+    setIncomes(incomesState.getState());
+  });
+
+  const handleChangeIncome = (income, event) => {
+    income.value = event.target.value;
+
+    incomesState.updateIncome(income);
+  };
+
   const handleKeyDown = (income, event) => {
     if (event.key === "Enter") {
-      console.log("[ViewIncomesDialog]: Going to edit Income. Value candidate: ", event.target.value);
-
-      axios
-        .put(`${config.server.uri}incomes/${income.id}`, income, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
-        .then((response) => {
-          console.log("[ViewIncomesDialog]: RESPONSE OK: ", response.data);
-
-          toast.success("Income saved successfully!");
-        })
-        .catch((error) => {
-          console.log("[ViewIncomesDialog]: RESPONSE ERROR: " + error);
-          toast.error("Unable to save Income. Try again, or check your internet connection!");
-        });
+      income.value = event.target.value;
+      editIncome(income);
     }
   };
-  const handleChangeIncome = (incomes, income, setIncomes, event) => {
-    const updatedIncomes = incomes.map((_income, i) => {
-      if (_income.id === income.id) {
-        _income.value = event.target.value;
-      }
-      return _income;
-    });
 
-    setIncomes(updatedIncomes);
-    calculateSumIncomes(updatedIncomes);
-  };
-
-  const deleteIncome = (incomes, income, setIncomes, event) => {
+  const removeIncome = (income, event) => {
     console.log("[ViewIncomesDialog]: Will delete item with id: " + income.id);
 
-    const removeIncomeRequest = async () => {
-      try {
-        const response = await axios.delete(config.server.uri + "incomes/" + income.id);
-        if (response.data !== "") {
-          removeItemFromState();
-          toast.success("Income removed!");
-        } else {
-          console.log("[ViewIncomesDialog]: response data on remove income is empty");
-          toast.error("Removing of this income failed!");
-        }
-      } catch (err) {
-        //console.log(err); TODO makes tests fail because of network delay response
-        console.log("[ViewIncomesDialog]: removeIncome failed with err: ", err.message);
-        toast.error("Removing of this expense failed!");
-      }
-    };
-
-    const removeItemFromState = () => {
-      var array = [...incomes];
-      var index = array.indexOf(income);
-      if (index !== -1) {
-        array.splice(index, 1);
-
-        setIncomes(array);
-        calculateSumIncomes(array);
-      }
-    };
-    removeIncomeRequest();
+    deleteIncome(income);
+    incomesState.removeIncome(income);
+    setIncomes(incomesState.getState());
+    setValue(value - 1);
   };
 
   const tabs = [];
@@ -162,7 +117,7 @@ export default function ViewIncomeDialog({ myData, calculateSumIncomes }) {
   for (let incomeIndex = 0; incomeIndex < incomes.length; incomeIndex++) {
     tabPanels.push(
       <TabPanel key={incomeIndex} value={value} index={incomeIndex}>
-        <IconButton sx={{ float: "right" }} onClick={(event) => deleteIncome(incomes, incomes[incomeIndex], setIncomes, event)} color="primary" aria-label="remove expense" size="small" align="right">
+        <IconButton sx={{ float: "right" }} onClick={(event) => removeIncome(incomes[incomeIndex], event)} color="primary" aria-label="remove expense" size="small" align="right">
           <DeleteIcon fontSize="medium" />
         </IconButton>
         <Typography component={"div"} variant="h4" gutterBottom>
@@ -170,7 +125,7 @@ export default function ViewIncomeDialog({ myData, calculateSumIncomes }) {
         </Typography>
 
         <Typography component={"div"} variant="h2" gutterBottom>
-          <IncomeEditable variant="standard" onKeyDown={(event) => handleKeyDown(incomes[incomeIndex], event)} InputProps={{ disableUnderline: true }} value={incomes[incomeIndex].value} onChange={(event) => handleChangeIncome(incomes, incomes[incomeIndex], setIncomes, event)} />
+          <IncomeEditable variant="standard" onKeyDown={(event) => handleKeyDown(incomes[incomeIndex], event)} InputProps={{ disableUnderline: true }} value={incomes[incomeIndex].value} onChange={(event) => handleChangeIncome(incomes[incomeIndex], event)} />
         </Typography>
         <Typography component={"div"} variant="h5" gutterBottom>
           Last updated: {incomes[incomeIndex].updatedAt}
@@ -180,7 +135,7 @@ export default function ViewIncomeDialog({ myData, calculateSumIncomes }) {
   }
 
   return (
-    <div>
+    <>
       <Tooltip title={"See Details"} placement="top">
         <IconButton onClick={handleClickOpen} sx={{ float: "right" }} color="primary" aria-label="See Details" size="small" align="right">
           <InfoIcon fontSize="inherit" />
@@ -197,7 +152,7 @@ export default function ViewIncomeDialog({ myData, calculateSumIncomes }) {
         <DialogContent>
           <Box sx={{ width: "100%" }}>
             <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-              <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+              <Tabs value={value} onChange={handleTabChange} aria-label="basic tabs example">
                 {tabs}
               </Tabs>
             </Box>
@@ -205,6 +160,6 @@ export default function ViewIncomeDialog({ myData, calculateSumIncomes }) {
           </Box>
         </DialogContent>
       </Dialog>
-    </div>
+    </>
   );
 }

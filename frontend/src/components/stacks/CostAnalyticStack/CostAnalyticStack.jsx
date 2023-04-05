@@ -14,8 +14,7 @@ import CreateIncomeDialog from "../../dialogs/CreateIncomeDialog";
 import Divider from "@mui/material/Divider";
 import TextField from "@mui/material/TextField";
 import { toast } from "material-react-toastify";
-import { CostAnalyticContext } from "../../../utils/AppUtil";
-import { ExpensesContext } from "../../../utils/AppUtil";
+import { CostAnalyticContext, IncomesContext, ExpensesContext } from "../../../utils/AppUtil";
 import CreateBalanceTransactionDialog from "../../dialogs/CreateBalanceTransactionDialog";
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -75,52 +74,40 @@ export default function CostAnalyticStack() {
   console.log("[CostAnalytics] Initializing component.");
   const costAnalyticState = useContext(CostAnalyticContext);
   const expensesState = useContext(ExpensesContext);
+  const incomesState = useContext(IncomesContext);
+
   const [costAnalytic, setCostAnalytic] = useState({});
   const [targetSaving, setTargetSaving] = useState(0);
-  const [incomes, setIncomes] = useState([]);
   const [sumIncomes, setSumIncomes] = useState(0);
 
   const handleCostAnalyticStateChange = (newState) => {
     // Do something with the new state
     console.log("DO SOMETHING CostAnalytic in CostAnalyticSTACK has changed:", newState);
+
     setTargetSaving(newState.targetSaving);
     setCostAnalytic(newState);
   };
 
-  useEffect(() => {
-    let fetchedIncomes = fetchIncomes();
-    fetchedIncomes.then((result) => {
-      setIncomes(result);
-      calculateSumIncomes(result);
-    });
+  const handleIncomesChange = () => {
+    console.log("DO SOMETHING Income in Incomes has changed:");
+    setSumIncomes(incomesState.getSumIncomes());
+  };
 
+  useEffect(() => {
+    setSumIncomes(incomesState.getSumIncomes());
     // Add a listener to the costAnalyticState to track changes
     costAnalyticState.addListener(handleCostAnalyticStateChange);
+    incomesState.addListener(handleIncomesChange);
     // Cleanup function to remove the listener when the component unmounts
     return () => {
       costAnalyticState.removeListener(handleCostAnalyticStateChange);
+      incomesState.removeListener(handleIncomesChange);
     };
-  }, [costAnalyticState]);
-
-  function addIncome(income) {
-    incomes.push(income);
-    var array = [...incomes];
-    setIncomes(array);
-    calculateSumIncomes(array);
-  }
-
-  function calculateSumIncomes(incomes) {
-    if (incomes.length > 1) {
-      let sum = 0;
-      incomes.forEach((income) => (sum += parseInt(income.value, 10)));
-      setSumIncomes(sum);
-    } else if (incomes.length === 1) {
-      setSumIncomes(incomes[0].value);
-    }
-  }
+  }, [costAnalyticState, incomesState, sumIncomes]);
 
   // edit target saving
-  const handleKeyDown = (targetSaving, event) => { // TODO - move this to the state and use genericUpdate of DTO
+  const handleKeyDown = (targetSaving, event) => {
+    // TODO - move this to the state and use genericUpdate of DTO
     if (event.key === "Enter") {
       console.log("[AnalyticStack] Going to edit Target Saving. Value candidate: " + event.target.value);
       axios
@@ -159,13 +146,13 @@ export default function CostAnalyticStack() {
               </Typography>
             </Tooltip>
 
-            <ViewIncomeDialog myData={incomes} calculateSumIncomes={calculateSumIncomes} />
+            <ViewIncomeDialog />
             <Divider style={{ width: "100%", marginTop: "8px", marginBottom: "8px" }} />
             <Typography style={{ marginTop: "20px", width: "fit-content" }} variant="standard" component="p" color="#b0b0b0" fontSize="3.3em" align="left">
               {sumIncomes}
             </Typography>
 
-            <CreateIncomeDialog onCreate={addIncome} />
+            <CreateIncomeDialog />
           </Item>
         </Grid>
 
@@ -196,7 +183,7 @@ export default function CostAnalyticStack() {
               {costAnalytic.balanceAccount}
             </Typography>
 
-            <CreateBalanceTransactionDialog costAnalytic={costAnalyticState}/>
+            <CreateBalanceTransactionDialog costAnalytic={costAnalyticState} />
           </Item>
         </Grid>
 
