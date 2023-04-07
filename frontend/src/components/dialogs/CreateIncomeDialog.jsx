@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useState, useContext } from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
@@ -10,23 +10,32 @@ import FilledInput from "@mui/material/FilledInput";
 import InputLabel from "@mui/material/InputLabel";
 import InputAdornment from "@mui/material/InputAdornment";
 import FormControl from "@mui/material/FormControl";
-import axios from "axios";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
-import config from "../../resources/config.json";
 import AddCardIcon from "@mui/icons-material/AddCard";
 import { toast } from "material-react-toastify";
+import { createIncome } from "../../api/RestClient";
+import { IncomesContext } from "../../utils/AppUtil";
 
-export default function CreateIncomeDialog({ onCreate }) {
-  const [open, setOpen] = React.useState(false);
-  const [itemName, setItemName] = React.useState(""); // TODO can be property of Object
-  const [itemDesc, setItemDesc] = React.useState(""); // TODO can be property of object
-  const [itemAmount, setItemAmount] = React.useState(0); // TODO can be property of Object
+export default function CreateIncomeDialog() {
+  const incomeState = useContext(IncomesContext);
 
-  let state = {
+  const [open, setOpen] = useState(false);
+  const [itemName, setItemName] = useState("");
+  const [itemDesc, setItemDesc] = useState("");
+  const [itemAmount, setItemAmount] = useState(0);
+
+  let incomePayload = {
     name: itemName,
     description: itemDesc,
     value: itemAmount,
+  };
+
+  const localClean = () => {
+    setItemName("");
+    setItemDesc("");
+    setItemAmount(0);
+    setOpen(false);
   };
 
   const handleClickOpen = () => {
@@ -34,10 +43,7 @@ export default function CreateIncomeDialog({ onCreate }) {
   };
 
   const handleCancel = () => {
-    setItemName("");
-    setItemDesc("");
-    setItemAmount(0);
-    setOpen(false);
+    localClean();
   };
 
   const handleClose = () => {
@@ -49,22 +55,11 @@ export default function CreateIncomeDialog({ onCreate }) {
       toast.warning("Amount is required");
       return 0;
     }
-    console.log("[CreateIncomeDialog] Sending POST request");
-    axios
-      .post(config.server.uri + "incomes", state)
-      .then((response) => {
-        console.log("[CreateIncomeDialog] RESPONSE OK: " + response.data);
-        onCreate(response.data);
-        toast.success("New Income created.");
-      })
-      .catch((error) => {
-        console.log("[CreateIncomeDialog] Catch ERROR: " + error);
-        toast.error("Income creation failed, or Income with same name already exist.");
-      });
-    setItemName("");
-    setItemDesc("");
-    setItemAmount(0);
-    setOpen(false);
+
+    createIncome(incomePayload);
+    incomeState.addIncome(incomePayload);
+
+    localClean();
   };
 
   return (
