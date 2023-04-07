@@ -1,11 +1,13 @@
-import { getCostAnalytic, editCostAnalytic } from "../api/RestClient";
+import RestClient from "../api/RestClient";
+import config from "../resources/config.json";
 
 export default class CostAnalyticState {
   constructor() {
     this.state = {};
     this.listeners = [];
+    this.restClient = new RestClient(config.api.costAnalyticEndpoint);
 
-    getCostAnalytic().then((data) => {
+    this.restClient.genericFetch().then((data) => {
       this.setState(data);
     });
   }
@@ -15,7 +17,7 @@ export default class CostAnalyticState {
    */
   saveState() {
     console.log(`[CostAnalyticState] Saving the state to backend: ${this.state}`);
-    editCostAnalytic(this.state);
+    this.restClient.genericEdit(this.state);
   }
 
   setState(newState) {

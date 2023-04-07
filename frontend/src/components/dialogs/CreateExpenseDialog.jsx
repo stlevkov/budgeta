@@ -14,12 +14,13 @@ import IconButton from "@mui/material/IconButton";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import { toast } from "material-react-toastify";
-import { createExpense } from "../../api/RestClient";
+import RestClient from "../../api/RestClient";
 import { ExpensesContext } from "../../utils/AppUtil";
+import config from "../../resources/config.json";
 
 export default function CreateExpenseDialog() {
   const expensesState = useContext(ExpensesContext);
-
+  const restClient = new RestClient(config.api.expensesEndpoint); // TODO move to state
   const [open, setOpen] = useState(false);
   const [itemName, setItemName] = useState("");
   const [itemDesc, setItemDesc] = useState("");
@@ -59,7 +60,7 @@ export default function CreateExpenseDialog() {
       return 0;
     }
 
-    createExpense(expensePayload);
+    restClient.genericCreate(expensePayload);
     addExpense(expensePayload);
 
     setItemName("");

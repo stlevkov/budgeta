@@ -1,4 +1,5 @@
-import { getUnexpected } from "../api/RestClient";
+import RestClient from "../api/RestClient";
+import config from "../resources/config.json";
 
 /** Represents an Unexpected State */
 export default class UnexpectedState {
@@ -12,8 +13,9 @@ export default class UnexpectedState {
     this.state = [];
     this.listeners = [];
     this.sumUnexpected = undefined;
+    this.restClient = new RestClient(config.api.unexpectedEndpoint);
 
-    getUnexpected().then((data) => {
+    this.restClient.genericFetch().then((data) => {
       this.setState(data);
     });
   }

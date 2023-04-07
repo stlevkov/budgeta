@@ -12,8 +12,9 @@ import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import CreateExpenseDialog from "../../dialogs/CreateExpenseDialog";
 import { CostAnalyticContext, ExpensesContext } from "../../../utils/AppUtil";
-import { deleteExpense, editExpense } from "../../../api/RestClient";
+import RestClient from "../../../api/RestClient";
 import PropTypes from "prop-types";
+import config from "../../../resources/config.json";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -66,6 +67,7 @@ export default function ExpensesDirectionStack() {
   const [progress, setProgress] = useState(43); // TODO - Calculate & Update dynamically
   const costAnalyticState = useContext(CostAnalyticContext);
   const expensesState = useContext(ExpensesContext);
+  const restClient = new RestClient(config.api.expensesEndpoint); // TODO move to state
 
   const handleCostAnalyticStateChange = (newState) => {
     // Do something with the new state
@@ -107,13 +109,13 @@ export default function ExpensesDirectionStack() {
   const handleKeyDown = (expense, event) => {
     if (event.key === "Enter") {
       expense.value = event.target.value;
-      editExpense(expense);
+      restClient.genericEdit(expense);
     }
   };
 
   const removeExpense = (expense, event) => {
     console.log("[ExpensesStack]: Will delete item with id: " + expense.id);
-    deleteExpense(expense);
+    restClient.genericDelete(expense); // TODO move to state
     expensesState.removeExpense(expense);
     setExpenses(expensesState.getState());
   };

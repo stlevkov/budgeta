@@ -1,4 +1,5 @@
-import { getIncomes } from "../api/RestClient";
+import RestClient from "../api/RestClient";
+import config from "../resources/config.json";
 
 export default class IncomesState {
   /**
@@ -11,8 +12,9 @@ export default class IncomesState {
     this.state = [];
     this.listeners = [];
     this.sumIncomes = undefined; // TODO make them private with #
+    this.restClient = new RestClient(config.api.incomesEndpoint);
 
-    getIncomes().then((data) => {
+    this.restClient.genericFetch().then((data) => {
       this.setState(data);
     });
   }
