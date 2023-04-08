@@ -15,16 +15,17 @@ import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import config from "../../resources/config.json";
 import { toast } from "material-react-toastify";
-import { createUnexpected } from "../../api/RestClient";
+import RestClient from "../../api/RestClient";
 import { UnexpectedContext } from "../../utils/AppUtil";
 
 export default function CreateSavingDialog() {
   const unexpectedState = useContext(UnexpectedContext);
 
   const [open, setOpen] = useState(false);
-  const [itemName, setItemName] = useState(""); // TODO can be property of Object
-  const [itemDesc, setItemDesc] = useState(""); // TODO can be property of object
-  const [itemAmount, setItemAmount] = useState(0); // TODO can be property of Object
+  const [itemName, setItemName] = useState("");
+  const [itemDesc, setItemDesc] = useState("");
+  const [itemAmount, setItemAmount] = useState(0);
+  const restClient = new RestClient(config.api.unexpectedEndpoint); // TODO move to state
 
   let savingPayload = {
     name: itemName,
@@ -59,7 +60,7 @@ export default function CreateSavingDialog() {
       toast.warning("Amount is required");
       return 0;
     }
-    createUnexpected(savingPayload);
+    restClient.genericCreate(savingPayload);
     addSaving(savingPayload);
 
     setItemName("");

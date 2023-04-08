@@ -15,7 +15,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import TextField from "@mui/material/TextField";
 import { styled } from "@mui/material/styles";
 import { IncomesContext } from "../../utils/AppUtil";
-import { deleteIncome, editIncome } from "../../api/RestClient";
+import RestClient from "../../api/RestClient";
+import config from "../../resources/config.json";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -69,6 +70,7 @@ export default function ViewIncomeDialog() {
   const [incomes, setIncomes] = useState([]);
   const [value, setValue] = useState(0);
   const incomesState = useContext(IncomesContext);
+  const restClient = new RestClient(config.api.incomesEndpoint); // TODO move to state
 
   const handleTabChange = (event, newValue) => {
     setValue(newValue);
@@ -95,14 +97,14 @@ export default function ViewIncomeDialog() {
   const handleKeyDown = (income, event) => {
     if (event.key === "Enter") {
       income.value = event.target.value;
-      editIncome(income);
+      restClient.genericEdit(income);
     }
   };
 
   const removeIncome = (income, event) => {
     console.log("[ViewIncomesDialog]: Will delete item with id: " + income.id);
 
-    deleteIncome(income);
+    restClient.genericDelete(income);
     incomesState.removeIncome(income);
     setIncomes(incomesState.getState());
     setValue(value - 1);

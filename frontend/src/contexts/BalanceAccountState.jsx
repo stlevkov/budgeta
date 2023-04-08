@@ -1,11 +1,13 @@
-import { getBalanceTransactions } from "../api/RestClient";
+import RestClient from "../api/RestClient";
+import config from "../resources/config.json";
 
 export default class BalanceAccountState {
   constructor() {
     this.state = [];
     this.listeners = [];
+    this.restClient = new RestClient(config.api.balanceTransactionEndpoint);
 
-    getBalanceTransactions().then((data) => {
+    this.restClient.genericFetch().then((data) => {
       this.setState(data);
     });
   }

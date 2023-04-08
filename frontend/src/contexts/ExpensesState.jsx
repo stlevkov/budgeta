@@ -1,4 +1,5 @@
-import { getExpenses } from "../api/RestClient";
+import RestClient from "../api/RestClient";
+import config from "../resources/config.json";
 
 /** Represents an Expenses State */
 export default class ExpensesState {
@@ -12,8 +13,9 @@ export default class ExpensesState {
     this.state = [];
     this.listeners = [];
     this.sumExpenses = undefined; // TODO make them private with #
+    this.restClient = new RestClient(config.api.expensesEndpoint);
 
-    getExpenses().then((data) => {
+    this.restClient.genericFetch().then((data) => {
       this.setState(data);
     });
   }
