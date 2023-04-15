@@ -1,25 +1,81 @@
 import RestClient from "../api/RestClient";
 import config from "../resources/config.json";
+import { calculateDailyRecommended } from "../utils/CostAnalyticUtil";
+import StateFactory from "./StateFactory";
 
 export default class CostAnalyticState {
-  constructor() {
+
+  /**
+   * 
+   * @param {StateFactory} stateFactory 
+   */
+  constructor(stateFactory) {
     this.state = {};
     this.listeners = [];
     this.restClient = new RestClient(config.api.costAnalyticEndpoint);
+    this.expensesState = stateFactory.getExpensesState();
+    this.incomesState = stateFactory.getIncomesState();
+    this.unexpectedState = stateFactory.getUnexpectedState();
 
+    this.incomesState.addListener(this.onChangeCalculateDailyRecommended.bind(this));
+    this.expensesState.addListener(this.onChangeCalculateDailyRecommended.bind(this));
+    this.unexpectedState.addListener(this.onChangeCalculateDailyRecommended.bind(this));
+
+    this.expensesState.addSaveListener(this.updateCostAnalytic.bind(this));
+    this.unexpectedState.addSaveListener(this.updateCostAnalytic.bind(this));
+    this.incomesState.addSaveListener(this.updateCostAnalytic.bind(this));
+    
     this.restClient.genericFetch().then((data) => {
       this.setState(data);
     });
   }
 
   /**
-   * Save the state to DB. This will make a Rest Call to the backend.
+   * Updates the dailyRecommended dinamically. Will not store the value to DB.
+   * The calculation is based on the following equasion:  x = ((i - (e+u+t)) / daysInCurrentMonth)
+   * 
+   * Note: Tipically this function is set as a callback to a listener when some of the following is updated:
+   *  - expenses
+   *  - incomes
+   *  - unexpected
+   *  - targetSaving
+   * 
    */
-  saveState() {
-    console.log(`[CostAnalyticState] Saving the state to backend: ${this.state}`);
-    this.restClient.genericEdit(this.state);
+  onChangeCalculateDailyRecommended() {
+    const costAnalytic = calculateDailyRecommended(this.expensesState.getState(), 
+    this.incomesState.getState(), this.unexpectedState.getState(), this.state);
+    this.setState(costAnalytic);
   }
 
+  /**
+   * Updates the Target Saving dynamically. Will not store the value to DB.
+   * This function also updates the CostAnalyticState.
+   * 
+   * @param {Number} targetSaving 
+   */
+  onChangeTargetSaving(targetSaving) {
+    this.state.targetSaving = targetSaving;
+    this.onChangeCalculateDailyRecommended();
+  }
+
+  /**
+   * Save the state to DB. This will make a Rest Call to the backend.
+   * The function will also set the state if operation succeed
+   * 
+   */
+  updateCostAnalytic() {
+    console.log(`[CostAnalyticState] Saving the state to backend: ${this.state}`);
+    this.restClient.genericEdit(this.state, () => {
+       this.setState(this.state);
+    });
+  }
+
+  /**
+   * Change the state dynamically. This will NOT store the new state to DB.
+   * use {@link updateCostAnalytic} to do that.
+   * 
+   * @param {CostAnalyticState} newState 
+   */
   setState(newState) {
     console.log("[CostAnalyticState] Setting the state to new state...", newState);
     this.state = structuredClone(newState);

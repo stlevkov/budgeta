@@ -1,11 +1,7 @@
 import React from 'react';
 import { createContext } from 'react';
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import CostAnalyticState from "../contexts/CostAnalyticState";
-import IncomesState from "../contexts/IncomesState";
-import ExpensesState from "../contexts/ExpensesState";
-import UnexpectedState from "../contexts/UnexpectedState";
-import BalanceAccountState from '../contexts/BalanceAccountState';
+import StateFactory from '../contexts/StateFactory';
 
 // Create a context object to hold the instances
 export const ColorModeContext = React.createContext({ toggleColorMode: () => { }, });
@@ -15,14 +11,17 @@ export const ExpensesContext = createContext();
 export const UnexpectedContext = createContext();
 export const BalanceAccountContext = createContext();
 
-export default function withContexts(Component) {
-  // Create an instance of each state classes
-  const costAnalyticState = new CostAnalyticState();
-  const incomesState = new IncomesState();
-  const expensesState = new ExpensesState();
-  const unexpectedState = new UnexpectedState();
-  const balanceAccountState = new BalanceAccountState();
+// Initialize the State Factory
+const stateFactory = new StateFactory();
 
+// Create an instance of each state classes, order is also important
+const incomesState = stateFactory.createIncomesState();
+const expensesState = stateFactory.createExpensesState();
+const unexpectedState = stateFactory.createUnexpectedState();
+const balanceAccountState = stateFactory.createBalanceAccountState();
+const costAnalyticState = stateFactory.createCostAnalyticState();
+
+export default function withContexts(Component) {
   // TODO move this color theme stuffs in a separate state context class!!!
   const themeModeStored =
     localStorage.getItem("themeMode") !== undefined &&

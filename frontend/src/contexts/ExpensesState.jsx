@@ -1,18 +1,21 @@
 import RestClient from "../api/RestClient";
 import config from "../resources/config.json";
+import StateFactory from "./StateFactory";
 
 /** Represents an Expenses State */
 export default class ExpensesState {
   /**
    * @constructor
+   * @param {StateFactory} stateFactory - To access another states if need
    * @param {Array} state - The state of the expenses
    * @param {Array} listeners - The listeners stack used to hold listeners
    * @param sumExpenses - the sum of all expenses in the state
    */
-  constructor() {
+  constructor(stateFactory) {
     this.state = [];
     this.listeners = [];
-    this.sumExpenses = undefined; // TODO make them private with #
+    this.saveListeners = [];
+    this.sumExpenses = undefined; // TODO move this to CostAnalyticState and just calculate with listener
     this.restClient = new RestClient(config.api.expensesEndpoint);
 
     this.restClient.genericFetch().then((data) => {
@@ -22,6 +25,7 @@ export default class ExpensesState {
 
   /**
    * Set the new state. Also calculates the sumExpenses. Use getSumExpenses to get the calculated sum.
+   * TODO - sumExpenses is property of CostAnalyticState, move it there
    *
    * @param newState new expenses array
    */
@@ -51,11 +55,13 @@ export default class ExpensesState {
   }
 
   /**
-   * Updating the state on value change event
+   * Updating the state on value change event. This function will not save the value to DB.
+   * After the dynamic change complete, or upon ENTER, please invoke {@link updateExpense}
    *
-   * @param expense single expense
+   * @param expense dto
    */
-  updateExpense(expense) {
+  onChange(expense) {
+    console.log('Expense candidate: ', expense)
     this.state.map((item) => {
       return item.id === expense.id ? expense : item;
     });
@@ -63,25 +69,47 @@ export default class ExpensesState {
   }
 
   /**
-   * Add new value to the state
+   * Stores the value to the DB and Update the expense state if succeed.
+   * Also notifies the save listeners.
+   * 
+   * @param expense dto
+   */
+  updateExpense(expense) {
+    this.restClient.genericEdit(expense, () => {
+      this.state.map((item) => {
+        return item.id === expense.id ? expense : item;
+      });
+      this.setState(this.state);
+      this.saveListeners.forEach((saveListener) => saveListener(this.state));
+    });
+  }
+
+  /**
+   * Add new value to the state.
    *
    * @param expense single expense
    */
   addExpense(expense) {
-    this.setState([...this.state, expense]);
+    this.restClient.genericCreate(expense, () => {
+      this.setState([...this.state, expense]);
+      this.saveListeners.forEach((saveListener) => saveListener(this.state));
+    });
   }
 
   /**
-   * Removing value from the state
+   * Removing value from the state.
    *
    * @param expense single expense
    */
   removeExpense(expense) {
-    var index = this.state.indexOf(expense);
-    if (index !== -1) {
-      this.state.splice(index, 1);
-    }
-    this.setState(this.state);
+    this.restClient.genericDelete(expense, () => {
+      var index = this.state.indexOf(expense);
+      if (index !== -1) {
+        this.state.splice(index, 1);
+      }
+      this.setState(this.state);
+      this.saveListeners.forEach((saveListener) => saveListener(this.state));
+    });
   }
 
   /**
@@ -101,5 +129,13 @@ export default class ExpensesState {
    */
   removeListener(listener) {
     this.listeners = this.listeners.filter((l) => l !== listener);
+  }
+
+  addSaveListener(saveListener) {
+    this.saveListeners.push(saveListener);
+  }
+
+  removeSaveListener(saveListener) {
+    this.saveListeners = this.saveListeners.filter((l) => l !== saveListener);
   }
 }

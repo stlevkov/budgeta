@@ -13,7 +13,6 @@ import data from "../../../resources/data.json";
 import CreateIncomeDialog from "../../dialogs/CreateIncomeDialog";
 import Divider from "@mui/material/Divider";
 import TextField from "@mui/material/TextField";
-import { toast } from "material-react-toastify";
 import { CostAnalyticContext, IncomesContext, ExpensesContext } from "../../../utils/AppUtil";
 import CreateBalanceTransactionDialog from "../../dialogs/CreateBalanceTransactionDialog";
 
@@ -62,19 +61,11 @@ const TargetSavingEditable = styled(TextField)(({ theme }) => ({
   },
 }));
 
-/**
- * CostAnalyticState is provided by the parent. In this component, the daily recommended
- * is changed by the targetSaving upon change in realtime.
- *
- * @param {costAnalyticState analyticState is provided by the Parent! No local state.}
- * @param {recalculateCostAnalytic function to recalculate the costAnalytic}
- * @returns
- */
 export default function CostAnalyticStack() {
   console.log("[CostAnalytics] Initializing component.");
   const costAnalyticState = useContext(CostAnalyticContext);
-  const expensesState = useContext(ExpensesContext);
-  const incomesState = useContext(IncomesContext);
+  const expensesState = useContext(ExpensesContext); // TODO shall become property of CostAnalytic, move it
+  const incomesState = useContext(IncomesContext); // TODO shall become property of CostAnalytic, move it
 
   const [costAnalytic, setCostAnalytic] = useState({});
   const [targetSaving, setTargetSaving] = useState(0);
@@ -88,7 +79,7 @@ export default function CostAnalyticStack() {
     setCostAnalytic(newState);
   };
 
-  const handleIncomesChange = () => {
+  const handleIncomesChange = () => { // TODO move this, as it shall become property of the CostAnalytic
     console.log("DO SOMETHING Income in Incomes has changed:");
     setSumIncomes(incomesState.getSumIncomes());
   };
@@ -107,32 +98,14 @@ export default function CostAnalyticStack() {
 
   // edit target saving
   const handleKeyDown = (targetSaving, event) => {
-    // TODO - move this to the state and use genericUpdate of DTO
     if (event.key === "Enter") {
-      console.log("[AnalyticStack] Going to edit Target Saving. Value candidate: " + event.target.value);
-      axios
-        .put(config.server.uri + "costAnalytics/targetSaving", event.target.value, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
-        .then((response) => {
-          console.log("[AnalyticStack] RESPONSE OK: " + response.data);
-          setTargetSaving(event.target.value);
-          toast.success("Target Saving saved successfully!");
-        })
-        .catch((error) => {
-          console.log("[AnalyticStack] RESPONSE ERROR: " + error);
-          toast.error("Unable to save Target Saving. Try again, or check your internet connection!");
-        });
+      // Value is already set with onChange, so we just save it to DB
+      costAnalyticState.updateCostAnalytic();
     }
   };
 
   const onTargetSavingChange = (e) => {
-    setTargetSaving(e.target.value);
-    costAnalytic.targetSaving = e.target.value;
-    costAnalytic.dailyRecommended += 5;
-    costAnalyticState.setState(costAnalytic);
+    costAnalyticState.onChangeTargetSaving(Number(e.target.value));
   };
 
   return (
@@ -195,13 +168,11 @@ export default function CostAnalyticStack() {
               </Typography>
             </Tooltip>
             <Divider style={{ width: "100%", marginTop: "8px", marginBottom: "8px" }} />
-            <TargetSavingEditable
-              variant="standard"
+            <TargetSavingEditable variant="standard" InputProps={{ disableUnderline: true }}
               onKeyDown={(event) => handleKeyDown(targetSaving, event)}
-              InputProps={{ disableUnderline: true }}
               value={targetSaving}
               onChange={(e) => {
-                setTargetSaving(e.target.value);
+                onTargetSavingChange(e);
               }}
             />
           </Item>

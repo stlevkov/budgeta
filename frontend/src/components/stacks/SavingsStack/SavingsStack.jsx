@@ -13,8 +13,6 @@ import IconButton from "@mui/material/IconButton";
 import Divider from "@mui/material/Divider";
 import CreateSavingDialog from "../../dialogs/CreateSavingDialog";
 import { UnexpectedContext } from "../../../utils/AppUtil";
-import RestClient from "../../../api/RestClient";
-import config from "../../../resources/config.json";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -66,7 +64,6 @@ export default function SavingsStack() {
   const [savings, setSavings] = useState([]);
   const [progress, setProgress] = useState(30); // TODO - Calculate & Update dynamically
   const unexpectedState = useContext(UnexpectedContext);
-  const restClient = new RestClient(config.api.unexpectedEndpoint); // TODO move to state
 
   const handleUnexpectedStateChange = (newState) => {
     // Do something with the new state
@@ -88,23 +85,20 @@ export default function SavingsStack() {
   }, [unexpectedState]);
 
   const onUnexpectedChange = (saving, event) => {
-    saving.value = event.target.value;
-
-    unexpectedState.updateUnexpected(saving);
+    saving.value = Number(event.target.value);
+    unexpectedState.onChange(saving);
   };
 
   const handleKeyDown = (saving, event) => {
     if (event.key === "Enter") {
-      saving.value = event.target.value;
-      restClient.genericEdit(saving);
+      saving.value = Number(event.target.value);
+      unexpectedState.updateUnexpected(saving);
     }
   };
 
   const deleteSaving = (saving, event) => {
     console.log("[SavingStack]: Will delete item with id: " + saving.id);
-    restClient.genericDelete(saving);
     unexpectedState.removeUnexpected(saving);
-    setSavings(unexpectedState.getState());
   };
 
   return (

@@ -13,9 +13,7 @@ import FormControl from "@mui/material/FormControl";
 import AddIcon from "@mui/icons-material/Add";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
-import config from "../../resources/config.json";
 import { toast } from "material-react-toastify";
-import RestClient from "../../api/RestClient";
 import { UnexpectedContext } from "../../utils/AppUtil";
 
 export default function CreateSavingDialog() {
@@ -25,7 +23,6 @@ export default function CreateSavingDialog() {
   const [itemName, setItemName] = useState("");
   const [itemDesc, setItemDesc] = useState("");
   const [itemAmount, setItemAmount] = useState(0);
-  const restClient = new RestClient(config.api.unexpectedEndpoint); // TODO move to state
 
   let savingPayload = {
     name: itemName,
@@ -34,11 +31,6 @@ export default function CreateSavingDialog() {
     purpose: "unknown",
     location: "unknown",
   };
-
-  function addSaving(saving) {
-    console.log("[SavingStack]: Will add saving: " + saving);
-    unexpectedState.addUnexpected(saving);
-  }
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -60,8 +52,8 @@ export default function CreateSavingDialog() {
       toast.warning("Amount is required");
       return 0;
     }
-    restClient.genericCreate(savingPayload);
-    addSaving(savingPayload);
+    
+    unexpectedState.addUnexpected(savingPayload);
 
     setItemName("");
     setItemDesc("");
@@ -116,7 +108,7 @@ export default function CreateSavingDialog() {
               id="amnt"
               value={itemAmount}
               onChange={(e) => {
-                setItemAmount(e.target.value);
+                setItemAmount(Number(e.target.value));
               }}
               startAdornment={<InputAdornment position="start">$</InputAdornment>}
             />

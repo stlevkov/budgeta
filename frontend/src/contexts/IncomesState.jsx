@@ -1,16 +1,19 @@
 import RestClient from "../api/RestClient";
 import config from "../resources/config.json";
+import StateFactory from "./StateFactory";
 
 export default class IncomesState {
   /**
    * @constructor
+   * @param {StateFactory} stateFactory - To access another states if need
    * @param {Array} state - The state of the incomes
    * @param {Array} listeners - The listeners stack used to hold listeners
    * @param sumIncomes - the sum of all incomes in the state
    */
-  constructor() {
+  constructor(stateFactory) {
     this.state = [];
     this.listeners = [];
+    this.saveListeners = [];
     this.sumIncomes = undefined; // TODO make them private with #
     this.restClient = new RestClient(config.api.incomesEndpoint);
 
@@ -50,11 +53,13 @@ export default class IncomesState {
   }
 
   /**
-   * Updating the state on value change event
-   *
-   * @param income single income
-   */
-  updateIncome(income) {
+  * Updating the state on value change event. This function will not save the value to DB.
+  * After the dynamic change complete, or upon ENTER, please invoke {@link updateIncome}
+  *
+  * @param income dto
+  */
+  onChangeIncome(income) {
+    console.log('Income candidate: ', income)
     this.state.map((item) => {
       return item.id === income.id ? income : item;
     });
@@ -62,25 +67,52 @@ export default class IncomesState {
   }
 
   /**
-   * Add new value to the state
+   * This function will make Rest call to save the value to DB.
+   * Also will update the state if the operation succeed.
+   * Also will notify save listeners.
+   *
+   * @param income single income
+   */
+  updateIncome(income) {
+    this.restClient.genericEdit(income, () => {
+      this.state.map((item) => {
+        return item.id === income.id ? income : item;
+      });
+      this.setState(this.state);
+      this.saveListeners.forEach((saveListener) => saveListener(this.state));
+    });
+
+  }
+
+  /**
+   * This function will save the value to DB.
+   * Will update the state if operation succeed.
+   * Also will call save listeners.
    *
    * @param income single income
    */
   addIncome(income) {
-    this.setState([...this.state, income]);
+    this.restClient.genericCreate(income, () => {
+      this.setState([...this.state, income]);
+      this.saveListeners.forEach((saveListener) => saveListener(this.state));
+    })
   }
 
   /**
-   * Removing value from the state
-   *
+   * This function will remove the value from DB. Removing value from the state if operation succeed.
+   * Also notify the save listeners.
+   * 
    * @param income single income
    */
   removeIncome(income) {
-    var index = this.state.indexOf(income);
-    if (index !== -1) {
-      this.state.splice(index, 1);
-    }
-    this.setState(this.state);
+    this.restClient.genericDelete(income, () => {
+      var index = this.state.indexOf(income);
+      if (index !== -1) {
+        this.state.splice(index, 1);
+      }
+      this.setState(this.state);
+      this.saveListeners.forEach((saveListener) => saveListener(this.state));
+    });
   }
 
   /**
@@ -100,5 +132,13 @@ export default class IncomesState {
    */
   removeListener(listener) {
     this.listeners = this.listeners.filter((l) => l !== listener);
+  }
+
+  addSaveListener(saveListener) {
+    this.saveListeners.push(saveListener);
+  }
+
+  removeSaveListener(saveListener) {
+    this.saveListeners = this.saveListeners.filter((l) => l !== saveListener);
   }
 }

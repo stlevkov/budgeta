@@ -1,6 +1,7 @@
 import config from "../resources/config.json";
 import axios from "axios";
 import { toast } from "material-react-toastify";
+import { processCallback } from "../utils/RestUtil";
 
 export default class RestClient {
   constructor(endpoint) {
@@ -12,6 +13,12 @@ export default class RestClient {
    *
    * @param endpoint for the back-end
    * @returns dto, or error if the operation failed
+   * 
+   * @example
+   * restClient.genericFetch().then((data) => {
+   *  // this.setState(data);
+   * });
+   * 
    */
   async genericFetch() {
     console.log("[API] Fetching " + this.endpoint);
@@ -32,10 +39,25 @@ export default class RestClient {
   }
 
   /**
- * Generic Edit serves all PUT operations to the back-end for DTOs, which implements TransactionType Interface.
- * The function is fire and forget and does not require callback.
- */
-  async genericEdit(dto) {
+   * Generic Edit, serves all POST operations to the back-end for DTOs, 
+   * which implements TransactionType Interface.
+   * This function will fire toast depending on the operation output - success or fail.
+   * 
+   * @param dto - can be expense, unexpected etc
+   * @param optional - notifySuccess, callback function which will be called if the operation pass
+   * 
+   * @example
+   * // fire and forget
+   * restClient.genericEdit(expense); 
+   * 
+   * // use lambda to consume success response
+   * restClient.genericEdit(expense, () => {
+   *  // update expense state
+   *  // update something depending on the state
+   * });
+   * 
+   */
+  async genericEdit(dto, notifySuccess) {
     axios.put(`${config.server.uri}${this.endpoint}/${dto.id}`, dto, {
         headers: {
           "Content-Type": "application/json",
@@ -44,6 +66,7 @@ export default class RestClient {
       .then((response) => {
         console.log("[EDIT][" + this.endpoint + "]: RESPONSE OK: ", response.data);
         toast.success(dto.name + " edited successfully!");
+        processCallback(notifySuccess);
       })
       .catch((error) => {
         console.log("[EDIT][" + this.endpoint + "]: RESPONSE ERROR: " + error);
@@ -51,11 +74,27 @@ export default class RestClient {
       });
   }
 
+
   /**
-   * Generic Create, serves all POST operations to the back-end for DTOs, which implements TransactionType Interface.
-   * The function is fire and forget and does not require callback.
+   * Generic Create, serves all POST operations to the back-end for DTOs, 
+   * which implements TransactionType Interface.
+   * This function will fire toast depending on the operation output - success or fail.
+   * 
+   * @param dto - can be expense, unexpected etc
+   * @param optional - notifySuccess, callback function which will be called if the operation pass
+   * 
+   * @example
+   * // fire and forget
+   * restClient.genericCreate(expense); 
+   * 
+   * // use lambda to consume success response
+   * restClient.genericCreate(expense, () => {
+   *  // update expense state
+   *  // update something depending on the state
+   * });
+   * 
    */
-  async genericCreate(dto) {
+  async genericCreate(dto, notifySuccess) {
     axios
       .post(`${config.server.uri}${this.endpoint}`, dto, {
         headers: {
@@ -65,6 +104,7 @@ export default class RestClient {
       .then((response) => {
         console.log("[POST][" + this.endpoint + "]: RESPONSE OK: ", response.data);
         toast.success(dto.name + " created successfully!");
+        processCallback(notifySuccess);
       })
       .catch((error) => {
         console.log("[POST][" + this.endpoint + "]: RESPONSE ERROR: " + error);
@@ -73,10 +113,25 @@ export default class RestClient {
   }
 
   /**
-   * Generic Delete, serves all DELETE operations to the back-end for DTOs, which implements TransactionType Interface.
-   * The function is fire and forget and does not require callback.
+   * Generic Delete, serves all POST operations to the back-end for DTOs, 
+   * which implements TransactionType Interface.
+   * This function will fire toast depending on the operation output - success or fail.
+   * 
+   * @param dto - can be expense, unexpected etc
+   * @param optional notifySuccess, a callback function which will be called if the operation pass
+   * 
+   * @example
+   * // fire and forget
+   * restClient.genericDelete(expense); 
+   * 
+   * // use lambda to consume success response
+   * restClient.genericDelete(expense, () => {
+   *  // update expense state
+   *  // update something depending on the state
+   * });
+   * 
    */
-  async genericDelete(dto) {
+  async genericDelete(dto, notifySuccess) {
     axios
       .delete(`${config.server.uri}${this.endpoint}/${dto.id}`, {
         headers: {
@@ -86,6 +141,7 @@ export default class RestClient {
       .then((response) => {
         console.log("[DELETE][" + this.endpoint + "]: RESPONSE OK: ", response.data);
         toast.success(dto.name + " deleted successfully!");
+        processCallback(notifySuccess);
       })
       .catch((error) => {
         console.log("[DELETE][" + this.endpoint + "]: RESPONSE ERROR: " + error);
