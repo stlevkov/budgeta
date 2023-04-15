@@ -11,10 +11,8 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import CreateExpenseDialog from "../../dialogs/CreateExpenseDialog";
-import { CostAnalyticContext, ExpensesContext } from "../../../utils/AppUtil";
-import RestClient from "../../../api/RestClient";
+import { ExpensesContext } from "../../../utils/AppUtil";
 import PropTypes from "prop-types";
-import config from "../../../resources/config.json";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -65,14 +63,7 @@ CircularProgressWithLabel.propTypes = {
 export default function ExpensesDirectionStack() {
   const [expenses, setExpenses] = useState([]);
   const [progress, setProgress] = useState(43); // TODO - Calculate & Update dynamically
-  const costAnalyticState = useContext(CostAnalyticContext);
   const expensesState = useContext(ExpensesContext);
-  const restClient = new RestClient(config.api.expensesEndpoint); // TODO move to state
-
-  const handleCostAnalyticStateChange = (newState) => {
-    // Do something with the new state
-    console.log("DO SOMETHING Analytic in EXPENSES has changed:", newState);
-  };
 
   const handleExpensesStateChange = (newState) => {
     // Do something with the new state
@@ -84,40 +75,31 @@ export default function ExpensesDirectionStack() {
     setExpenses(expensesState.getState());
     setProgress(progress);
 
-    costAnalyticState.addListener(handleCostAnalyticStateChange);
     expensesState.addListener(handleExpensesStateChange);
 
     return () => {
       setProgress(0);
       setExpenses([]);
-      costAnalyticState.removeListener(handleCostAnalyticStateChange);
       expensesState.removeListener(handleExpensesStateChange);
     };
-  }, [costAnalyticState, expensesState]);
+  }, [expensesState]);
 
   const onExpenseChange = (expense, event) => {
-    expense.value = event.target.value;
-
-    expensesState.updateExpense(expense);
-
-    let costAnalytic = costAnalyticState.getState();
-    costAnalytic.dailyRecommended -= 10; // TODO remove/fix this when dynamic update of daily recommended is fixed
-    costAnalyticState.setState(costAnalytic);
+    expense.value = Number(event.target.value);
+    expensesState.onChange(expense);
   };
 
   // Edit expense event
   const handleKeyDown = (expense, event) => {
     if (event.key === "Enter") {
-      expense.value = event.target.value;
-      restClient.genericEdit(expense);
+      expense.value = Number(event.target.value);
+      expensesState.updateExpense(expense);
     }
   };
 
   const removeExpense = (expense, event) => {
     console.log("[ExpensesStack]: Will delete item with id: " + expense.id);
-    restClient.genericDelete(expense); // TODO move to state
     expensesState.removeExpense(expense);
-    setExpenses(expensesState.getState());
   };
 
   /*

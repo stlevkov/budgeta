@@ -14,9 +14,7 @@ import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import AddCardIcon from "@mui/icons-material/AddCard";
 import { toast } from "material-react-toastify";
-import RestClient from "../../api/RestClient";
 import { IncomesContext } from "../../utils/AppUtil";
-import config from "../../resources/config.json";
 
 export default function CreateIncomeDialog() {
   const incomeState = useContext(IncomesContext);
@@ -25,7 +23,6 @@ export default function CreateIncomeDialog() {
   const [itemName, setItemName] = useState("");
   const [itemDesc, setItemDesc] = useState("");
   const [itemAmount, setItemAmount] = useState(0);
-  const restClient = new RestClient(config.api.incomesEndpoint); // TODO move to state
 
   let incomePayload = {
     name: itemName,
@@ -58,7 +55,6 @@ export default function CreateIncomeDialog() {
       return 0;
     }
 
-    restClient.genericCreate(incomePayload); // TODO move to state
     incomeState.addIncome(incomePayload);
 
     localClean();
@@ -110,7 +106,7 @@ export default function CreateIncomeDialog() {
               id="amnt"
               value={itemAmount}
               onChange={(e) => {
-                setItemAmount(e.target.value);
+                setItemAmount(Number(e.target.value));
               }}
               startAdornment={<InputAdornment position="start">$</InputAdornment>}
             />

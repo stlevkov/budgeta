@@ -14,13 +14,10 @@ import IconButton from "@mui/material/IconButton";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import { toast } from "material-react-toastify";
-import RestClient from "../../api/RestClient";
 import { ExpensesContext } from "../../utils/AppUtil";
-import config from "../../resources/config.json";
 
 export default function CreateExpenseDialog() {
   const expensesState = useContext(ExpensesContext);
-  const restClient = new RestClient(config.api.expensesEndpoint); // TODO move to state
   const [open, setOpen] = useState(false);
   const [itemName, setItemName] = useState("");
   const [itemDesc, setItemDesc] = useState("");
@@ -33,11 +30,6 @@ export default function CreateExpenseDialog() {
     purpose: "unknown",
     location: "unknown",
   };
-
-  function addExpense(expense) {
-    console.log("[CrateExpenseDialog]: Will add expense: ", expense);
-    expensesState.addExpense(expense);
-  }
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -60,8 +52,7 @@ export default function CreateExpenseDialog() {
       return 0;
     }
 
-    restClient.genericCreate(expensePayload);
-    addExpense(expensePayload);
+    expensesState.addExpense(expensePayload);
 
     setItemName("");
     setItemDesc("");
@@ -81,46 +72,19 @@ export default function CreateExpenseDialog() {
         <DialogTitle>New Expense</DialogTitle>
         <DialogContent>
           <DialogContentText>Add regular monthly Expense, for example - Loan, TV, GSM, Car Taxes</DialogContentText>
-          <TextField
-            required
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Name"
-            type="text"
+          <TextField required autoFocus margin="dense" id="name" label="Name" type="text" variant="standard"
             value={itemName}
             onChange={(e) => {
               setItemName(e.target.value);
-            }}
-            //fullWidth
-            variant="standard"
-          />
-          <TextField
-            required
-            autoFocus
-            margin="dense"
-            id="desc"
-            label="Description"
-            type="text"
+            }}/>
+          <TextField required autoFocus variant="standard" margin="dense" id="desc" label="Description" type="text" fullWidth
             value={itemDesc}
             onChange={(e) => {
               setItemDesc(e.target.value);
-            }}
-            fullWidth
-            variant="standard"
-          />
-          <FormControl
-            fullWidth
-            // sx={{ m: 1 }}
-            variant="filled">
+            }}/>
+          <FormControl fullWidth variant="filled">
             <InputLabel htmlFor="cost">Cost</InputLabel>
-            <FilledInput
-              required
-              id="cost"
-              value={itemCost}
-              onChange={(e) => {
-                setItemCost(e.target.value);
-              }}
+            <FilledInput required id="cost" value={itemCost} onChange={(e) => { setItemCost(Number(e.target.value)); }}
               startAdornment={<InputAdornment position="start">$</InputAdornment>}
             />
           </FormControl>
