@@ -1,0 +1,13 @@
+{
+    "server" : {
+       "uri" : "http://localhost:8080/api/"
+    },
+    "api" : {
+        "costAnalyticEndpoint" : "costAnalytics",
+        "incomesEndpoint" : "incomes",
+        "expensesEndpoint" : "expenses",
+        "unexpectedEndpoint" : "unexpecteds",
+        "balanceTransactionEndpoint" : "balanceAccount"
+    }
+
+}
