@@ -1,1 +1,1 @@
-## Budgeta App Java SDK API
+## Budgeta Java SDK API
