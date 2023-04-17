@@ -19,6 +19,10 @@ npm run build
 # Remove the node_modules folder from the react ui directory
 rm -rf node_modules
 
+# Install dependencies for the express server
+cd ../deploy || exit
+npm install
+
 # Build the java sdk-api
 cd ../sdk-api || exit
 mvn clean install
