@@ -1,1 +1,1 @@
-## Budgeta App React UI
+## Budgeta React UI
