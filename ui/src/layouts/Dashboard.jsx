@@ -1,7 +1,6 @@
 import * as React from "react";
 import axios from "axios";
 import { useState, useEffect } from "react";
-import config from "../resources/config.json";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
@@ -17,105 +16,14 @@ import Tooltip from "@mui/material/Tooltip";
 import { ToastContainer } from "material-react-toastify";
 import "material-react-toastify/dist/ReactToastify.css";
 
-const fetchData = async (endpoint) => {
-  console.log("[Dashboard] Fetching " + endpoint);
-  try {
-    const response = await axios.get(config.server.uri + endpoint);
-    if (response.data !== "") {
-      console.log("[Dashboard][FETCH]["+ endpoint +"] Response OK");
-      return response.data;
-    } else {
-      console.log("Something is wrong");
-      return "error";
-    }
-  } catch (err) {
-    console.log("Something is wrong: " + err);
-    return "error";
-  }
-};
-
-function sumValues(array) {
-  let sum = 0;
-  array.forEach((obj) => {
-    sum += Number(obj.value);
-  });
-  return sum;
-}
-
-function daysInThisMonth() {
-  var now = new Date();
-  return new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-}
-
 export default function Dashboard() {
   const sidebarWidth = "12em";
   const [errorMessageOpen, setErrorMessageOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("No error yet");
   const [open, setOpen] = useState(true);
-  const [expenses, setExpenses] = useState([]); // TODO provide as hook in each Stack
-  const [incomes, setIncomes] = useState([]); // TODO provide as hook in each Stack
-  const [unexpecteds, setSavings] = useState([]); // TODO provide as hook in each Stack
-
-  const [sumExpenses, setSumExpenses] = useState(0);
-  const [sumIncomes, setSumIncomes] = useState(0);
-  const [sumSavings, setSumSavings] = useState(0);
-
-  /**
-   * Daily recommended: (Incomes - (Expenses + Savings + TargetSave + Unexpected)) / days in month
-   * Monthly target:    (Incomes - (Expenses + Savings + TargetSave + Unexpected)
-   *
-   * @param {int} targetSaving Target Saving set by navbar field
-   */
-  // const calculateCostAnalytics = (targetSaving = costAnalytics.targetSaving, expenses) => {
-  //   let localSumExpenses = sumExpenses;
-  //   if(typeof expenses != "undefined"){
-  //     console.log("Expenses is provided, will calculate based on that: " + expenses);
-  //     console.log("[OLD] SumExpenses: " + sumExpenses);
-  //   //  setSumExpenses(sumValues(expenses)); // we dont set the local state, only the variable for this function call
-  //     localSumExpenses = sumValues(expenses);
-  //   }
-    
-  //   console.log("tempSumExpenses: " + localSumExpenses);
-  //   console.log("sumIncomes: " + sumIncomes);
-  //   console.log("sumSavings: " + sumSavings);
-  //   console.log("targetSaving: " + targetSaving);
-  //   let sumAllExpenses = localSumExpenses + sumSavings + parseFloat(targetSaving);
-  //   console.log("sumAllExpenses: " + sumAllExpenses);
-  //   let daily = (sumIncomes - sumAllExpenses) / daysInThisMonth();
-  //   let availableForSpend = sumIncomes - sumAllExpenses; // TODO  MONTHLY TARGET - add this to Daily Recommended box
-    
-  //   const clone = structuredClone(costAnalytics);
-  //   // set the variable and then the state
-  //   clone.allExpenses = localSumExpenses + sumSavings;
-  //   clone.dailyRecommended = Math.round((daily + Number.EPSILON) * 100) / 100;
-  //   setCostAnalytics(clone); // React is tracing the instances
-  //   console.log("Daily recommended: " + clone.dailyRecommended);
-  // };
 
   useEffect(() => {
     console.log("[Dashboard][UseEffect] Initializing Component.")
-
-    let fetchedExpenses = fetchData("expenses");
-    fetchedExpenses.then((result) => {
-     // console.log("[Dashboard][Expenses] Candidate: " + JSON.stringify(result));
-      setExpenses(result);
-      setSumExpenses(sumValues(result));
-    });  
-
-    let fetchedIncomes = fetchData("incomes");
-    fetchedIncomes.then((result) => {
-    //  console.log("[Dashboard][Incomes] Candidate: " + JSON.stringify(result));
-      setIncomes(result);
-      setSumIncomes(sumValues(result));
-    });  
-
-    let fetchedSavings = fetchData("unexpecteds");
-    fetchedSavings.then((result) => {
-     // console.log("[Dashboard][Savings] Candidate: " + JSON.stringify(result));
-      setSavings(result);
-      setSumSavings(sumValues(result));
-    });  
-
   }, []);
 
   const toggleSidebar = () => {

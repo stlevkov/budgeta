@@ -8,7 +8,7 @@ import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
 import ViewIncomeDialog from "../../dialogs/ViewIncomesDialog";
 import Grid from "@mui/material/Unstable_Grid2";
-import config from "../../../resources/config.json";
+import config from "../../../resources/config";
 import data from "../../../resources/data.json";
 import CreateIncomeDialog from "../../dialogs/CreateIncomeDialog";
 import Divider from "@mui/material/Divider";

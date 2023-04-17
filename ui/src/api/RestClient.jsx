@@ -1,4 +1,4 @@
-import config from "../resources/config.json";
+import config from  '../resources/config';
 import axios from "axios";
 import { toast } from "material-react-toastify";
 import { processCallback } from "../utils/RestUtil";
@@ -23,6 +23,7 @@ export default class RestClient {
   async genericFetch() {
     console.log("[API] Fetching " + this.endpoint);
     try {
+    console.log('URI: ', config.server.uri);
       const response = await axios.get(config.server.uri + this.endpoint);
       if (response.data !== "") {
         console.log("[FETCH][" + this.endpoint + "] Response OK");

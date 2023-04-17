@@ -46,8 +46,12 @@ Access:
 |----------------------|------------------------|------------|
 | BUDGETA_UI_DIST_PATH | path to ui dist folder | ../ui/dist |
 | BUDGETA_UI_PORT      | express http port      | 3006       |
+| BUDGETA_SDK_API_HOST | spring boot host       | localhost  |
 | BUDGETA_SDK_API_PORT | spring boot http port  | 8080       |
 | BUDGETA_MONGODB_PORT | mongodb port           | 27017      |
 
 ### Logging
+
+To see the logs from the applications use: `pm2 logs`
+
 To enable spring security debug, set `@EnableWebSecurity(debug = true)` in [WebSecurityConfig](./sdk-api/src/main/java/com/budgeta/sdk/api/config/WebSecurityConfig.java) 

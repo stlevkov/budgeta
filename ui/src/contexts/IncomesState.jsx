@@ -1,5 +1,5 @@
 import RestClient from "../api/RestClient";
-import config from "../resources/config.json";
+import config from  '../resources/config';
 import StateFactory from "./StateFactory";
 
 export default class IncomesState {
