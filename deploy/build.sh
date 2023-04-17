@@ -31,9 +31,9 @@ mvn clean install
 cd ..
 
 # Start the java sdk-api using pm2
-pm2 start deploy/spring.sh --name budgeta-sdk-api # --watch
+pm2 start deploy/spring.sh --name budgeta-sdk-api --update-env # --watch
 
 # Start the react ui using pm2
-pm2 start deploy/server.js --name budgeta-ui # --watch
+pm2 start deploy/server.js --name budgeta-ui --update-env # --watch
 
 echo "Deployment complete"
