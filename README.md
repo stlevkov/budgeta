@@ -4,30 +4,37 @@ WEB Application that monitors the availability of the family budget and helps sa
 ![NodeJS](https://github.com/stlevkov/budgeta/actions/workflows/node.js.yml/badge.svg)  ![Spring](https://github.com/stlevkov/budgeta/actions/workflows/maven.yml/badge.svg)
 
 ### UI Preview
-![demo image not available](https://github.com/stlevkov/budgeta/blob/main/resources/budgeta_demo_preview_unreleased.jpg?raw=true)
+![demo image not available](resources/budgeta_demo_preview_unreleased.jpg?raw=true)
 
 ## Setup
+Execute the [./autorun.sh](./setup/autorun.sh) script and use the provided options
 
+![autorun image not available](resources/autorun.png?raw=true)
+
+## Advanced
 ### Prerequisites
 #### Install the latest working dependencies:
+
+- Execute the [./install.sh](./setup/install.sh) script
+
+Or install the dependencies manually:
 - Mongodb v6.0.5
 - maven v3.6.3
 - nodejs v18.14.1
 - npm v9.3.1
-- vite v4.1.1
 - java v11.0.8
 - pm2 v5.3.0
 
 #### Set the initial Mongodb state
 
-`mongorestore -d budgeta deploy/db_init/mongodump/budgeta`
+`mongorestore -d budgeta setup/db_init/mongodump/budgeta`
 
 ### Building
 
 Follow the deployment or development setups
 
 #### Deployment
-Execute the [./build.sh](./deploy/build.sh) script
+Execute the [./build.sh](./setup/build.sh) script
 
 use `pm2 status` to get information about the processes
 
@@ -40,7 +47,7 @@ Execute  `mvn spring-boot:run` in the [java sdk-api](./sdk-api/README.md) direct
 Access:
 ``` http://localhost:3006 ``` to use the Budgeta App
 
-### Environment setup
+### Environment Setup
 
 | env name             | description            | default    |
 |----------------------|------------------------|------------|
