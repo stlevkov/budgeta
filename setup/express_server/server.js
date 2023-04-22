@@ -7,7 +7,7 @@ const app = express();
 // Enable CORS
 app.use(cors());
 
-const distPath = process.env.BUDGETA_UI_DIST_PATH || path.join(__dirname, '../ui/dist');
+const distPath = process.env.BUDGETA_UI_DIST_PATH || path.join(__dirname, '../../ui/dist');
 const distIndex = process.env.BUDGETA_UI_DIST_PATH || path.join(__dirname, '../ui/dist', 'index.html');
 
 // Serve the static files from the dist directory
