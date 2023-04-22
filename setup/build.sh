@@ -19,7 +19,7 @@ npm run build
 rm -rf node_modules
 
 # Install dependencies for the express server
-cd "$SCRIPT_DIR"/../setup || exit
+cd "$SCRIPT_DIR"/../setup/express_server || exit
 npm install
 
 # Build the java sdk-api
