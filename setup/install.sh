@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Check if running with root or sudo permissions
+if [ "$EUID" -ne 0 ]; then
+    echo "Root permissions are required to run this script."
+    exit 1
+fi
+
 echo "Installing Budgeta App..."
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
@@ -40,9 +46,5 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-nvm install v18.14.1
+nvm install v18.16.0
 node -v
-
-echo "Installing PM2..."
-sudo npm install pm2 -g
-sudo chown "$USER":"$USER" /home/"$USER"/.pm2/rpc.sock /home/"$USER"/.pm2/pub.sock

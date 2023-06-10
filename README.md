@@ -1,7 +1,14 @@
 # Budgeta
-WEB Application that monitors the availability of the family budget and helps save and spend easily.
+WEB Application which helps to Plan the Family Budget and save funds.
+It does not requires everyday inputs. Once configured, the application will monitor the savings.
 
 ![NodeJS](https://github.com/stlevkov/budgeta/actions/workflows/node.js.yml/badge.svg)  ![Spring](https://github.com/stlevkov/budgeta/actions/workflows/maven.yml/badge.svg)
+
+### Supported Platforms
+
+| OS     | Version | Tested |
+| ------ | ------- | ------ |
+| Ubuntu | 22.04   |    ✔   |
 
 ### UI Preview
 ![demo image not available](resources/budgeta_demo_preview_unreleased.jpg?raw=true)
@@ -20,10 +27,9 @@ Execute the [./autorun.sh](./setup/autorun.sh) script and use the provided optio
 Or install the dependencies manually:
 - Mongodb v6.0.5
 - maven v3.6.3
-- nodejs v18.14.1
+- nodejs v18.16.0
 - npm v9.3.1
 - java v11.0.8
-- pm2 v5.3.0
 
 #### Set the initial Mongodb state
 
@@ -31,12 +37,17 @@ Or install the dependencies manually:
 
 ### Building
 
-Follow the deployment or development setups
+Follow the deployment or development setup
 
 #### Deployment
 Execute the [./build.sh](./setup/build.sh) script
 
-use `pm2 status` to get information about the processes
+use `systemctl` to get information about the service processes
+
+| service name |
+| ------------ |
+| budgeta-ui   |
+| budgeta-sdk  |
 
 #### Development
 Execute `npm install && npm start` in the [react ui](./ui/README.md) directory
@@ -59,7 +70,6 @@ Access:
 
 ### Logging
 
-To see the logs from the applications use: `pm2 logs`
+To see the logs from the applications check the systemd service logs
 
-To enable spring security debug, set `@EnableWebSecurity(debug = true)` in [WebSecurityConfig](./sdk-api/src/main/java/com/budgeta/sdk/api/config/WebSecurityConfig.java) 
-TODO
+To enable spring security debug, set `@EnableWebSecurity(debug = true)` in [WebSecurityConfig](./sdk-api/src/main/java/com/budgeta/sdk/api/config/WebSecurityConfig.java)

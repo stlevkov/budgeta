@@ -1,0 +1,12 @@
+[Unit]
+Description=Budgeta App v1.0.0 UI
+After=network.target
+
+[Service]
+ExecStart=/opt/budgeta/deployment/start_ui.sh
+Restart=on-failure
+RestartSec=5
+StartLimitBurst=5
+
+[Install]
+WantedBy=multi-user.target

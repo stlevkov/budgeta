@@ -1,0 +1,12 @@
+[Unit]
+Description=Budgeta SDK v1.0.0 Backend
+After=network.target
+
+[Service]
+ExecStart=/opt/budgeta/deployment/start_sdk.sh
+Restart=on-failure
+RestartSec=5
+StartLimitBurst=5
+
+[Install]
+WantedBy=multi-user.target
