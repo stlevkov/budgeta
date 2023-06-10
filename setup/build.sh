@@ -10,6 +10,9 @@ fi
 
 echo "Deployment started in $SCRIPT_DIR"
 
+echo "Loading environment..."
+source "$SCRIPT_DIR/systemd/env.sh"
+
 JAR="budgeta.sdk.api-0.0.1-SNAPSHOT.jar"
 
 # Check for /opt/budgeta folder, remove and recreate
@@ -18,7 +21,7 @@ BUDGETA_DIR_UI="/opt/budgeta/ui"
 BUDGETA_DIR_SDK="/opt/budgeta/sdk"
 BUDGETA_DIR_DPL="/opt/budgeta/deployment"
 
-rm -rf /opt/budgeta
+rm -rf "/opt/budgeta"
 mkdir -p "$BUDGETA_DIR_UI" "$BUDGETA_DIR_UI/dist" "$BUDGETA_DIR_SDK" "$BUDGETA_DIR_DPL"
 
 # Stop the budgeta processes if any
