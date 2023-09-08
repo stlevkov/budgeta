@@ -10,7 +10,7 @@ import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 export default function SideNavBar() {
   const { collapseSidebar } = useProSidebar();
   return (
-    <Sidebar style={{ border: "none", paddingRight: "1em" }} width={"14em"} backgroundColor={"#252B30"}>
+    <Sidebar style={{ border: "none", paddingRight: "1em", minHeight: "100vh" }} width={"14em"} backgroundColor={"#252B30"}>
       <Menu
         menuItemStyles={{
           button: ({ level, active, disabled }) => {
