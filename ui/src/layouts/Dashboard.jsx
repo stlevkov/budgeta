@@ -36,15 +36,16 @@ export default function Dashboard() {
     padding: 6,
     textAlign: "center",
     color: theme.palette.text.secondary,
+    boxShadow: "0px 6px 8px #45464a"
   }));
 
   return (
     <>
       {/* <ResponsiveGrid/> */} {/* Use this for reference if you broke the dashboard layout */}
       <ExpensesStack  />
-      <Divider style={{ width: "100%", marginTop: "8px", marginBottom: "8px" }} />
+      <Divider style={{ width: "100%", marginTop: "8px", marginBottom: "8px"}} />
       <SavingsStack />
-      <Divider>Analytics & Summary</Divider>
+      <Divider style={{ width: "100%", marginTop: "8px", marginBottom: "8px"}}/>
       <CostAnalyticStack />
       <Box sx={{ flexGrow: 1 }} style={{ marginTop: "12px", marginBottom: "12px" }}>
         <Grid container rowSpacing={2} columns={{ xs: 2, sm: 4, md: 12, lg: 12, xl: 12 }}>
@@ -55,7 +56,7 @@ export default function Dashboard() {
                   <Grid xs={2} sm={4} md={4} key={index}>
                     <Item style={{ height: "375px" }}>
                       <Tooltip title={<Typography fontSize="1.3em">Test Description</Typography>} placement="top">
-                        <Typography component="p" align="left" color="orange" fontSize="1.5em" variant="standard">
+                        <Typography style={{fontWeight: "bold"}} component="p" align="left" color="orange" fontSize="1.5em" variant="standard">
                           VACANCY
                         </Typography>
                       </Tooltip>

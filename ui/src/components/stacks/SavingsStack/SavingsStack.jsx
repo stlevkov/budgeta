@@ -12,7 +12,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import IconButton from "@mui/material/IconButton";
 import Divider from "@mui/material/Divider";
 import CreateSavingDialog from "../../dialogs/CreateSavingDialog";
-import { UnexpectedContext } from "../../../utils/AppUtil";
+import { IncomesContext, UnexpectedContext } from "../../../utils/AppUtil";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -20,6 +20,7 @@ const Item = styled(Paper)(({ theme }) => ({
   padding: 6,
   textAlign: "center",
   color: theme.palette.text.secondary,
+  boxShadow: "0px 6px 8px #45464a"
 }));
 
 const SavingsEditable = styled(TextField)(({ theme }) => ({
@@ -62,18 +63,26 @@ CircularProgressWithLabel.propTypes = {
 
 export default function SavingsStack() {
   const [unexpecteds, setSavings] = useState([]);
-  const [progress, setProgress] = useState(30); // TODO - Calculate & Update dynamically
+  const [progress, setProgress] = useState(0);
   const unexpectedState = useContext(UnexpectedContext);
+  const incomesState = useContext(IncomesContext)
+
+  const descSort = (expenses) => {
+    const sortedData = [...expenses];
+    sortedData.sort((a, b) => b.value - a.value);
+    return sortedData;
+  }
 
   const handleUnexpectedStateChange = (newState) => {
     // Do something with the new state
     console.log("DO SOMETHING Unexpected in UNEXPECTED has changed:", newState);
-    setSavings(newState);
+    setSavings(descSort(newState));
+    setProgress((unexpectedState.getSumUnexpected() / incomesState.getSumIncomes()) * 100);
   };
 
   useEffect(() => {
-    setSavings(unexpectedState.getState());
-    setProgress(progress);
+    setSavings(descSort(unexpectedState.getState()));
+    setProgress((unexpectedState.getSumUnexpected() / incomesState.getSumIncomes()) * 100);
 
     unexpectedState.addListener(handleUnexpectedStateChange);
 
@@ -105,10 +114,10 @@ export default function SavingsStack() {
     <Box sx={{ flexGrow: 1 }}>
       <Grid container disableEqualOverflow spacing={{ xs: 2, md: 2 }}>
         <Grid xs={6} sm={4} md={3} lg={2} xl={1.5}>
-          <Item style={{ backgroundColor: "#00000000", height: "70px" }}>
+          <Item style={{ backgroundColor: "#321f36", height: "70px" }}>
             <Box width={"100%"} height={"12%"}>
               <Tooltip title="Unexpected expenses for this month as a % from the Incomes" placement="top">
-                <Typography style={{ float: "left" }} component="p" align="left" color="#9ccc12" variant="standard">
+                <Typography style={{ float: "left", fontWeight: "bold" }} component="p" align="left" color="#9ccc12" variant="standard">
                   UNEXPECTED
                 </Typography>
               </Tooltip>
@@ -119,7 +128,7 @@ export default function SavingsStack() {
                 {unexpectedState.getSumUnexpected()}
               </Typography>
               <Divider orientation="vertical" variant="middle" flexItem />
-              <CircularProgressWithLabel sx={{ w: "49%" }} align="right" value={progress} />
+              <CircularProgressWithLabel sx={{ w: "50%" }} align="right" value={progress} />
             </Box>
           </Item>
         </Grid>

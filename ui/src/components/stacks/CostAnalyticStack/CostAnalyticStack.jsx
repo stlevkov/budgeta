@@ -22,6 +22,7 @@ const Item = styled(Paper)(({ theme }) => ({
   padding: 6,
   textAlign: "center",
   color: theme.palette.text.secondary,
+  boxShadow: "0px 6px 8px #45464a"
 }));
 
 async function fetchIncomes() {
@@ -114,7 +115,7 @@ export default function CostAnalyticStack() {
         <Grid xs={12} sm={6} md={4} lg={2.3}>
           <Item style={{ height: "120px" }}>
             <Tooltip title={<Typography fontSize="1.3em">All Collected Incomes each month</Typography>} placement="top">
-              <Typography style={{ float: "left" }} component="p" color="orange" fontSize="1.5em" variant="standard" align="left">
+              <Typography style={{ float: "left", fontWeight: "bold" }} component="p" color="orange" fontSize="1.5em" variant="standard" align="left">
                 INCOMES
               </Typography>
             </Tooltip>
@@ -132,7 +133,7 @@ export default function CostAnalyticStack() {
         <Grid xs={12} sm={6} md={4} lg={2.3}>
           <Item style={{ height: "120px" }}>
             <Tooltip title={<Typography fontSize="1.3em">All expenses each month</Typography>} placement="top">
-              <Typography style={{ float: "left" }} component="p" color="orange" fontSize="1.5em" variant="standard" align="left">
+              <Typography style={{ float: "left", fontWeight: "bold" }} component="p" color="orange" fontSize="1.5em" variant="standard" align="left">
                 ALL EXPENSES
               </Typography>
             </Tooltip>
@@ -146,7 +147,7 @@ export default function CostAnalyticStack() {
         <Grid xs={12} sm={6} md={4} lg={2.3}>
           <Item style={{ height: "120px" }}>
             <Tooltip title={<Typography fontSize="1.3em">All unexpecteds at one place</Typography>} placement="top">
-              <Typography style={{ float: "left" }} component="p" color="orange" fontSize="1.5em" variant="standard" align="left">
+              <Typography style={{ float: "left", fontWeight: "bold" }} component="p" color="orange" fontSize="1.5em" variant="standard" align="left">
                 BALANCE ACCOUNT
               </Typography>
             </Tooltip>
@@ -163,7 +164,7 @@ export default function CostAnalyticStack() {
         <Grid xs={12} sm={6} md={4} lg={2.3}>
           <Item style={{ height: "120px" }}>
             <Tooltip title={<Typography fontSize="1.3em">Savings each month</Typography>} placement="top">
-              <Typography style={{ float: "left" }} component="p" color="orange" fontSize="1.5em" variant="standard" align="left">
+              <Typography style={{ float: "left", fontWeight: "bold" }} component="p" color="orange" fontSize="1.5em" variant="standard" align="left">
                 TARGET SAVING
               </Typography>
             </Tooltip>
@@ -181,7 +182,7 @@ export default function CostAnalyticStack() {
         <Grid xs={12} sm={6} md={4} lg={2.8}>
           <Item style={{ height: "120px", backgroundColor: "#07233e" }}>
             <Tooltip title={<Typography fontSize="1.3em">Daily recommended - try not to exceed</Typography>} placement="top">
-              <Typography component="p" align="left" color="orange" fontSize="1.5em" variant="standard">
+              <Typography style={{fontWeight: "bold"}} component="p" align="left" color="orange" fontSize="1.5em" variant="standard">
                 DAILY TARGET
               </Typography>
             </Tooltip>

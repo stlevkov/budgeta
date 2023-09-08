@@ -11,7 +11,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import CreateExpenseDialog from "../../dialogs/CreateExpenseDialog";
-import { ExpensesContext } from "../../../utils/AppUtil";
+import { ExpensesContext, IncomesContext } from "../../../utils/AppUtil";
 import PropTypes from "prop-types";
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -20,6 +20,7 @@ const Item = styled(Paper)(({ theme }) => ({
   padding: 6,
   textAlign: "center",
   color: theme.palette.text.secondary,
+  boxShadow: "0px 6px 8px #45464a"
 }));
 
 const ExpenseEditable = styled(TextField)(({ theme }) => ({
@@ -62,18 +63,26 @@ CircularProgressWithLabel.propTypes = {
 
 export default function ExpensesDirectionStack() {
   const [expenses, setExpenses] = useState([]);
-  const [progress, setProgress] = useState(43); // TODO - Calculate & Update dynamically
+  const [progress, setProgress] = useState(0); // TODO - Calculate & Update dynamically
   const expensesState = useContext(ExpensesContext);
+  const incomesState = useContext(IncomesContext);
+
+  const descSort = (expenses) => {
+    const sortedData = [...expenses];
+    sortedData.sort((a, b) => b.value - a.value);
+    return sortedData;
+  }
 
   const handleExpensesStateChange = (newState) => {
     // Do something with the new state
     console.log("DO SOMETHING Expenses in EXPENSES has changed:", newState);
-    setExpenses(newState);
+    setExpenses(descSort(newState));
+    setProgress((expensesState.getSumExpenses() / incomesState.getSumIncomes()) * 100);
   };
 
   useEffect(() => {
-    setExpenses(expensesState.getState());
-    setProgress(progress);
+    setExpenses(descSort(expensesState.getState()));
+    setProgress((expensesState.getSumExpenses() / incomesState.getSumIncomes()) * 100);
 
     expensesState.addListener(handleExpensesStateChange);
 
@@ -115,10 +124,10 @@ export default function ExpensesDirectionStack() {
     <Box sx={{ flexGrow: 1 }}>
       <Grid container disableEqualOverflow spacing={{ xs: 2, md: 2 }}>
         <Grid xs={6} sm={4} md={3} lg={2} xl={1.5}>
-          <Item style={{ backgroundColor: "#00000000", height: "70px" }}>
+          <Item style={{ backgroundColor: "#321f36", height: "70px" }}>
             <Box width={"100%"} height={"12%"}>
               <Tooltip title="All Monthly Expenses as a % from the Incomes" placement="top">
-                <Typography style={{ float: "left" }} component="p" align="left" color="#9ccc12" variant="standard">
+                <Typography style={{ float: "left", fontWeight: "bold" }} component="p" align="left" color="#9ccc12" variant="standard">
                   EXPENSES
                 </Typography>
               </Tooltip>
@@ -129,7 +138,7 @@ export default function ExpensesDirectionStack() {
                 {expensesState.getSumExpenses()}
               </Typography>
               <Divider orientation="vertical" variant="middle" flexItem />
-              <CircularProgressWithLabel sx={{ w: "49%" }} align="right" value={progress} />
+              <CircularProgressWithLabel sx={{ w: "50%" }} align="right" value={progress} />
             </Box>
           </Item>
         </Grid>
