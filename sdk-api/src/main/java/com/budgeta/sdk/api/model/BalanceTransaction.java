@@ -24,15 +24,15 @@ import java.util.Date;
 
 @Getter
 @Setter
-@Document(collection = "unexpecteds")
-public class BalanceTransaction extends TransactionType{
+@Document(collection = "balance_transactions")
+public class BalanceTransaction extends DocumentInfo {
 
     @NotNull
     private BalanceTransactionType type;
 
     public BalanceTransaction(String id, @NotNull String name, @NotNull String description, @NotNull BigDecimal value,
-                              Date updatedAt, BalanceTransactionType type) {
-        super(id, name, description, value, updatedAt);
+                              Date updatedAt, BalanceTransactionType type, @NotNull String dashboardId) {
+        super(id, name, description, value, updatedAt, dashboardId);
         this.type = type;
     }
 

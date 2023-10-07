@@ -6,7 +6,8 @@ export default {
     costAnalyticEndpoint: 'costAnalytics',
     incomesEndpoint: 'incomes',
     expensesEndpoint: 'expenses',
-    unexpectedEndpoint: 'unexpecteds',
+    unexpectedsEndpoint: 'unexpecteds',
     balanceTransactionEndpoint: 'balanceAccount',
+    dashboardEndpoint: 'dashboards',
   }
 };

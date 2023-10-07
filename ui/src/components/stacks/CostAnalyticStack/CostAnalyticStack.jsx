@@ -189,7 +189,7 @@ export default function CostAnalyticStack() {
             <Divider style={{ width: "100%", marginTop: "0px", marginBottom: "8px" }} />
 
             <Typography style={{ marginTop: "20px", width: "100%" }} component="p" color="#b0b0b0" fontSize="3.3em" align="center">
-              {costAnalytic.dailyRecommended}
+              {costAnalytic.dailyRecommended < 0 ? 'no funds' : costAnalytic.dailyRecommended}
             </Typography>
           </Item>
         </Grid>

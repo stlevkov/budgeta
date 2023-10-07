@@ -38,23 +38,23 @@ public class ExpenseController {
     private ExpenseService expenseService;
 
     @GetMapping("/api/expenses")
-    public ResponseEntity<?> getAll(){
+    public ResponseEntity<?> getAll() {
         System.out.println("Get All Expenses called");
         List<Expense> expenses = expenseRepository.findAll();
-        if(expenses.size() > 0) {
-            return new ResponseEntity<List<Expense>>(expenses, HttpStatus.OK);
+        if (!expenses.isEmpty()) {
+            return new ResponseEntity<>(expenses, HttpStatus.OK);
         }
         return new ResponseEntity<>("No Expenses available", HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/api/expenses/{id}")
-    public ResponseEntity<?> getExpense(@PathVariable("id") String id){
-        System.out.println("Get single Expense");
-        Optional<Expense> expense = expenseRepository.findById(id);
-        if(expense.isPresent()) {
-            return new ResponseEntity<Expense>(expense.get(), HttpStatus.OK);
+    @GetMapping("/api/expenses/{dashboardId}") // Update the request mapping
+    public ResponseEntity<?> getAllByDashboardId(@PathVariable String dashboardId) {
+        System.out.println("[GET][EXPENSES] getAllByDashboardId called for dashboardId: " + dashboardId);
+        List<Expense> expenses = expenseRepository.findByDashboardId(dashboardId); // Update the repository method
+        if (!expenses.isEmpty()) {
+            return new ResponseEntity<>(expenses, HttpStatus.OK);
         }
-        return new ResponseEntity<>("Expense with id " + id + " is not found.", HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>("No Expenses available for the specified dashboardId.", HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/api/expenses/{id}")

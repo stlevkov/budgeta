@@ -38,7 +38,7 @@ public class CostAnalyticController {
     public ResponseEntity<?> getAll(){
         System.out.println("GetAll CostAnalytics called");
         List<CostAnalytic> costAnalytics = costAnalyticRepository.findAll();
-        if(costAnalytics.size() > 0) {
+        if(!costAnalytics.isEmpty()) {
             return new ResponseEntity<>(costAnalytics.get(0), HttpStatus.OK);
         }
         return new ResponseEntity<>("No CostAnalytics available", HttpStatus.NO_CONTENT);

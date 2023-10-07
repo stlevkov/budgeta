@@ -73,4 +73,10 @@ public class CostAnalytic {
 
     @NotNull
     private BigDecimal balanceAccount;
+
+    /**
+     * Provides reference to its corresponding dashboard
+     */
+    @NotNull
+    private String dashboardId;
 }

@@ -3,60 +3,87 @@ import IncomesState from "./IncomesState";
 import ExpensesState from "./ExpensesState";
 import UnexpectedState from "./UnexpectedState";
 import BalanceAccountState from "./BalanceAccountState";
+import DashboardState from "./DashboardState";
 
 export default class StateFactory {
   constructor() {
-    this._costAnalyticState = null;
-    this._incomesState = null;
-    this._expensesState = null;
-    this._unexpectedState = null;
-    this._balanceAccountState = null;
+    this.costAnalyticState = null;
+    this.incomesState = null;
+    this.expensesState = null;
+    this.unexpectedState = null;
+    this.balanceAccountState = null;
+    this.dashboardState = null;
   }
 
   createCostAnalyticState() {
-    this._costAnalyticState = new CostAnalyticState(this);
-    return this._costAnalyticState;
+    this.costAnalyticState = new CostAnalyticState(this);
+    return this.costAnalyticState;
   }
 
   createIncomesState() {
-    this._incomesState = new IncomesState(this);
-    console.log('StateFactory: created IncomesState: ', this._incomesState);
-    return this._incomesState;
+    this.incomesState = new IncomesState(this);
+    return this.incomesState;
   }
 
   createExpensesState() {
-    this._expensesState = new ExpensesState(this);
-    return this._expensesState;
+    this.expensesState = new ExpensesState(this);
+    return this.expensesState;
   }
 
   createUnexpectedState() {
-    this._unexpectedState = new UnexpectedState(this);
-    return this._unexpectedState;
+    this.unexpectedState = new UnexpectedState(this);
+    return this.unexpectedState;
   }
 
   createBalanceAccountState() {
-    this._balanceAccountState = new BalanceAccountState(this);
-    return this._balanceAccountState;
+    this.balanceAccountState = new BalanceAccountState(this);
+    return this.balanceAccountState;
+  }
+
+  createDashboardState() {
+    this.dashboardState = new DashboardState(this);
+    return this.dashboardState;
   }
 
   getCostAnalyticState() {
-    return this._costAnalyticState;
+    if(this.costAnalyticState === null) {
+      return this.createCostAnalyticState();
+    }
+    return this.costAnalyticState;
   }
 
   getIncomesState() {
-    console.log('StateFactory: someone calls getIncomesState, returning: ', this._incomesState);
-    return this._incomesState;
+    if(this.incomesState === null) {
+      return this.createIncomesState();
+    }
+    return this.incomesState;
   }
 
   getExpensesState() {
-    return this._expensesState;
+    if(this.expensesState === null) {
+      return this.createExpensesState();
+    }
+    return this.expensesState;
   }
 
   getUnexpectedState() {
-    return this._unexpectedState;
+    if(this.unexpectedState === null) {
+      return this.createUnexpectedState();
+    }
+    return this.unexpectedState;
   }
 
   getBalanceAccountState() {
-    return this._balanceAccountState;
+    if(this.balanceAccountState === null) {
+      return this.createBalanceAccountState();
+    }
+    return this.balanceAccountState;
+  }
+
+  getDashboardState() {
+    if(this.dashboardState === null) {
+      return this.createDashboardState();
+    }
+    return this.dashboardState;
   }
 }

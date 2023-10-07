@@ -39,7 +39,7 @@ public class BalanceController {
     public ResponseEntity<?> GetBalanceAccount(){
         System.out.println("GetBalanceAccount called");
         List<BalanceTransaction> balanceTransactions = balanceRepository.findAll();
-        if(balanceTransactions.size() > 0) {
+        if(!balanceTransactions.isEmpty()) {
             return new ResponseEntity<>(balanceTransactions, HttpStatus.OK);
         }
         return new ResponseEntity<>("No BalanceTransactions available", HttpStatus.NO_CONTENT);

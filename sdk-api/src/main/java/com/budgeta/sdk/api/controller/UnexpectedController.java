@@ -37,40 +37,40 @@ public class UnexpectedController {
     private UnexpectedService unexpectedService;
 
     @GetMapping("/api/unexpecteds")
-    public ResponseEntity<?> getAll(){
-        System.out.println("GetAllSavings called");
-        List<Unexpected> unexpecteds = unexpectedRepository.findAll();
-        if(unexpecteds.size() > 0) {
-            return new ResponseEntity<List<Unexpected>>(unexpecteds, HttpStatus.OK);
+    public ResponseEntity<?> getAll() {
+        System.out.println("Get All Unexpected called");
+        List<Unexpected> unexpectedItems = unexpectedRepository.findAll();
+        if (!unexpectedItems.isEmpty()) {
+            return new ResponseEntity<>(unexpectedItems, HttpStatus.OK);
         }
-        return new ResponseEntity<>("No Savings available", HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>("No Unexpected items available", HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/api/unexpecteds/{id}")
-    public ResponseEntity<?> getSaving(@PathVariable("id") String id){
-        System.out.println("Get single Saving");
-        Optional<Unexpected> unexpected = unexpectedRepository.findById(id);
-        if(unexpected.isPresent()) {
-            return new ResponseEntity<Unexpected>(unexpected.get(), HttpStatus.OK);
+    @GetMapping("/api/unexpecteds/{dashboardId}")
+    public ResponseEntity<?> getAllByDashboardId(@PathVariable String dashboardId) {
+        System.out.println("[GET][UNEXPECTED] getAllByDashboardId called for dashboardId: " + dashboardId);
+        List<Unexpected> unexpectedItems = unexpectedRepository.findByDashboardId(dashboardId);
+        if (!unexpectedItems.isEmpty()) {
+            return new ResponseEntity<>(unexpectedItems, HttpStatus.OK);
         }
-        return new ResponseEntity<>("Saving with id " + id + " is not found.", HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>("No Unexpected items available for the specified dashboardId.", HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/api/unexpecteds/{id}")
-    public ResponseEntity<?> deleteSaving(@PathVariable("id") String id){
-        System.out.println("Delete Saving");
+    public ResponseEntity<?> deleteUnexpected(@PathVariable("id") String id){
+        System.out.println("Delete Unexpected");
         Optional<Unexpected> unexpected = unexpectedRepository.findById(id);
         if(unexpected.isPresent()) {
             unexpectedRepository.delete(unexpected.get());
-            return new ResponseEntity<>("Saving with id: " + id + " has been deleted.", HttpStatus.OK);
+            return new ResponseEntity<>("Unexpected with id: " + id + " has been deleted.", HttpStatus.OK);
         }
-        return new ResponseEntity<>("Saving with id " + id + " is not found.", HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>("Unexpected with id " + id + " is not found.", HttpStatus.NOT_FOUND);
     }
 
     @PostMapping("/api/unexpecteds")
-    public ResponseEntity<?> createSaving(@RequestBody Unexpected unexpected){
+    public ResponseEntity<?> createUnexpected(@RequestBody Unexpected unexpected){
         try{
-            unexpectedService.createSaving(unexpected);
+            unexpectedService.createUnexpected(unexpected);
             return new ResponseEntity<>(unexpected, HttpStatus.CREATED);
         } catch (ConstraintViolationException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
@@ -81,8 +81,8 @@ public class UnexpectedController {
 
 
     @PutMapping("/api/unexpecteds/{id}")
-    public ResponseEntity<?> updateSaving(@PathVariable String id, @RequestBody Unexpected unexpected){
-        System.out.println("Updating Saving");
+    public ResponseEntity<?> updateUnexpected(@PathVariable String id, @RequestBody Unexpected unexpected){
+        System.out.println("Updating Unexpected");
         Optional<Unexpected> unexpectedOptional = unexpectedRepository.findById(id);
         if(unexpectedOptional.isPresent()){
             Unexpected unexpectedUpdate = unexpectedOptional.get();
@@ -99,7 +99,7 @@ public class UnexpectedController {
             }
         }
         return new ResponseEntity<>("Unable to update unexpected with id " + id +
-                ". Reason: Saving with this ID not found.", HttpStatus.NOT_FOUND);
+                ". Reason: Unexpected with this ID not found.", HttpStatus.NOT_FOUND);
     }
 
 }

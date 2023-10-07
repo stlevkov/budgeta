@@ -25,13 +25,14 @@ import java.util.Date;
 @Setter
 @Getter
 @Document(collection = "unexpecteds")
-public class Unexpected extends TransactionType{
+public class Unexpected extends DocumentInfo {
     @NotNull
     private String location;
     @NotNull
     private String purpose;
 
-    public Unexpected(String id, @NotNull String name, @NotNull String description, @NotNull BigDecimal value, Date updatedAt) {
-        super(id, name, description, value, updatedAt);
+    public Unexpected(String id, @NotNull String name, @NotNull String description, @NotNull BigDecimal value,
+                      Date updatedAt, @NotNull String dashboardId) {
+        super(id, name, description, value, updatedAt, dashboardId);
     }
 }

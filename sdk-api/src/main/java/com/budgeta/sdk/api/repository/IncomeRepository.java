@@ -18,10 +18,13 @@ import com.budgeta.sdk.api.model.Income;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface IncomeRepository extends MongoRepository<Income, String> {
 
     @Query("{name : ?0}")
     Optional<Income> findByName(String name);
+
+    List<Income> findByDashboardId(String dashboardId);
 }
