@@ -1,6 +1,6 @@
 /*
     Budgeta Application
-    Copyright (C) 2022  S.Levkov, K.Ivanov
+    Copyright (C) 2022  S.K.Levkov, K.K.Ivanov
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -12,19 +12,14 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
  */
-package com.budgeta.sdk.api.repository;
+package com.budgeta.sdk.api.service;
 
-import com.budgeta.sdk.api.model.Expense;
-import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.data.mongodb.repository.Query;
+import com.budgeta.sdk.api.exception.ValidationCollectionException;
+import com.budgeta.sdk.api.model.Dashboard;
 
-import java.util.List;
-import java.util.Optional;
+import javax.validation.ConstraintViolationException;
 
-public interface ExpenseRepository extends MongoRepository<Expense, String> {
+public interface DashboardService {
 
-    @Query("{name : ?0}")
-    Optional<Expense> findByName(String name);
-
-    List<Expense> findByDashboardId(String dashboardId);
+    void createDashboard(Dashboard dashboard) throws ConstraintViolationException, ValidationCollectionException;
 }

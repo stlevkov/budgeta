@@ -31,7 +31,7 @@ public class UnexpectedServiceImpl implements UnexpectedService {
     private UnexpectedRepository unexpectedRepo;
 
     @Override
-    public void createSaving(Unexpected unexpected) throws ConstraintViolationException, ValidationCollectionException {
+    public void createUnexpected(Unexpected unexpected) throws ConstraintViolationException, ValidationCollectionException {
         System.out.println("Trying to create new Saving: " + unexpected);
         Optional<Unexpected> unexpectedOptional = unexpectedRepo.findByName(unexpected.getName());
         System.out.println("Is the unexpected already present? " + unexpectedOptional.isPresent());

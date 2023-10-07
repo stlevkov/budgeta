@@ -1,50 +1,75 @@
-import { Sidebar, Menu, MenuItem, useProSidebar } from "react-pro-sidebar";
-import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
-import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
-import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
-import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
-import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
-import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
-import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
+import React, { useState, useEffect, useContext } from 'react';
+import { Sidebar, Menu, MenuItem, useProSidebar } from 'react-pro-sidebar';
+import SettingsIcon from '@mui/icons-material/Settings';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
+import CalendarDialog from '../components/dialogs/CalendarDialog';
+
+import { CalendarIcon } from '@mui/x-date-pickers';
+import { DashboardContext } from '../utils/AppUtil';
 
 export default function SideNavBar() {
   const { collapseSidebar } = useProSidebar();
+  const [open, setOpen] = useState(false);
+  const [currentDate, setCurrrentDate] = useState('');
+  const dashboardState = useContext(DashboardContext);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleDashboardChanged = (dashboard) => {
+     console.log('Dashboard: ', dashboard);
+     setCurrrentDate(dashboard.year + " / " + dashboard.month);
+  }
+
+  useEffect(() => {
+    console.log("[Sidebar][UseEffect] Initializing Component.");
+    const dashboardDate = dashboardState.getCurrentDate();
+    setCurrrentDate(dashboardDate.year + " / " + dashboardDate.month);
+    dashboardState.addListener(handleDashboardChanged);
+    
+  }, [dashboardState]);
+
   return (
-    <Sidebar style={{ border: "none", paddingRight: "1em", minHeight: "100vh" }} width={"14em"} backgroundColor={"#252B30"}>
+    <Sidebar
+      style={{ border: 'none', paddingRight: '1em', minHeight: '100vh' }}
+      backgroundColor={'#252B30'}
+    >
       <Menu
         menuItemStyles={{
           button: ({ level, active, disabled }) => {
             if (level === 0) {
               return {
-                color: disabled ? "#eee" : "#B0B0B0",
-                backgroundColor: active ? "#fff" : undefined,
-                "&:hover": {
-                  backgroundColor: "#335B8C !important",
-                  color: "white !important",
-                  borderRadius: "8px !important",
-                  fontWeight: "bold !important",
+                color: disabled ? '#eee' : '#B0B0B0',
+                backgroundColor: active ? '#fff' : undefined,
+                '&:hover': {
+                  backgroundColor: '#335B8C !important',
+                  color: 'white !important',
+                  borderRadius: '8px !important',
+                  fontWeight: 'bold !important',
                 },
               };
             }
           },
-        }}>
+        }}
+      >
         <MenuItem
           className="Menu-Item"
-          style={{ textAlign: "center" }}
+          style={{ textAlign: 'center' }}
           icon={<MenuOutlinedIcon />}
           onClick={() => {
             collapseSidebar();
-          }}>
-          {" "}
+          }}
+        >
           <h2>Budgeta</h2>
         </MenuItem>
-        <MenuItem icon={<HomeOutlinedIcon />}>Home</MenuItem>
-        <MenuItem icon={<PeopleOutlinedIcon />}>Team</MenuItem>
-        <MenuItem icon={<ContactsOutlinedIcon />}>Contacts</MenuItem>
-        <MenuItem icon={<ReceiptOutlinedIcon />}>Profile</MenuItem>
-        <MenuItem icon={<HelpOutlineOutlinedIcon />}>FAQ</MenuItem>
-        <MenuItem icon={<CalendarTodayOutlinedIcon />}>Calendar</MenuItem>
+        <MenuItem icon={<DashboardIcon />}>Dashboard</MenuItem>
+        <MenuItem icon={<SettingsIcon />}>Settings</MenuItem>
+        <MenuItem icon={<CalendarIcon />} onClick={handleClickOpen}>{currentDate}</MenuItem>
       </Menu>
+      <CalendarDialog open={open} setOpen={setOpen} />
     </Sidebar>
+    
   );
 }

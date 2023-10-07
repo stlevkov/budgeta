@@ -14,11 +14,23 @@
  */
 package com.budgeta.sdk.api.service;
 
-import com.budgeta.sdk.api.exception.ValidationCollectionException;
-import com.budgeta.sdk.api.model.Unexpected;
+import com.budgeta.sdk.api.model.Dashboard;
+import com.budgeta.sdk.api.repository.DashboardRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import javax.validation.ConstraintViolationException;
 
-public interface UnexpectedService {
-    void createUnexpected(Unexpected unexpected) throws ConstraintViolationException, ValidationCollectionException;
+@Service
+public class DashboardServiceImpl implements DashboardService{
+
+    @Autowired
+    private DashboardRepository dashboardRepo;
+
+    @Override
+    public void createDashboard(Dashboard dashboard) throws ConstraintViolationException {
+        System.out.println("Trying to create new dashboard: " + dashboard);
+        System.out.println("Creating dashboard from the service");
+        dashboardRepo.save(dashboard);
+    }
 }

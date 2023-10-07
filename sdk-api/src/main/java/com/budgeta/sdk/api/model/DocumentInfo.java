@@ -14,16 +14,38 @@
  */
 package com.budgeta.sdk.api.model;
 
-import org.springframework.data.mongodb.core.mapping.Document;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import org.springframework.data.annotation.Id;
 
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Date;
 
-@Document(collection = "incomes")
-public class Income extends DocumentInfo {
-    public Income(String id, @NotNull String name, @NotNull String description, @NotNull BigDecimal value,
-                  Date updatedAt, @NotNull String dashboardId) {
-        super(id, name, description, value, updatedAt, dashboardId);
-    }
+@Setter
+@Getter
+@AllArgsConstructor
+@ToString
+public abstract class DocumentInfo {
+    @Id
+    private String id;
+    @NotNull
+    private String name;
+    @NotNull
+    private String description;
+    @NotNull
+    private BigDecimal value;
+
+    /**
+     * Updated by the system
+     */
+    private Date updatedAt;
+
+    /**
+     * Provides reference to its corresponding dashboard
+     */
+    @NotNull
+    private String dashboardId;
 }

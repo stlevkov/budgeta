@@ -15,11 +15,14 @@ export const BalanceAccountContext = createContext();
 const stateFactory = new StateFactory();
 
 // Create an instance of each state classes, order is also important
+const dashboardState = stateFactory.createDashboardState();
 const incomesState = stateFactory.createIncomesState();
 const expensesState = stateFactory.createExpensesState();
 const unexpectedState = stateFactory.createUnexpectedState();
 const balanceAccountState = stateFactory.createBalanceAccountState();
 const costAnalyticState = stateFactory.createCostAnalyticState();
+
+export const DashboardContext = createContext(dashboardState);
 
 export default function withContexts(Component) {
   // TODO move this color theme stuffs in a separate state context class!!!

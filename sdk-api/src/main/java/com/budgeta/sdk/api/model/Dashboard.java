@@ -1,6 +1,6 @@
 /*
     Budgeta Application
-    Copyright (C) 2022  S.Levkov, K.Ivanov
+    Copyright (C) 2023  S.Levkov, K.Ivanov
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -14,31 +14,29 @@
  */
 package com.budgeta.sdk.api.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotNull;
-import java.math.BigDecimal;
-import java.util.Date;
 
 @Setter
 @Getter
+@NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class TransactionType {
+@Document(collection = "dashboards")
+public class Dashboard {
+
     @Id
     private String id;
+
     @NotNull
-    private String name;
+    private String month;
+
     @NotNull
-    private String description;
+    private Integer year;
+
     @NotNull
-    private BigDecimal value;
-    /**
-     * Updated by the system
-     */
-    private Date updatedAt;
+    private Boolean readOnly;
 }

@@ -21,6 +21,7 @@ export default class CostAnalyticState {
     this.expensesState.addListener(this.onChangeCalculateDailyRecommended.bind(this));
     this.unexpectedState.addListener(this.onChangeCalculateDailyRecommended.bind(this));
 
+    //TODO review this listener, if they are only need to update the cost analytics and fix it
     this.expensesState.addSaveListener(this.updateCostAnalytic.bind(this));
     this.unexpectedState.addSaveListener(this.updateCostAnalytic.bind(this));
     this.incomesState.addSaveListener(this.updateCostAnalytic.bind(this));

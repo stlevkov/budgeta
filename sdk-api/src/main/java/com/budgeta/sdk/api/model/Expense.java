@@ -21,8 +21,9 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 @Document(collection = "expenses")
-public class Expense extends TransactionType{
-    public Expense(String id, @NotNull String name, @NotNull String description, @NotNull BigDecimal value, Date updatedAt) {
-        super(id, name, description, value, updatedAt);
+public class Expense extends DocumentInfo {
+    public Expense(String id, @NotNull String name, @NotNull String description, @NotNull BigDecimal value,
+                   Date updatedAt, String dashboardId) {
+        super(id, name, description, value, updatedAt, dashboardId);
     }
 }

@@ -41,20 +41,20 @@ public class IncomeController {
     public ResponseEntity<?> getAll(){
         System.out.println("GetAllIncomes called");
         List<Income> incomes = incomeRepository.findAll();
-        if(incomes.size() > 0) {
-            return new ResponseEntity<List<Income>>(incomes, HttpStatus.OK);
+        if(!incomes.isEmpty()) {
+            return new ResponseEntity<>(incomes, HttpStatus.OK);
         }
         return new ResponseEntity<>("No Incomes available", HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/api/incomes/{id}")
-    public ResponseEntity<?> getIncome(@PathVariable("id") String id){
-        System.out.println("Get single Income");
-        Optional<Income> income = incomeRepository.findById(id);
-        if(income.isPresent()) {
-            return new ResponseEntity<Income>(income.get(), HttpStatus.OK);
+    @GetMapping("/api/incomes/{dashboardId}")
+    public ResponseEntity<?> getAllByDashboardId(@PathVariable String dashboardId){
+        System.out.println("[GET][INCOMES] getAllByDashboardId called for dashboardId: " + dashboardId);
+        List<Income> incomes = incomeRepository.findByDashboardId(dashboardId);
+        if(!incomes.isEmpty()) {
+            return new ResponseEntity<>(incomes, HttpStatus.OK);
         }
-        return new ResponseEntity<>("Income with id " + id + " is not found.", HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>("No Incomes available for the specified dashboardId.", HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/api/incomes/{id}")
@@ -80,7 +80,6 @@ public class IncomeController {
         }
     }
 
-    // TODO: 20.10.22 г. Create Builder for the other Models just for fun :)
     @PutMapping("/api/incomes/{id}")
     public ResponseEntity<?> updateIncome(@PathVariable String id, @RequestBody Income income){
         System.out.println("Updating Income");

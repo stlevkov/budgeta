@@ -14,18 +14,11 @@
  */
 package com.budgeta.sdk.api.repository;
 
-import com.budgeta.sdk.api.model.Expense;
-import com.budgeta.sdk.api.model.Unexpected;
+import com.budgeta.sdk.api.model.Dashboard;
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.data.mongodb.repository.Query;
 
 import java.util.List;
-import java.util.Optional;
 
-public interface UnexpectedRepository extends MongoRepository<Unexpected, String> {
-
-    @Query("{name : ?0}")
-    Optional<Unexpected> findByName(String name);
-
-    List<Unexpected> findByDashboardId(String dashboardId);
+public interface DashboardRepository extends MongoRepository<Dashboard, String> {
+    List<Dashboard> findByYearAndMonth(int year, String month);
 }
