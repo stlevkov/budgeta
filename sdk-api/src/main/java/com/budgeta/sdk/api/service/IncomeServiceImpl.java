@@ -32,14 +32,22 @@ public class IncomeServiceImpl implements IncomeService{
 
     @Override
     public void createIncome(Income income) throws ConstraintViolationException, ValidationCollectionException {
-        System.out.println("Trying to create new Income: " + income);
         Optional<Income> incomeOptional = incomeRepo.findByName(income.getName());
-        System.out.println("Is the income already present? " + incomeOptional.isPresent());
         if(incomeOptional.isPresent()){
             throw new ValidationCollectionException(ValidationCollectionException.alreadyExists());
         }
-        System.out.println("Creating Income from the service");
         income.setUpdatedAt(new Date());
         incomeRepo.save(income);
+    }
+
+    @Override
+    public void updateIncome(Income income) throws ConstraintViolationException, ValidationCollectionException {
+        Optional<Income> incomeOptional = incomeRepo.findById(income.getId());
+        if (incomeOptional.isPresent()) {
+            income.setUpdatedAt(new Date());
+            incomeRepo.save(income);
+        } else {
+            throw new ValidationCollectionException(ValidationCollectionException.notFound(income.getId()));
+        }
     }
 }

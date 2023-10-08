@@ -32,9 +32,8 @@ public class BalanceServiceImpl implements BalanceService {
 
     @Override
     public void createBalanceTransaction(BalanceTransaction balanceTransaction) throws ConstraintViolationException, ValidationCollectionException {
-        System.out.println("Creating Balance Transaction from the service");
         //TODO update the CostAnalytic account Balance based on the balance Transaction type
-        costAnalyticService.updateCostAnalytic(balanceTransaction);
+        costAnalyticService.addBalanceTransaction(balanceTransaction);
         balanceTransaction.setUpdatedAt(new Date());
         balanceRepository.save(balanceTransaction);
     }

@@ -1,3 +1,4 @@
+import { Toast } from "material-react-toastify/dist/components";
 import RestClient from "../api/RestClient";
 import Dashboard from "../data/classes/Dashboard";
 import Expense from "../data/classes/Expense";
@@ -5,6 +6,7 @@ import DashboardListener from "../data/interfaces/DashboardListener";
 import config from '../resources/config';
 import DashboardState from "./DashboardState";
 import StateFactory from "./StateFactory";
+import { toast } from "material-react-toastify";
 
 export default class ExpensesState implements DashboardListener {
   private expenseState: Expense[];
@@ -13,6 +15,7 @@ export default class ExpensesState implements DashboardListener {
   private sumExpenses: number | undefined;
   private restClient: RestClient;
   private dashboardState: DashboardState;
+  private selectedDashboard: Dashboard | undefined;
 
   constructor(stateFactory: StateFactory) { // Add the StateFactory parameter
     this.expenseState = [];
@@ -22,10 +25,12 @@ export default class ExpensesState implements DashboardListener {
     this.restClient = new RestClient(config.api.expensesEndpoint);
     this.dashboardState = stateFactory.getDashboardState();
     this.dashboardState.addListener(this.onDashboardStateChange.bind(this));
+    this.selectedDashboard = undefined;
   }
 
   onDashboardStateChange(dashboard: Dashboard) {
     console.log('[ExpensesState] Dashboard has changed, fetching by dashboardId: ', dashboard.id);
+    this.selectedDashboard = dashboard;
     this.restClient.genericFetch<Expense[]>([dashboard.id]).then((data) => {
         console.log('[ExpensesState] Data: ', data);
         this.setState(data);
@@ -73,10 +78,15 @@ export default class ExpensesState implements DashboardListener {
   }
 
   addExpense(expense: Expense) {
-    this.restClient.genericCreate(expense, () => {
-      this.setState([...this.expenseState, expense]);
-      this.saveListeners.forEach((saveListener) => saveListener());
-    });
+    if(this.selectedDashboard){
+      expense.dashboardId = this.selectedDashboard.id;
+      this.restClient.genericCreate(expense, () => {
+        this.setState([...this.expenseState, expense]);
+        this.saveListeners.forEach((saveListener) => saveListener());
+      });
+    } else {
+       toast.error("Unable to create new Expense. Please refresh the page and try again or contact admin.");
+    }
   }
 
   removeExpense(expense: Expense) {

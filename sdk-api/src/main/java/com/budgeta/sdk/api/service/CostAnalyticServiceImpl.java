@@ -21,21 +21,19 @@ import com.budgeta.sdk.api.repository.CostAnalyticRepository;
 import com.budgeta.sdk.api.repository.ExpenseRepository;
 import com.budgeta.sdk.api.repository.IncomeRepository;
 import com.budgeta.sdk.api.repository.UnexpectedRepository;
-import com.budgeta.sdk.api.utils.ArithmeticUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.validation.ConstraintViolationException;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.Calendar;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CostAnalyticServiceImpl implements CostAnalyticService {
 
     @Autowired
-    private CostAnalyticRepository costAnalyticRepository;
+    private CostAnalyticRepository costAnalyticRepo;
 
     @Autowired
     private ExpenseRepository expenseRepository;
@@ -47,50 +45,35 @@ public class CostAnalyticServiceImpl implements CostAnalyticService {
     @Override
     public void createCostAnalytic(CostAnalytic costAnalytic) throws ConstraintViolationException, ValidationCollectionException {
         System.out.println("Trying to create initial CostAnalytic: " + costAnalytic);
-        List<CostAnalytic> costAnalytics = costAnalyticRepository.findAll();
+        List<CostAnalytic> costAnalytics = costAnalyticRepo.findAll();
         System.out.println("Is the CostAnalytic already present? " + (costAnalytics.size() == 1));
-        if(costAnalytics.size() >= 1){
+        if(!costAnalytics.isEmpty()){
             throw new ValidationCollectionException("Creation of more CostAnalytic entries is not allowed");
         }
         System.out.println("Creating CostAnalytic from the service");
         costAnalytic.setAllExpenses(BigDecimal.ZERO);
         costAnalytic.setDailyRecommended(BigDecimal.ZERO);
         costAnalytic.setMonthlyTarget(BigDecimal.ZERO);
-        costAnalyticRepository.save(costAnalytic);
+        costAnalyticRepo.save(costAnalytic);
     }
 
     @Override
-    public CostAnalytic updateCostAnalytic(CostAnalytic costAnalytic) throws ConstraintViolationException, ValidationCollectionException {
-        System.out.println("Trying to update initial CostAnalytic: " + costAnalytic);
-        // At this point Unexpected and TargetSaving are already set in the object by the caller
-        List<CostAnalytic> costAnalytics = costAnalyticRepository.findAll();
-        System.out.println("Is the CostAnalytic already present? " + (costAnalytics.size() == 1));
-
-        if(costAnalytics.size() < 1){
-            throw new ValidationCollectionException("CostAnalytic not found. You should create it first.");
+    public void updateCostAnalytic(CostAnalytic costAnalytic) throws ConstraintViolationException, ValidationCollectionException {
+        Optional<CostAnalytic> costAnalyticOptional = costAnalyticRepo.findById(costAnalytic.getId());
+        if (costAnalyticOptional.isPresent()) {
+            costAnalyticRepo.save(costAnalytic);
+        } else {
+            throw new ValidationCollectionException(ValidationCollectionException.notFound(costAnalytic.getId()));
         }
-
-        System.out.println("Updating CostAnalytic from the service");
-        BigDecimal sumExpenses = ArithmeticUtils.sumExpenses(expenseRepository.findAll());
-        BigDecimal sumIncomes = ArithmeticUtils.sumIncomes(incomeRepository.findAll());
-        BigDecimal sumSavings = ArithmeticUtils.sumSavings(unexpectedRepository.findAll());
-        BigDecimal targetSaving = costAnalytic.getTargetSaving();
-
-        BigDecimal monthlyTarget = calculateMonthlyTarget(sumExpenses, sumIncomes, sumSavings, targetSaving);
-        BigDecimal dailyRecommended = calculateDailyRecommended(targetSaving, sumExpenses, sumIncomes, sumSavings);
-
-        costAnalytic.setAllExpenses(sumExpenses.add(sumSavings));
-        costAnalytic.setDailyRecommended(dailyRecommended);
-        costAnalytic.setMonthlyTarget(monthlyTarget);
-        return costAnalyticRepository.save(costAnalytic);
     }
 
+    //TODO Move this to BalanceServiceImpl
     @Override
-    public void updateCostAnalytic(BalanceTransaction transaction) throws ValidationCollectionException {
-        List<CostAnalytic> costAnalytics = costAnalyticRepository.findAll();
+    public void addBalanceTransaction(BalanceTransaction transaction) throws ValidationCollectionException {
+        List<CostAnalytic> costAnalytics = costAnalyticRepo.findAll();
         System.out.println("Is the CostAnalytic already present? " + (costAnalytics.size() == 1));
 
-        if(costAnalytics.size() < 1){
+        if(costAnalytics.isEmpty()){
             throw new ValidationCollectionException("CostAnalytic not found. You should create it first.");
         }
 
@@ -101,19 +84,7 @@ public class CostAnalyticServiceImpl implements CostAnalyticService {
         } else { // deposit
             costAnalytic.setBalanceAccount(costAnalytic.getBalanceAccount().add(transaction.getValue()));
         }
-        costAnalyticRepository.save(costAnalytic);
-    }
-
-    private BigDecimal calculateMonthlyTarget(BigDecimal sumExpenses, BigDecimal sumIncomes, BigDecimal sumSavings, BigDecimal targetSaving) {
-        // Incomes - (Expenses + Savings + TargetSave + Unexpected)
-        return sumIncomes.subtract(sumExpenses.add(sumSavings).add(targetSaving)).setScale(2, RoundingMode.HALF_EVEN);
-    }
-
-    private BigDecimal calculateDailyRecommended(BigDecimal targetSavings, BigDecimal sumExpenses, BigDecimal sumIncomes, BigDecimal sumSavings){
-        // (Incomes - (Expenses + Savings + TargetSave + Unexpected)) / days in month
-        BigDecimal overall = sumIncomes.subtract(targetSavings.add(sumExpenses).add(sumSavings));
-        return overall.divide(BigDecimal.valueOf(Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH)),
-                2, RoundingMode.HALF_EVEN);
+        costAnalyticRepo.save(costAnalytic);
     }
 
 

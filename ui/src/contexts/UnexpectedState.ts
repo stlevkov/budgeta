@@ -5,6 +5,7 @@ import Dashboard from "../data/classes/Dashboard";
 import Unexpected from "../data/classes/Unexpected";
 import DashboardState from "./DashboardState";
 import DashboardListener from "../data/interfaces/DashboardListener";
+import { toast } from "material-react-toastify";
 
 export default class UnexpectedState implements DashboardListener {
   private unexpectedState: Unexpected[]; // Change the type to Unexpected[]
@@ -13,6 +14,7 @@ export default class UnexpectedState implements DashboardListener {
   private sumUnexpected: number | undefined;
   private restClient: RestClient;
   private dashboardState: DashboardState;
+  private selectedDashboard: Dashboard | undefined;
 
   constructor(stateFactory: StateFactory) { // Add the StateFactory parameter
     this.unexpectedState = [];
@@ -22,17 +24,19 @@ export default class UnexpectedState implements DashboardListener {
     this.restClient = new RestClient(config.api.unexpectedsEndpoint);
     this.dashboardState = stateFactory.getDashboardState();
     this.dashboardState.addListener(this.onDashboardStateChange.bind(this));
+    this.selectedDashboard = undefined;
   }
 
   onDashboardStateChange(dashboard: Dashboard) {
     console.log('[UnexpectedState] Dashboard has changed, fetching by dashboardId: ', dashboard.id);
+    this.selectedDashboard = dashboard;
     this.restClient.genericFetch<Unexpected[]>([dashboard.id]).then((data) => {
-        console.log('[UnexpectedState] Data: ', data);
-        this.setState(data);
-      }).catch((error) => {
-        console.error('[UnexpectedState] Error:', error);
-        this.setState([]);
-      });
+      console.log('[UnexpectedState] Data: ', data);
+      this.setState(data);
+    }).catch((error) => {
+      console.error('[UnexpectedState] Error:', error);
+      this.setState([]);
+    });
   }
 
   setState(newState: Unexpected[]) {
@@ -73,10 +77,15 @@ export default class UnexpectedState implements DashboardListener {
   }
 
   addUnexpected(unexpected: Unexpected) {
-    this.restClient.genericCreate(unexpected, () => {
-      this.setState([...this.unexpectedState, unexpected]);
-      this.saveListeners.forEach((saveListener) => saveListener());
-    });
+    if (this.selectedDashboard) {
+      unexpected.dashboardId = this.selectedDashboard.id;
+      this.restClient.genericCreate(unexpected, () => {
+        this.setState([...this.unexpectedState, unexpected]);
+        this.saveListeners.forEach((saveListener) => saveListener());
+      });
+    } else {
+      toast.error("Unable to create new Unexpected. Please refresh the page and try again or contact admin.");
+    }
   }
 
   removeUnexpected(unexpected: Unexpected) {

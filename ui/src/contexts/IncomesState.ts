@@ -5,6 +5,7 @@ import Dashboard from "../data/classes/Dashboard";
 import DashboardListener from "../data/interfaces/DashboardListener";
 import DashboardState from "./DashboardState";
 import Income from "../data/classes/Income";
+import { toast } from "material-react-toastify";
 
 export default class IncomesState implements DashboardListener {
   private incomeState: Income[];
@@ -13,6 +14,7 @@ export default class IncomesState implements DashboardListener {
   private sumIncomes: number | undefined;
   private restClient: RestClient;
   private dashboardState: DashboardState;
+  private selectedDashboard: Dashboard | undefined;
 
   constructor(stateFactory: StateFactory) {
     this.incomeState = [];
@@ -22,17 +24,19 @@ export default class IncomesState implements DashboardListener {
     this.restClient = new RestClient(config.api.incomesEndpoint);
     this.dashboardState = stateFactory.getDashboardState();
     this.dashboardState.addListener(this.onDashboardStateChange.bind(this));
+    this.selectedDashboard = undefined;
   }
 
   onDashboardStateChange(dashboard: Dashboard) {
     console.log('[IncomesState] Dashboard has changed, fetching by dashboardId: ', dashboard.id);
+    this.selectedDashboard = dashboard;
     this.restClient.genericFetch<Income[]>([dashboard.id]).then((data) => {
-        console.log('[IncomesState] Data: ', data);
-        this.setState(data);
-      }).catch((error) => {
-        console.error('[IncomesState] Error:', error);
-        this.setState([]);
-      });
+      console.log('[IncomesState] Data: ', data);
+      this.setState(data);
+    }).catch((error) => {
+      console.error('[IncomesState] Error:', error);
+      this.setState([]);
+    });
   }
 
   setState(newState: Income[]) {
@@ -73,10 +77,15 @@ export default class IncomesState implements DashboardListener {
   }
 
   addIncome(income: Income) {
-    this.restClient.genericCreate(income, () => {
-      this.setState([...this.incomeState, income]);
-      this.saveListeners.forEach((saveListener) => saveListener());
-    })
+    if (this.selectedDashboard) {
+      income.dashboardId = this.selectedDashboard.id;
+      this.restClient.genericCreate(income, () => {
+        this.setState([...this.incomeState, income]);
+        this.saveListeners.forEach((saveListener) => saveListener());
+      });
+    } else {
+      toast.error("Unable to create new Income. Please refresh the page and try again or contact admin.");
+    }
   }
 
   removeIncome(income: Income) {

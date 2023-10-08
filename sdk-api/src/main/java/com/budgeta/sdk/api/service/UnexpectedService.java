@@ -21,4 +21,6 @@ import javax.validation.ConstraintViolationException;
 
 public interface UnexpectedService {
     void createUnexpected(Unexpected unexpected) throws ConstraintViolationException, ValidationCollectionException;
+
+    void updateUnexpected(Unexpected unexpected) throws ConstraintViolationException, ValidationCollectionException;
 }

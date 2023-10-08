@@ -23,7 +23,7 @@ import javax.validation.ConstraintViolationException;
 public interface CostAnalyticService {
     void createCostAnalytic(CostAnalytic costAnalytic) throws ConstraintViolationException, ValidationCollectionException;
 
-    CostAnalytic updateCostAnalytic(CostAnalytic costAnalytic) throws ConstraintViolationException, ValidationCollectionException;
+    void updateCostAnalytic(CostAnalytic costAnalytic) throws ConstraintViolationException, ValidationCollectionException;
 
-    void updateCostAnalytic(BalanceTransaction balanceTransaction) throws ValidationCollectionException;
+    void addBalanceTransaction(BalanceTransaction balanceTransaction) throws ValidationCollectionException;
 }

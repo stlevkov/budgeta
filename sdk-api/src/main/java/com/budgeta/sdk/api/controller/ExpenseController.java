@@ -39,7 +39,7 @@ public class ExpenseController {
 
     @GetMapping("/api/expenses")
     public ResponseEntity<?> getAll() {
-        System.out.println("Get All Expenses called");
+        System.out.println("[GET][EXPENSES] getAll");
         List<Expense> expenses = expenseRepository.findAll();
         if (!expenses.isEmpty()) {
             return new ResponseEntity<>(expenses, HttpStatus.OK);
@@ -59,7 +59,7 @@ public class ExpenseController {
 
     @DeleteMapping("/api/expenses/{id}")
     public ResponseEntity<?> deleteExpense(@PathVariable("id") String id){
-        System.out.println("Delete Expense");
+        System.out.println("[POST][Expense] Deleting Expense with id: " + id);
         Optional<Expense> expenses = expenseRepository.findById(id);
         if(expenses.isPresent()) {
             expenseRepository.delete(expenses.get());
@@ -70,6 +70,7 @@ public class ExpenseController {
 
     @PostMapping("/api/expenses")
     public ResponseEntity<?> createExpense(@RequestBody Expense expense){
+        System.out.println("[POST][Expense] Creating new Expense: " + expense);
         try{
             expenseService.createExpense(expense);
             return new ResponseEntity<>(expense, HttpStatus.CREATED);
@@ -80,25 +81,16 @@ public class ExpenseController {
         }
     }
 
-    @PutMapping("/api/expenses/{id}")
-    public ResponseEntity<?> updateExpense(@PathVariable String id, @RequestBody Expense expense){
-        System.out.println("Updating Expense");
-        Optional<Expense> expenseOptional = expenseRepository.findById(id);
-        if(expenseOptional.isPresent()){
-            Expense expenseUpdate = expenseOptional.get();
-            expenseUpdate.setName(expense.getName());
-            expenseUpdate.setUpdatedAt(new Date());
-            expenseUpdate.setDescription(expense.getDescription());
-            expenseUpdate.setValue(expense.getValue());
-            try{
-                expenseRepository.save(expenseUpdate);
-                return new ResponseEntity<>(expenseUpdate, HttpStatus.OK);
-            } catch (Exception e) {
-                return new ResponseEntity<>("Unable to create expense. Reason: " + e.getMessage(),
-                        HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+    @PutMapping("/api/expenses")
+    public ResponseEntity<?> updateExpense(@RequestBody Expense expense) {
+        System.out.println("[PUT][Expense] Updating Expense: " + expense);
+        try {
+            expenseService.updateExpense(expense);
+            return new ResponseEntity<>(expense, HttpStatus.ACCEPTED);
+        } catch (ConstraintViolationException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+        } catch (ValidationCollectionException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>("Unable to update expense with id " + id +
-                ". Reason: Expense with this ID not found.", HttpStatus.NOT_FOUND);
     }
 }
