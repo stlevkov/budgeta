@@ -57,7 +57,7 @@ export default class RestClient {
    */
   async genericEdit(dto: DocumentInfo, notifySuccess?: () => void): Promise<void> {
     axios
-      .put(`${config.server.uri}${this.endpoint}/${dto.id}`, dto, {
+      .put(`${config.server.uri}${this.endpoint}`, dto, {
         headers: {
           "Content-Type": "application/json",
         },

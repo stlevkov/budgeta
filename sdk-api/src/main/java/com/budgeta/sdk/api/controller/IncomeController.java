@@ -39,7 +39,7 @@ public class IncomeController {
 
     @GetMapping("/api/incomes")
     public ResponseEntity<?> getAll(){
-        System.out.println("GetAllIncomes called");
+        System.out.println("[GET][Income] getAll called");
         List<Income> incomes = incomeRepository.findAll();
         if(!incomes.isEmpty()) {
             return new ResponseEntity<>(incomes, HttpStatus.OK);
@@ -49,7 +49,7 @@ public class IncomeController {
 
     @GetMapping("/api/incomes/{dashboardId}")
     public ResponseEntity<?> getAllByDashboardId(@PathVariable String dashboardId){
-        System.out.println("[GET][INCOMES] getAllByDashboardId called for dashboardId: " + dashboardId);
+        System.out.println("[GET][Income] getAllByDashboardId called for dashboardId: " + dashboardId);
         List<Income> incomes = incomeRepository.findByDashboardId(dashboardId);
         if(!incomes.isEmpty()) {
             return new ResponseEntity<>(incomes, HttpStatus.OK);
@@ -59,7 +59,8 @@ public class IncomeController {
 
     @DeleteMapping("/api/incomes/{id}")
     public ResponseEntity<?> deleteIncome(@PathVariable("id") String id){
-        System.out.println("Delete Income");
+        System.out.println("[POST][Income] Deleting Income with id: " + id);
+        //TODO - move this to the service
         Optional<Income> incomes = incomeRepository.findById(id);
         if(incomes.isPresent()) {
             incomeRepository.delete(incomes.get());
@@ -70,6 +71,7 @@ public class IncomeController {
 
     @PostMapping("/api/incomes")
     public ResponseEntity<?> createIncome(@RequestBody Income income){
+        System.out.println("[POST][Income] Creating Income: " + income);
         try{
             incomeService.createIncome(income);
             return new ResponseEntity<>(income, HttpStatus.CREATED);
@@ -80,25 +82,16 @@ public class IncomeController {
         }
     }
 
-    @PutMapping("/api/incomes/{id}")
-    public ResponseEntity<?> updateIncome(@PathVariable String id, @RequestBody Income income){
-        System.out.println("Updating Income");
-        Optional<Income> incomeOptional = incomeRepository.findById(id);
-        if(incomeOptional.isPresent()){
-            Income incomeUpdate = incomeOptional.get();
-            incomeUpdate.setName(income.getName());
-            incomeUpdate.setUpdatedAt(new Date());
-            incomeUpdate.setDescription(income.getDescription());
-            incomeUpdate.setValue(income.getValue());
-            try{
-                incomeRepository.save(incomeUpdate);
-                return new ResponseEntity<>(incomeUpdate, HttpStatus.OK);
-            } catch (Exception e) {
-                return new ResponseEntity<>("Unable to create income. Reason: " + e.getMessage(),
-                        HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+    @PutMapping("/api/incomes")
+    public ResponseEntity<?> updateIncome(@RequestBody Income income){
+        System.out.println("[PUT][Income] Updating Income: " + income);
+        try {
+            incomeService.updateIncome(income);
+            return new ResponseEntity<>(income, HttpStatus.ACCEPTED);
+        } catch (ConstraintViolationException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+        } catch (ValidationCollectionException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>("Unable to update income with id " + id +
-                ". Reason: Income with this ID not found.", HttpStatus.NOT_FOUND);
     }
 }

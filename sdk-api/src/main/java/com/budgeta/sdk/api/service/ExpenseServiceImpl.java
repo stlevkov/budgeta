@@ -25,21 +25,29 @@ import java.util.Date;
 import java.util.Optional;
 
 @Service
-public class ExpenseServiceImpl implements ExpenseService{
+public class ExpenseServiceImpl implements ExpenseService {
 
     @Autowired
     private ExpenseRepository expenseRepo;
 
     @Override
     public void createExpense(Expense expense) throws ConstraintViolationException, ValidationCollectionException {
-        System.out.println("Trying to create new Expense: " + expense);
         Optional<Expense> expenseOptional = expenseRepo.findByName(expense.getName());
-        System.out.println("Is the expense already present? " + expenseOptional.isPresent());
-        if(expenseOptional.isPresent()){
+        if (expenseOptional.isPresent()) {
             throw new ValidationCollectionException(ValidationCollectionException.alreadyExists());
         }
-        System.out.println("Creating Expense from the service");
         expense.setUpdatedAt(new Date());
         expenseRepo.save(expense);
+    }
+
+    @Override
+    public void updateExpense(Expense expense) throws ConstraintViolationException, ValidationCollectionException {
+        Optional<Expense> expenseOptional = expenseRepo.findById(expense.getId());
+        if (expenseOptional.isPresent()) {
+            expense.setUpdatedAt(new Date());
+            expenseRepo.save(expense);
+        } else {
+            throw new ValidationCollectionException(ValidationCollectionException.notFound(expense.getId()));
+        }
     }
 }

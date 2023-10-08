@@ -69,6 +69,7 @@ public class UnexpectedController {
 
     @PostMapping("/api/unexpecteds")
     public ResponseEntity<?> createUnexpected(@RequestBody Unexpected unexpected){
+        System.out.println("[POST][Unexpected] Creating Unexpected: " + unexpected);
         try{
             unexpectedService.createUnexpected(unexpected);
             return new ResponseEntity<>(unexpected, HttpStatus.CREATED);
@@ -79,27 +80,17 @@ public class UnexpectedController {
         }
     }
 
-
-    @PutMapping("/api/unexpecteds/{id}")
-    public ResponseEntity<?> updateUnexpected(@PathVariable String id, @RequestBody Unexpected unexpected){
-        System.out.println("Updating Unexpected");
-        Optional<Unexpected> unexpectedOptional = unexpectedRepository.findById(id);
-        if(unexpectedOptional.isPresent()){
-            Unexpected unexpectedUpdate = unexpectedOptional.get();
-            unexpectedUpdate.setName(unexpected.getName());
-            unexpectedUpdate.setUpdatedAt(new Date());
-            unexpectedUpdate.setDescription(unexpected.getDescription());
-            unexpectedUpdate.setValue(unexpected.getValue());
-            try{
-                unexpectedRepository.save(unexpectedUpdate);
-                return new ResponseEntity<>(unexpectedUpdate, HttpStatus.OK);
-            } catch (Exception e) {
-                return new ResponseEntity<>("Unable to create unexpected. Reason: " + e.getMessage(),
-                        HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+    @PutMapping("/api/unexpecteds")
+    public ResponseEntity<?> updateUnexpected(@RequestBody Unexpected unexpected){
+        try {
+            System.out.println("[PUT][Unexpected] Updating Unexpected: " + unexpected);
+            unexpectedService.updateUnexpected(unexpected);
+            return new ResponseEntity<>(unexpected, HttpStatus.ACCEPTED);
+        } catch (ConstraintViolationException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+        } catch (ValidationCollectionException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>("Unable to update unexpected with id " + id +
-                ". Reason: Unexpected with this ID not found.", HttpStatus.NOT_FOUND);
     }
 
 }

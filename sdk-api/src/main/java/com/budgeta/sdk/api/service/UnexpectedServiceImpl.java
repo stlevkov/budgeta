@@ -15,6 +15,7 @@
 package com.budgeta.sdk.api.service;
 
 import com.budgeta.sdk.api.exception.ValidationCollectionException;
+import com.budgeta.sdk.api.model.Expense;
 import com.budgeta.sdk.api.model.Unexpected;
 import com.budgeta.sdk.api.repository.UnexpectedRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,14 +33,22 @@ public class UnexpectedServiceImpl implements UnexpectedService {
 
     @Override
     public void createUnexpected(Unexpected unexpected) throws ConstraintViolationException, ValidationCollectionException {
-        System.out.println("Trying to create new Saving: " + unexpected);
         Optional<Unexpected> unexpectedOptional = unexpectedRepo.findByName(unexpected.getName());
-        System.out.println("Is the unexpected already present? " + unexpectedOptional.isPresent());
         if(unexpectedOptional.isPresent()){
             throw new ValidationCollectionException(ValidationCollectionException.alreadyExists());
         }
-        System.out.println("Creating Saving from the service");
         unexpected.setUpdatedAt(new Date());
         unexpectedRepo.save(unexpected);
+    }
+
+    @Override
+    public void updateUnexpected(Unexpected unexpected) throws ConstraintViolationException, ValidationCollectionException {
+        Optional<Unexpected> unexpectedOptional = unexpectedRepo.findById(unexpected.getId());
+        if (unexpectedOptional.isPresent()) {
+            unexpected.setUpdatedAt(new Date());
+            unexpectedRepo.save(unexpected);
+        } else {
+            throw new ValidationCollectionException(ValidationCollectionException.notFound(unexpected.getId()));
+        }
     }
 }

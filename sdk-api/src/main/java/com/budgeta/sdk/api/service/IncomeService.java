@@ -22,4 +22,6 @@ import javax.validation.ConstraintViolationException;
 public interface IncomeService {
 
     void createIncome(Income income) throws ConstraintViolationException, ValidationCollectionException;
+
+    void updateIncome(Income income) throws ConstraintViolationException, ValidationCollectionException;
 }

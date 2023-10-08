@@ -22,4 +22,6 @@ import javax.validation.ConstraintViolationException;
 public interface ExpenseService {
 
     void createExpense(Expense expense) throws ConstraintViolationException, ValidationCollectionException;
+
+    void updateExpense(Expense expense) throws ConstraintViolationException, ValidationCollectionException;
 }

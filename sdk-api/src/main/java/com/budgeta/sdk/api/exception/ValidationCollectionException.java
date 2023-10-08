@@ -21,8 +21,8 @@ public class ValidationCollectionException extends Exception {
         super(message);
     }
 
-    public static String todoNotFound(String id){
-        return "Item with " + id + " not found.";
+    public static String notFound(String id){
+        return "Item with given id: " + id + " is not found.";
     }
 
     public static String alreadyExists(){

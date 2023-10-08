@@ -14,6 +14,7 @@
  */
 package com.budgeta.sdk.api.controller;
 
+import com.budgeta.sdk.api.exception.ValidationCollectionException;
 import com.budgeta.sdk.api.model.CostAnalytic;
 import com.budgeta.sdk.api.repository.CostAnalyticRepository;
 import com.budgeta.sdk.api.service.CostAnalyticService;
@@ -22,9 +23,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.ConstraintViolationException;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class CostAnalyticController {
@@ -36,7 +37,7 @@ public class CostAnalyticController {
 
     @GetMapping("/api/costAnalytics")
     public ResponseEntity<?> getAll(){
-        System.out.println("GetAll CostAnalytics called");
+        System.out.println("[GET][CostAnalytic] getAll called");
         List<CostAnalytic> costAnalytics = costAnalyticRepository.findAll();
         if(!costAnalytics.isEmpty()) {
             return new ResponseEntity<>(costAnalytics.get(0), HttpStatus.OK);
@@ -44,27 +45,17 @@ public class CostAnalyticController {
         return new ResponseEntity<>("No CostAnalytics available", HttpStatus.NO_CONTENT);
     }
 
-    @PutMapping("/api/costAnalytics/{id}")
-    public ResponseEntity<?> updateCostAnalytic(@PathVariable String id, @RequestBody CostAnalytic costAnalytic){
-        System.out.println("Updating CostAnalytic");
-        Optional<CostAnalytic> costAnalyticOptional = costAnalyticRepository.findById(id);
-        if(costAnalyticOptional.isPresent()){
-            CostAnalytic costAnalyticUpdate = costAnalyticOptional.get();
-            costAnalyticUpdate.setBalanceAccount(costAnalytic.getBalanceAccount());
-            costAnalyticUpdate.setTargetSaving(costAnalytic.getTargetSaving());
-            costAnalyticUpdate.setMonthlyTarget(costAnalytic.getMonthlyTarget());
-            costAnalyticUpdate.setAllExpenses(costAnalytic.getAllExpenses());
-            costAnalyticUpdate.setName(costAnalytic.getName());
-            try{
-                costAnalyticRepository.save(costAnalyticUpdate);
-                return new ResponseEntity<>(costAnalyticUpdate, HttpStatus.OK);
-            } catch (Exception e) {
-                return new ResponseEntity<>("Unable to create costAnalytic. Reason: " + e.getMessage(),
-                        HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+    @PutMapping("/api/costAnalytics")
+    public ResponseEntity<?> updateCostAnalytic(@RequestBody CostAnalytic costAnalytic){
+        System.out.println("[PUT][CostAnalytic] Updating CostAnalytic: " + costAnalytic);
+        try {
+            costAnalyticService.updateCostAnalytic(costAnalytic);
+            return new ResponseEntity<>(costAnalytic, HttpStatus.ACCEPTED);
+        } catch (ConstraintViolationException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+        } catch (ValidationCollectionException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>("Unable to update CostAnalytic with id " + id +
-                ". Reason: CostAnalytic with this ID not found.", HttpStatus.NOT_FOUND);
     }
 
     @PutMapping("/api/costAnalytics/targetSaving") // TODO Remove this and use the generic update
