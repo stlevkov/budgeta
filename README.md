@@ -11,7 +11,7 @@ It does not requires everyday inputs. Once configured, the application will moni
 | Ubuntu | 22.04   |    ✔   |
 
 ### UI Preview
-![demo image not available](resources/budgeta_demo_preview_unreleased.jpg?raw=true)
+![demo image not available](resources/budgeta_demo_preview_unreleased.png?raw=true)
 
 ## Setup
 Execute the [./autorun.sh](./setup/autorun.sh) script and use the provided options
