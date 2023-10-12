@@ -25,5 +25,4 @@ public interface CostAnalyticService {
 
     void updateCostAnalytic(CostAnalytic costAnalytic) throws ConstraintViolationException, ValidationCollectionException;
 
-    void addBalanceTransaction(BalanceTransaction balanceTransaction) throws ValidationCollectionException;
 }

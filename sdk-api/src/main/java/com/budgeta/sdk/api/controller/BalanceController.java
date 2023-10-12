@@ -33,7 +33,7 @@ public class BalanceController {
 
     private BalanceRepository balanceRepository;
 
-    private BalanceService unexpectedService;
+    private BalanceService balanceService;
 
     @GetMapping("/api/balanceAccount")
     public ResponseEntity<?> GetBalanceAccount(){
@@ -57,8 +57,9 @@ public class BalanceController {
 
     @PostMapping("/api/balanceAccount")
     public ResponseEntity<?> createBalanceTransaction(@RequestBody BalanceTransaction balanceTransaction){
+        System.out.println("[POST][BalanceAccount] Create new Balance transaction: " + balanceTransaction);
         try{
-            unexpectedService.createBalanceTransaction(balanceTransaction);
+            balanceService.createBalanceTransaction(balanceTransaction);
             return new ResponseEntity<>(balanceTransaction, HttpStatus.CREATED);
         } catch (ConstraintViolationException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);

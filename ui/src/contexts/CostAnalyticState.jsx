@@ -1,4 +1,5 @@
 import RestClient from "../api/RestClient";
+import BalanceTransaction from "../data/classes/BalanceTransaction";
 import config from  '../resources/config';
 import { calculateDailyRecommended } from "../utils/CostAnalyticUtil";
 import StateFactory from "./StateFactory";
@@ -16,10 +17,12 @@ export default class CostAnalyticState {
     this.expensesState = stateFactory.getExpensesState();
     this.incomesState = stateFactory.getIncomesState();
     this.unexpectedState = stateFactory.getUnexpectedState();
+    this.balanceAccountState = stateFactory.getBalanceAccountState();
 
     this.incomesState.addListener(this.onChangeCalculateDailyRecommended.bind(this));
     this.expensesState.addListener(this.onChangeCalculateDailyRecommended.bind(this));
     this.unexpectedState.addListener(this.onChangeCalculateDailyRecommended.bind(this));
+    this.balanceAccountState.addTransactionListener(this.onChangeUpdateBalanceAccount.bind(this));
 
     //TODO review this listener, if they are only need to update the cost analytics and fix it
     this.expensesState.addSaveListener(this.updateCostAnalytic.bind(this));
@@ -29,6 +32,16 @@ export default class CostAnalyticState {
     this.restClient.genericFetch().then((data) => {
       this.setState(data);
     });
+  }
+
+  onChangeUpdateBalanceAccount(balanceTransaction) {
+    console.log("[CostAnalyticState] Update balance account with: ", balanceTransaction);
+    if(balanceTransaction.type === 'WITHDRAW'){
+      this.state.balanceAccount -= Number(balanceTransaction.value);
+    } else {
+      this.state.balanceAccount += Number(balanceTransaction.value);
+    }
+    this.updateCostAnalytic();
   }
 
   /**
@@ -80,6 +93,7 @@ export default class CostAnalyticState {
   setState(newState) {
     console.log("[CostAnalyticState] Setting the state to new state...", newState);
     this.state = structuredClone(newState);
+    console.log('[CostAnalyticState] Listeners: ', this.listeners.length);
     this.listeners.forEach((listener) => listener(this.state)); // Notify all listeners that the state has changed
   }
 
@@ -88,11 +102,11 @@ export default class CostAnalyticState {
   }
 
   addListener(listener) {
-    console.log("Added listener to our state class");
-    this.listeners.push(listener); // Add a listener to be notified when the state changes
+    console.log("[CostAnalyticState] Added listener to state class");
+    this.listeners.push(listener);
   }
 
   removeListener(listener) {
-    this.listeners = this.listeners.filter((l) => l !== listener); // Remove a listener
+    this.listeners = this.listeners.filter((l) => l !== listener);
   }
 }

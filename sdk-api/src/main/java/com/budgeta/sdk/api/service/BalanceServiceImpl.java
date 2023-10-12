@@ -28,12 +28,9 @@ import java.util.Date;
 public class BalanceServiceImpl implements BalanceService {
 
     private BalanceRepository balanceRepository;
-    private CostAnalyticService costAnalyticService;
 
     @Override
     public void createBalanceTransaction(BalanceTransaction balanceTransaction) throws ConstraintViolationException, ValidationCollectionException {
-        //TODO update the CostAnalytic account Balance based on the balance Transaction type
-        costAnalyticService.addBalanceTransaction(balanceTransaction);
         balanceTransaction.setUpdatedAt(new Date());
         balanceRepository.save(balanceTransaction);
     }

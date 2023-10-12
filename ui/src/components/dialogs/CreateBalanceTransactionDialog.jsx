@@ -22,6 +22,7 @@ const BalanceTransactionType = {
   DEPOSIT: "DEPOSIT",
 };
 
+//TODO Replace by actual object BalanceTransaction.ts
 let balanceTransaction = {
   name: "Manual Update by User",
   description: "",
@@ -29,22 +30,14 @@ let balanceTransaction = {
   type: {},
 };
 
-export default function CreateBalanceTransactionDialog({costAnalytic}) {
+export default function CreateBalanceTransactionDialog({balanceAccount}) {
   const [open, setOpen] = React.useState(false);
   const [description, setDescription] = React.useState('');
   const [amount, setAmount] = React.useState(0);
   const [type, setType] = React.useState(BalanceTransactionType.DEPOSIT);
 
   const newBalanceTransaction = (balanceTransaction) => {
-    console.log("Creating new Balance Transaction: ", balanceTransaction);
-    let costAnalyticState = costAnalytic.getState();
-    if(balanceTransaction.type === 'WITHDRAW'){
-      costAnalyticState.balanceAccount -= Number(balanceTransaction.value);
-    } else {
-      costAnalyticState.balanceAccount += Number(balanceTransaction.value);
-    }
-    costAnalytic.saveState(); // TODO - can be improved with callback to not proceed if save failed
-    costAnalytic.setState(costAnalyticState);
+    balanceAccount.newTransaction(balanceTransaction);
   };
 
   const clearStates = () => {
