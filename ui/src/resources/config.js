@@ -7,7 +7,7 @@ export default {
     incomesEndpoint: 'incomes',
     expensesEndpoint: 'expenses',
     unexpectedsEndpoint: 'unexpecteds',
-    balanceTransactionEndpoint: 'balanceAccount',
+    balanceAccountEndpoint: 'balanceAccount',
     dashboardEndpoint: 'dashboards',
   }
 };

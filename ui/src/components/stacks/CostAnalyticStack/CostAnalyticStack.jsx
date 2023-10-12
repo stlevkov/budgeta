@@ -13,7 +13,7 @@ import data from "../../../resources/data.json";
 import CreateIncomeDialog from "../../dialogs/CreateIncomeDialog";
 import Divider from "@mui/material/Divider";
 import TextField from "@mui/material/TextField";
-import { CostAnalyticContext, IncomesContext, ExpensesContext } from "../../../utils/AppUtil";
+import { CostAnalyticContext, IncomesContext, ExpensesContext, BalanceAccountContext } from "../../../utils/AppUtil";
 import CreateBalanceTransactionDialog from "../../dialogs/CreateBalanceTransactionDialog";
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -67,6 +67,7 @@ export default function CostAnalyticStack() {
   const costAnalyticState = useContext(CostAnalyticContext);
   const expensesState = useContext(ExpensesContext); // TODO shall become property of CostAnalytic, move it
   const incomesState = useContext(IncomesContext); // TODO shall become property of CostAnalytic, move it
+  const balanceAccountState = useContext(BalanceAccountContext);
 
   const [costAnalytic, setCostAnalytic] = useState({});
   const [targetSaving, setTargetSaving] = useState(0);
@@ -147,7 +148,21 @@ export default function CostAnalyticStack() {
         <Grid xs={12} sm={6} md={4} lg={2.3}>
           <Item style={{ height: "120px" }}>
             <Tooltip title={<Typography fontSize="1.3em">All unexpecteds at one place</Typography>} placement="top">
-              <Typography style={{ float: "left", fontWeight: "bold" }} component="p" color="orange" fontSize="1.5em" variant="standard" align="left">
+              <Typography
+                style={{
+                  float: "left",
+                  fontWeight: "bold",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  maxWidth: "100%", // Ensure the text doesn't overflow the box
+                }}
+                component="p"
+                color="orange"
+                fontSize="1.5em"
+                variant="standard"
+                align="left"
+              >
                 BALANCE ACCOUNT
               </Typography>
             </Tooltip>
@@ -157,9 +172,10 @@ export default function CostAnalyticStack() {
               {costAnalytic.balanceAccount}
             </Typography>
 
-            <CreateBalanceTransactionDialog costAnalytic={costAnalyticState} />
+            <CreateBalanceTransactionDialog balanceAccount={balanceAccountState} />
           </Item>
         </Grid>
+
 
         <Grid xs={12} sm={6} md={4} lg={2.3}>
           <Item style={{ height: "120px" }}>
@@ -182,7 +198,7 @@ export default function CostAnalyticStack() {
         <Grid xs={12} sm={6} md={4} lg={2.8}>
           <Item style={{ height: "120px", backgroundColor: "#07233e" }}>
             <Tooltip title={<Typography fontSize="1.3em">Daily recommended - try not to exceed</Typography>} placement="top">
-              <Typography style={{fontWeight: "bold"}} component="p" align="left" color="orange" fontSize="1.5em" variant="standard">
+              <Typography style={{ fontWeight: "bold" }} component="p" align="left" color="orange" fontSize="1.5em" variant="standard">
                 DAILY TARGET
               </Typography>
             </Tooltip>

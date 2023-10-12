@@ -67,25 +67,4 @@ public class CostAnalyticServiceImpl implements CostAnalyticService {
         }
     }
 
-    //TODO Move this to BalanceServiceImpl
-    @Override
-    public void addBalanceTransaction(BalanceTransaction transaction) throws ValidationCollectionException {
-        List<CostAnalytic> costAnalytics = costAnalyticRepo.findAll();
-        System.out.println("Is the CostAnalytic already present? " + (costAnalytics.size() == 1));
-
-        if(costAnalytics.isEmpty()){
-            throw new ValidationCollectionException("CostAnalytic not found. You should create it first.");
-        }
-
-        CostAnalytic costAnalytic = costAnalytics.get(0);
-
-        if(transaction.getType().equals(BalanceTransaction.BalanceTransactionType.WITHDRAW)){
-            costAnalytic.setBalanceAccount(costAnalytic.getBalanceAccount().subtract(transaction.getValue()));
-        } else { // deposit
-            costAnalytic.setBalanceAccount(costAnalytic.getBalanceAccount().add(transaction.getValue()));
-        }
-        costAnalyticRepo.save(costAnalytic);
-    }
-
-
 }

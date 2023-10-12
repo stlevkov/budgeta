@@ -28,18 +28,12 @@ import java.util.Date;
 public class BalanceTransaction extends DocumentInfo {
 
     @NotNull
-    private BalanceTransactionType type;
+    private String type;
 
     public BalanceTransaction(String id, @NotNull String name, @NotNull String description, @NotNull BigDecimal value,
-                              Date updatedAt, BalanceTransactionType type, @NotNull String dashboardId) {
+                              Date updatedAt, String type, @NotNull String dashboardId) {
         super(id, name, description, value, updatedAt, dashboardId);
         this.type = type;
     }
-
-    public enum BalanceTransactionType {
-        WITHDRAW,
-        DEPOSIT
-    }
-
 
 }
