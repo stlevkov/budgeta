@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import javax.validation.ConstraintViolationException;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -31,9 +32,18 @@ public class ExpenseServiceImpl implements ExpenseService {
     private ExpenseRepository expenseRepo;
 
     @Override
+    public List<Expense> getByDashboardId(String dashboardId) throws ConstraintViolationException, ValidationCollectionException {
+        List<Expense> expenses = expenseRepo.findByDashboardId(dashboardId);
+        if(expenses.isEmpty()){
+            throw new ValidationCollectionException("No expenses found for the given dashboardId: " + dashboardId);
+        }
+        return expenses;
+    }
+
+    @Override
     public void createExpense(Expense expense) throws ConstraintViolationException, ValidationCollectionException {
         Optional<Expense> expenseOptional = expenseRepo.findByName(expense.getName());
-        if (expenseOptional.isPresent()) {
+        if (expenseOptional.isPresent() && expense.getDashboardId().equals(expenseOptional.get().getDashboardId())) {
             throw new ValidationCollectionException(ValidationCollectionException.alreadyExists());
         }
         expense.setUpdatedAt(new Date());

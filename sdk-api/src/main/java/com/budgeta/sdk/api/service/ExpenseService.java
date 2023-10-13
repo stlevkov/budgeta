@@ -18,8 +18,11 @@ import com.budgeta.sdk.api.exception.ValidationCollectionException;
 import com.budgeta.sdk.api.model.Expense;
 
 import javax.validation.ConstraintViolationException;
+import java.util.List;
 
 public interface ExpenseService {
+
+    List<Expense> getByDashboardId(String dashboardId) throws ConstraintViolationException, ValidationCollectionException;
 
     void createExpense(Expense expense) throws ConstraintViolationException, ValidationCollectionException;
 

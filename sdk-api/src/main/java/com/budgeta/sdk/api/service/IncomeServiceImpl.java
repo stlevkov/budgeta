@@ -15,6 +15,7 @@
 package com.budgeta.sdk.api.service;
 
 import com.budgeta.sdk.api.exception.ValidationCollectionException;
+import com.budgeta.sdk.api.model.Expense;
 import com.budgeta.sdk.api.model.Income;
 import com.budgeta.sdk.api.repository.IncomeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import javax.validation.ConstraintViolationException;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -33,7 +35,7 @@ public class IncomeServiceImpl implements IncomeService{
     @Override
     public void createIncome(Income income) throws ConstraintViolationException, ValidationCollectionException {
         Optional<Income> incomeOptional = incomeRepo.findByName(income.getName());
-        if(incomeOptional.isPresent()){
+        if(incomeOptional.isPresent() && income.getDashboardId().equals(incomeOptional.get().getDashboardId())){
             throw new ValidationCollectionException(ValidationCollectionException.alreadyExists());
         }
         income.setUpdatedAt(new Date());
@@ -49,5 +51,14 @@ public class IncomeServiceImpl implements IncomeService{
         } else {
             throw new ValidationCollectionException(ValidationCollectionException.notFound(income.getId()));
         }
+    }
+
+    @Override
+    public List<Income> getByDashboardId(String dashboardId) throws ConstraintViolationException, ValidationCollectionException {
+        List<Income> incomes = incomeRepo.findByDashboardId(dashboardId);
+        if(incomes.isEmpty()){
+            throw new ValidationCollectionException("No incomes found for the given dashboardId: " + dashboardId);
+        }
+        return incomes;
     }
 }

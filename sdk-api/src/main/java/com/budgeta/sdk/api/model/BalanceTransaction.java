@@ -27,6 +27,12 @@ import java.util.Date;
 @Document(collection = "balance_transactions")
 public class BalanceTransaction extends DocumentInfo {
 
+    public static final String DEPOSIT = "DEPOSIT";
+    public static final String WITHDRAW = "WITHDRAW";
+    public static final String USER_UPDATE = "Balance update by User";
+    public static final String SYSTEM_UPDATE = "Balance update by System Account Scheduler";
+    public static final String SYSTEM_UPDATE_DESCR = "Monthly account balance update with target saving";
+
     @NotNull
     private String type;
 

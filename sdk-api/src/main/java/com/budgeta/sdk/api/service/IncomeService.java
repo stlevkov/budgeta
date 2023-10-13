@@ -18,10 +18,13 @@ import com.budgeta.sdk.api.exception.ValidationCollectionException;
 import com.budgeta.sdk.api.model.Income;
 
 import javax.validation.ConstraintViolationException;
+import java.util.List;
 
 public interface IncomeService {
 
     void createIncome(Income income) throws ConstraintViolationException, ValidationCollectionException;
 
     void updateIncome(Income income) throws ConstraintViolationException, ValidationCollectionException;
+
+    List<Income> getByDashboardId(String id) throws ConstraintViolationException, ValidationCollectionException;
 }

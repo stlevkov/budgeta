@@ -21,5 +21,7 @@ import javax.validation.ConstraintViolationException;
 
 public interface DashboardService {
 
-    void createDashboard(Dashboard dashboard) throws ConstraintViolationException, ValidationCollectionException;
+    Dashboard createDashboard(Dashboard dashboard) throws ConstraintViolationException, ValidationCollectionException;
+
+    Dashboard getCurrentDashboard(int currentYear, String currentMonth) throws ConstraintViolationException, ValidationCollectionException;
 }
