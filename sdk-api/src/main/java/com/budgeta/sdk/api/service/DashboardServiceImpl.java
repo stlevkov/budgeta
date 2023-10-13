@@ -14,12 +14,14 @@
  */
 package com.budgeta.sdk.api.service;
 
+import com.budgeta.sdk.api.exception.ValidationCollectionException;
 import com.budgeta.sdk.api.model.Dashboard;
 import com.budgeta.sdk.api.repository.DashboardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.validation.ConstraintViolationException;
+import java.util.List;
 
 @Service
 public class DashboardServiceImpl implements DashboardService{
@@ -28,9 +30,19 @@ public class DashboardServiceImpl implements DashboardService{
     private DashboardRepository dashboardRepo;
 
     @Override
-    public void createDashboard(Dashboard dashboard) throws ConstraintViolationException {
+    public Dashboard createDashboard(Dashboard dashboard) throws ConstraintViolationException {
         System.out.println("Trying to create new dashboard: " + dashboard);
         System.out.println("Creating dashboard from the service");
-        dashboardRepo.save(dashboard);
+        return dashboardRepo.save(dashboard);
+    }
+
+    @Override
+    public Dashboard getCurrentDashboard(int currentYear, String currentMonth) throws ConstraintViolationException, ValidationCollectionException {
+        List<Dashboard> dashboards = dashboardRepo.findByYearAndMonth(currentYear, currentMonth);
+        if(dashboards.size() == 1) {
+            return dashboards.get(0);
+        } else {
+            throw new ValidationCollectionException("Unable to found dashboards with given year, month: " + currentYear + ", " + currentMonth);
+        }
     }
 }

@@ -25,4 +25,5 @@ public interface CostAnalyticService {
 
     void updateCostAnalytic(CostAnalytic costAnalytic) throws ConstraintViolationException, ValidationCollectionException;
 
+    CostAnalytic getCurrentCostAnalytic(int year, String month) throws ValidationCollectionException;
 }

@@ -23,9 +23,9 @@ import java.math.RoundingMode;
 import java.util.List;
 
 
-public final class ArithmeticUtils {
+public final class ArithmeticUtil {
 
-    private ArithmeticUtils(){
+    private ArithmeticUtil(){
         // hide
     }
 

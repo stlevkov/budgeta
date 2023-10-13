@@ -24,7 +24,7 @@ const BalanceTransactionType = {
 
 //TODO Replace by actual object BalanceTransaction.ts
 let balanceTransaction = {
-  name: "Manual Update by User",
+  name: "Balance update by User",
   description: "",
   value: 0,
   type: {},

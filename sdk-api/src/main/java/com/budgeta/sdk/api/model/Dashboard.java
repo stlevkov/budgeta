@@ -22,7 +22,6 @@ import javax.validation.constraints.NotNull;
 
 @Setter
 @Getter
-@NoArgsConstructor
 @AllArgsConstructor
 @ToString
 @Document(collection = "dashboards")
