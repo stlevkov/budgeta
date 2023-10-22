@@ -63,7 +63,7 @@ CircularProgressWithLabel.propTypes = {
 
 export default function ExpensesDirectionStack() {
   const [expenses, setExpenses] = useState([]);
-  const [progress, setProgress] = useState(0); // TODO - Calculate & Update dynamically
+  const [progress, setProgress] = useState(0);
   const expensesState = useContext(ExpensesContext);
   const incomesState = useContext(IncomesContext);
 
@@ -74,8 +74,7 @@ export default function ExpensesDirectionStack() {
   }
 
   const handleExpensesStateChange = (newState) => {
-    // Do something with the new state
-    console.log("DO SOMETHING Expenses in EXPENSES has changed:", newState);
+    console.log("[ExpensesStack] Expenses has changed:", newState);
     setExpenses(descSort(newState));
     setProgress((expensesState.getSumExpenses() / incomesState.getSumIncomes()) * 100);
   };
@@ -107,7 +106,7 @@ export default function ExpensesDirectionStack() {
   };
 
   const removeExpense = (expense, event) => {
-    console.log("[ExpensesStack]: Will delete item with id: " + expense.id);
+    console.log("[ExpensesStack]: Triggered deletion of item: ", expense);
     expensesState.removeExpense(expense);
   };
 

@@ -81,9 +81,10 @@ export default class RestClient {
    * This function will fire toast depending on the operation output - success or fail.
    *
    * @param dto - DocumentInfo object.
-   * @param optional - notifySuccess, callback function which will be called if the operation passes.
+   * @param optional - notifySuccess, callback function which will be called if the operation passes
+   * and providing the created object.
    */
-  async genericCreate(dto: DocumentInfo, notifySuccess?: () => void): Promise<void> {
+  async genericCreate(dto: DocumentInfo, notifySuccess?: (dto: DocumentInfo) => void): Promise<void> {
     axios
       .post(`${config.server.uri}${this.endpoint}`, dto, {
         headers: {
@@ -93,7 +94,7 @@ export default class RestClient {
       .then((response) => {
         console.log("[POST][" + this.endpoint + "]: RESPONSE OK: ", response.data);
         toast.success(dto.name + " created successfully!");
-        processCallback(notifySuccess);
+        processCallback(notifySuccess, response.data);
       })
       .catch((error) => {
         console.log("[POST][" + this.endpoint + "]: RESPONSE ERROR: " + error);

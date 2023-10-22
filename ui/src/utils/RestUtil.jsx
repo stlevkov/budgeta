@@ -14,10 +14,10 @@ export function embedPathVariables(pathVariables, endpoint) {
     return endpoint + path;
 }
 
-export function processCallback(notifySuccess) {
+export function processCallback(notifySuccess, modifiedObject) {
     if (notifySuccess !== undefined) {
         try {
-            notifySuccess();
+            notifySuccess(modifiedObject);
         } catch (error) {
             toast.error(`Internal error. Please contact devs: ${error}`);
         }

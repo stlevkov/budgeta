@@ -77,11 +77,11 @@ export default class ExpensesState implements DashboardListener {
     });
   }
 
-  addExpense(expense: Expense) {
+  addExpense(expenseCandidate: Expense) {
     if(this.selectedDashboard){
-      expense.dashboardId = this.selectedDashboard.id;
-      this.restClient.genericCreate(expense, () => {
-        this.setState([...this.expenseState, expense]);
+      expenseCandidate.dashboardId = this.selectedDashboard.id;
+      this.restClient.genericCreate(expenseCandidate, (savedExpense) => {
+        this.setState([...this.expenseState, savedExpense]);
         this.saveListeners.forEach((saveListener) => saveListener());
       });
     } else {
