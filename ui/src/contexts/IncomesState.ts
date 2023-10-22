@@ -76,11 +76,11 @@ export default class IncomesState implements DashboardListener {
     });
   }
 
-  addIncome(income: Income) {
+  addIncome(incomeCandidate: Income) {
     if (this.selectedDashboard) {
-      income.dashboardId = this.selectedDashboard.id;
-      this.restClient.genericCreate(income, () => {
-        this.setState([...this.incomeState, income]);
+      incomeCandidate.dashboardId = this.selectedDashboard.id;
+      this.restClient.genericCreate(incomeCandidate, (savedIncome) => {
+        this.setState([...this.incomeState, savedIncome]);
         this.saveListeners.forEach((saveListener) => saveListener());
       });
     } else {

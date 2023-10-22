@@ -76,11 +76,11 @@ export default class UnexpectedState implements DashboardListener {
     });
   }
 
-  addUnexpected(unexpected: Unexpected) {
+  addUnexpected(unexpectedCandidate: Unexpected) {
     if (this.selectedDashboard) {
-      unexpected.dashboardId = this.selectedDashboard.id;
-      this.restClient.genericCreate(unexpected, () => {
-        this.setState([...this.unexpectedState, unexpected]);
+      unexpectedCandidate.dashboardId = this.selectedDashboard.id;
+      this.restClient.genericCreate(unexpectedCandidate, (savedUnexpected) => {
+        this.setState([...this.unexpectedState, savedUnexpected]);
         this.saveListeners.forEach((saveListener) => saveListener());
       });
     } else {
