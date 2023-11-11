@@ -63,6 +63,10 @@ public class CostAnalytic {
     @NotNull
     private BigDecimal monthlyTarget;
 
+    /**
+     * Balance account stores the saved money each month. It is calculated based on the {@link targetSaving},
+     * automatically at the end of each month or manually updated by user.
+     */
     @NotNull
     private BigDecimal balanceAccount;
 

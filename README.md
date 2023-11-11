@@ -1,6 +1,6 @@
 # Budgeta
-WEB Application which helps to Plan the Family Budget and save funds.
-It does not requires everyday inputs. Once configured, the application will monitor the savings.
+A web application that helps plan the family budget and save funds without requiring daily inputs. 
+Once configured, the application will monitor the savings.
 
 ![NodeJS](https://github.com/stlevkov/budgeta/actions/workflows/node.js.yml/badge.svg)  ![Spring](https://github.com/stlevkov/budgeta/actions/workflows/maven.yml/badge.svg)
 
