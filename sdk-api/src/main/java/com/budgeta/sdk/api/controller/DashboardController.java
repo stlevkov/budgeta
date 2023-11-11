@@ -1,6 +1,6 @@
 /*
     Budgeta Application
-    Copyright (C) 2022  S.Levkov, K.Ivanov
+    Copyright (C) 2022 - 2023  S.Levkov, K.Ivanov
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -43,6 +43,12 @@ public class DashboardController {
             return new ResponseEntity<>(dashboards, HttpStatus.OK);
         }
         return new ResponseEntity<>("No dashboards available", HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/api/dashboards/aggregation")
+    public ResponseEntity<?> getAllAggregation(){
+        System.out.println("[GET][Dashboard Aggregation]");
+        return new ResponseEntity<>(dashboardRepository.getAggregatedDashboards(), HttpStatus.ACCEPTED);
     }
 
     @GetMapping("/api/dashboards/{year}/{month}")

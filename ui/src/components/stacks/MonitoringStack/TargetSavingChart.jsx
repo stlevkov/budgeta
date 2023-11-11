@@ -1,3 +1,4 @@
+// TODO: Remove this after charts are ready
 import { PieChart, Pie, Sector, ResponsiveContainer } from "recharts";
 
 const renderActiveShape = (props) => {

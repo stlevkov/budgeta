@@ -12,37 +12,30 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
  */
-package com.budgeta.sdk.api.model;
+import Dashboard from "./Dashboard";
 
-import lombok.*;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+export default class DashboardAggregation extends Dashboard {
 
-import javax.validation.constraints.NotNull;
+  public totalExpenses: number
 
-@Setter
-@Getter
-@AllArgsConstructor
-@ToString
-@Document(collection = "dashboards")
-public class Dashboard {
+  private totalUnexpecteds: number;
 
-    @Id
-    private String id;
+  private targetSaving: number;
 
-    @NotNull
-    private String month;
+  constructor(
+    id: string,
+    month: string,
+    year: number,
+    readOnly: boolean,
+    totalExpenses: number,
+    totalUnexpecteds: number,
+    targetSaving: number
+  ) {
+    super(id, month, year, readOnly);
 
-    @NotNull
-    private Integer year;
-
-    @NotNull
-    private Boolean readOnly;
-
-    private Double totalExpenses;
-
-    private Double totalUnexpecteds;
-
-    private Double targetSaving;
+    this.totalExpenses = totalExpenses;
+    this.totalUnexpecteds = totalUnexpecteds;
+    this.targetSaving = targetSaving;
+  }
 
 }

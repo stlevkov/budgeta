@@ -1,91 +1,150 @@
-import * as React from "react";
-import { useTheme } from "@mui/material/styles";
+/*
+    Budgeta Application
+    Copyright (C) 2022 - 2023  S.Levkov, K.Ivanov
 
-import {
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
 
-const data = [
-  {
-    name: "0",
-    uv: 400,
-    amt: 240,
-  },
-  {
-    name: "1",
-    uv: 500,
-    amt: 221,
-  },
-  {
-    name: "2",
-    uv: 300,
-    amt: 221,
-  },
-  {
-    name: "3",
-    uv: 200,
-    amt: 229,
-  },
-  {
-    name: "4",
-    uv: 278,
-    amt: 200,
-  },
-  {
-    name: "4",
-    uv: 189,
-    amt: 218,
-  },
-  {
-    name: "5",
-    uv: 239,
-    amt: 250,
-  },
-  {
-    name: "6",
-    uv: 349,
-    amt: 210,
-  },
-];
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+ */
+import React, { PureComponent } from 'react';
+import { useState, useEffect, useContext } from "react";
+import { ComposedChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { DashboardContext } from '../../../utils/AppUtil';
+
+const monthTickFormatter = (tick) => {
+  const date = new Date(tick);
+  return "";
+};
+
 export default function StatisticChart() {
-  const theme = useTheme();
+  const dashboardState = useContext(DashboardContext);
+  const [aggregationState, setAggregationState] = useState([]);
+
+  const [seriesVisibility, setSeriesVisibility] = useState({
+    expenses: true,
+    unexpecteds: true,
+    savings: true,
+  });
+
+  const [seriesColor, setSeriesColor] = useState({
+    expenses: "#2da81d",
+    unexpecteds: "#8884d8",
+    savings: "lightblue",
+  });
+
+  const handleClick = (e) => {
+    const { value } = e;
+    const updatedVisibility = { ...seriesVisibility };
+    updatedVisibility[value] = !updatedVisibility[value];
+    setSeriesVisibility(updatedVisibility);
+  }
+
+  // adjust the text color/decoration of the Legend text
+  const renderColorfulLegendText = (value, entry) => {
+    const { color } = entry;
+    return <span style={{
+      color: seriesVisibility[value] ? color : 'gray',
+      textDecoration: seriesVisibility[value] ? 'none' : 'line-through',
+      cursor: 'pointer',
+    }}>{value}</span>;
+  };
+
+const getMonthNumber = (monthName) => {
+  const months = {
+    January: '01',
+    February: '02',
+    March: '03',
+    April: '04',
+    May: '05',
+    June: '06',
+    July: '07',
+    August: '08',
+    September: '09',
+    October: '10',
+    November: '11',
+    December: '12',
+  };
+
+  return months[monthName];
+};
+
+  const transformAggregationState = (originalState) => {
+    if(!originalState) return;
+
+    const transformedState = originalState.map((item) => {
+      return {
+        date: `${item.year}-${getMonthNumber(item.month)}`, 
+        expenses: item.totalExpenses,
+        unexpecteds: item.totalUnexpecteds,
+        savings: item.targetSaving,
+      };
+    });
+
+    transformedState.sort((a, b) => (a.date > b.date ? 1 : -1));
+  
+    return transformedState;
+  };
+
+  const handleDashboardAggregationChanged = (aggregation) => {
+    console.log('[StatisticChart][Aggregation]: ', aggregation);
+    setAggregationState(transformAggregationState(dashboardState.getAggregationState()));
+ }
+
+ useEffect(() => {
+  console.log("[StatisticChart][UseEffect] Initializing Component.");
+  dashboardState.addAggregationListener(handleDashboardAggregationChanged);
+  setAggregationState(transformAggregationState(dashboardState.getAggregationState()));
+}, [dashboardState]);
 
   return (
-    <ResponsiveContainer>
-      <AreaChart
-        data={data}
-        syncId="anyId"
+    <ResponsiveContainer width="100%" height="100%">
+      <ComposedChart
+        width={500}
+        height={300}
+        data={aggregationState}
         margin={{
-          top: 0,
-          right: 0,
-          left: -20,
-          bottom: -10,
+          top: 5,
+          right: 30,
+          left: 0,
+          bottom: 5,
         }}
       >
-        <defs>
-          <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="20%" stopColor="#61d129" stopOpacity={1} />
-          <stop offset="95%" stopColor="#1A2027" stopOpacity={0.5} />
-          </linearGradient>
-        </defs>
-        <XAxis dataKey="name" />
-        <YAxis  />
-        <CartesianGrid horizontal={false} vertical={false} />
-        <Tooltip />
-        <Area
-          type="linear"
-          dataKey="uv"
-          stroke={theme.palette.primary.main}
-          fillOpacity={1}
-          fill="url(#colorUv)"
+        {/* <CartesianGrid strokeDasharray="3 3" /> */}
+        <XAxis dataKey="date" />
+        <XAxis
+          dataKey="date"
+          axisLine={false}
+          tickLine={false}
+          interval={0}
+          tickFormatter={monthTickFormatter}
+          height={1}
+          scale="band"
+
+          xAxisId="quarter"
         />
-      </AreaChart>
+        <YAxis  />
+        <Tooltip>updatedVisibility</Tooltip>
+        <Legend
+          onClick={(e) => handleClick(e)}
+          payload={Object.keys(seriesVisibility).map((dataKey) => ({ // adjust square box icon next to the text
+            value: dataKey,
+            type: 'square',
+            color: seriesVisibility[dataKey] ? seriesColor[dataKey] : 'gray',
+          }))}
+          formatter={renderColorfulLegendText}
+        />
+
+        <Bar dataKey="expenses" hide={!seriesVisibility["expenses"]} fill={seriesColor["expenses"]} />
+        <Bar dataKey="unexpecteds" hide={!seriesVisibility["unexpecteds"]} fill={seriesColor["unexpecteds"]} />
+        <Line dataKey="savings" type="monotone" hide={!seriesVisibility["savings"]} stroke={seriesColor["savings"]} strokeWidth="10" />
+      </ComposedChart>
     </ResponsiveContainer>
   );
+
 }

@@ -9,5 +9,6 @@ export default {
     unexpectedsEndpoint: 'unexpecteds',
     balanceAccountEndpoint: 'balanceAccount',
     dashboardEndpoint: 'dashboards',
+    dashboardAggregatedEndpoint: 'dashboards/aggregation'
   }
 };

@@ -1,6 +1,6 @@
 /*
     Budgeta Application
-    Copyright (C) 2022  S.Levkov, K.Ivanov
+    Copyright (C) 2022 - 2023  S.Levkov, K.Ivanov
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -62,14 +62,6 @@ public class CostAnalytic {
      */
     @NotNull
     private BigDecimal monthlyTarget;
-
-    /**
-     * All expenses are the amount of money which is marked to be spent for the month.
-     * The value is calculated based on the sum of the regular monthly Expenses only.
-     * The value is not supposed to be updated by the user. It is calculated and read by the app.
-     */
-    @NotNull
-    private BigDecimal allExpenses;
 
     @NotNull
     private BigDecimal balanceAccount;
