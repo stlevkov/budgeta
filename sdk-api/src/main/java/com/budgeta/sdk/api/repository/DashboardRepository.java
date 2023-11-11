@@ -1,6 +1,6 @@
 /*
     Budgeta Application
-    Copyright (C) 2022  S.Levkov, K.Ivanov
+    Copyright (C) 2022 - 2023  S.Levkov, K.Ivanov
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -15,10 +15,25 @@
 package com.budgeta.sdk.api.repository;
 
 import com.budgeta.sdk.api.model.Dashboard;
+import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
 
 public interface DashboardRepository extends MongoRepository<Dashboard, String> {
     List<Dashboard> findByYearAndMonth(int year, String month);
+
+    @Aggregation(pipeline = {
+            "{$lookup: {from: 'expenses', let: {id: '$_id'}, pipeline: [{$match: {$expr: {$eq: [{$toObjectId: '$dashboardId'}, '$$id']}}}], as: 'expenses'}}",
+            "{$unwind: '$expenses'}",
+            "{$group: { _id: '$_id', month: {$first: '$month'}, year: {$first: '$year'}, readOnly: {$first: '$readOnly'}, totalExpenses: {$sum: {$toDouble: '$expenses.value'}}}}",
+            "{$lookup: {from: 'unexpecteds', let: {id: '$_id'}, pipeline: [{$match: {$expr: {$eq: [{$toObjectId: '$dashboardId'}, '$$id']}}}], as: 'unexpecteds'}}",
+            "{$unwind: '$unexpecteds'}",
+            "{$group: { _id: '$_id', month: {$first: '$month'}, year: {$first: '$year'}, readOnly: {$first: '$readOnly'}, totalExpenses: {$first: '$totalExpenses'}, totalUnexpecteds: {$sum: {$toDouble: '$unexpecteds.value'}}}}",
+            "{$lookup: {from: 'cost_analytics', let: {id: '$_id'}, pipeline: [{$match: {$expr: {$eq: [{$toObjectId: '$dashboardId'}, '$$id']}}}], as: 'costAnalytics'}}",
+            "{$unwind: '$costAnalytics'}",
+            "{$group: { _id: '$_id', month: {$first: '$month'}, year: {$first: '$year'}, readOnly: {$first: '$readOnly'}, totalExpenses: {$first: '$totalExpenses'}, totalUnexpecteds: {$first: '$totalUnexpecteds'}, targetSaving: {$first: '$costAnalytics.targetSaving'}}}"
+    })
+    List<Dashboard> getAggregatedDashboards();
+
 }

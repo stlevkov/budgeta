@@ -1,6 +1,6 @@
 /*
     Budgeta Application
-    Copyright (C) 2022  S.Levkov, K.Ivanov
+    Copyright (C) 2022 - 2023  S.Levkov, K.Ivanov
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

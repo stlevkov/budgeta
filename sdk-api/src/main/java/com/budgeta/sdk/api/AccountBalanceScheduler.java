@@ -1,3 +1,17 @@
+/*
+    Budgeta Application
+    Copyright (C) 2022 - 2023  S.Levkov, K.Ivanov
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+ */
 package com.budgeta.sdk.api;
 
 import com.budgeta.sdk.api.exception.ValidationCollectionException;
@@ -98,7 +112,7 @@ public class AccountBalanceScheduler {
         nextMonthAsString = nextMonthAsString.substring(0, 1).toUpperCase() + nextMonthAsString.substring(1);
         String nextMonth = nextMonthAsString;
 
-        Dashboard newDashboard = new Dashboard(null, nextMonth, year, false);
+        Dashboard newDashboard = new Dashboard(null, nextMonth, year, false, null, null, null);
         return dashboardService.createDashboard(newDashboard);
     }
 

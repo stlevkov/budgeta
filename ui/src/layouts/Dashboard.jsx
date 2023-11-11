@@ -15,6 +15,7 @@ import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
 import { ToastContainer } from "material-react-toastify";
 import "material-react-toastify/dist/ReactToastify.css";
+import UsagesPieChart from "../components/stacks/MonitoringStack/UsagesPieChart";
 
 export default function Dashboard() {
   const sidebarWidth = "12em";
@@ -52,8 +53,7 @@ export default function Dashboard() {
           <Grid xs={2} sm={6} md={6}>
             <Box sx={{ flexGrow: 1 }}>
               <Grid container spacing={{ xs: 2, md: 2 }} columns={{ xs: 2, sm: 4, md: 12, lg: 12, xl: 12 }}>
-                {Array.from(Array(3)).map((_, index) => (
-                  <Grid xs={2} sm={4} md={4} key={index}>
+                  <Grid xs={2} sm={4} md={4}>
                     <Item style={{ height: "375px" }}>
                       <Tooltip title={<Typography fontSize="1.3em">Test Description</Typography>} placement="top">
                         <Typography style={{fontWeight: "bold"}} component="p" align="left" color="orange" fontSize="1.5em" variant="standard">
@@ -65,15 +65,21 @@ export default function Dashboard() {
                         {"Estimated Date: 06/09/2023"}
                       </Typography>
                       <br />
-                        <TargetSavingChart id={index} />
+                        <TargetSavingChart id={1} />
                       <br />
                       <Typography component="p" align="left" color="gray" fontSize="1.1em" variant="standard">
                         {"Earnings per day: 25"}
                       </Typography>
                     </Item>
                   </Grid>
-                ))}
+
+                  <Grid xs={2} sm={8} md={8}>
+                    <Item style={{ height: "375px" }}>
+                       <UsagesPieChart/>
+                    </Item>
+                  </Grid>
               </Grid>
+              
             </Box>
           </Grid>
 
