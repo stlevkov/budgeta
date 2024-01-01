@@ -6,25 +6,29 @@ import Unexpected from "../data/classes/Unexpected";
 import DashboardState from "./DashboardState";
 import DashboardListener from "../data/interfaces/DashboardListener";
 import { toast } from "material-react-toastify";
+import FactoryInitializable from "../data/interfaces/FactoryInitializable";
 
-export default class UnexpectedState implements DashboardListener {
+export default class UnexpectedState implements DashboardListener, FactoryInitializable<UnexpectedState>{
   private unexpectedState: Unexpected[]; // Change the type to Unexpected[]
   private listeners: Array<(unexpected: Unexpected[]) => void> = [];
   private saveListeners: Array<() => void> = [];
   private sumUnexpected: number | undefined;
   private restClient: RestClient;
-  private dashboardState: DashboardState;
+  private dashboardState: DashboardState | any;
   private selectedDashboard: Dashboard | undefined;
 
-  constructor(stateFactory: StateFactory) { // Add the StateFactory parameter
+  constructor(stateFactory: StateFactory<UnexpectedState>) { // Add the StateFactory parameter
     this.unexpectedState = [];
     this.listeners = [];
     this.saveListeners = [];
     this.sumUnexpected = undefined;
     this.restClient = new RestClient(config.api.unexpectedsEndpoint);
-    this.dashboardState = stateFactory.getDashboardState();
-    this.dashboardState.addListener(this.onDashboardStateChange.bind(this));
     this.selectedDashboard = undefined;
+  }
+
+  onFactoryReady(factory: StateFactory<any>): void {
+    this.dashboardState = factory.getState(DashboardState);
+    this.dashboardState.addListener(this.onDashboardStateChange.bind(this));
   }
 
   onDashboardStateChange(dashboard: Dashboard) {
@@ -78,7 +82,7 @@ export default class UnexpectedState implements DashboardListener {
 
   addUnexpected(unexpectedCandidate: Unexpected) {
     if (this.selectedDashboard) {
-      unexpectedCandidate.dashboardId = this.selectedDashboard.id;
+      unexpectedCandidate.dashboardId = this.selectedDashboard.id || '999999'; // TODO - fix that
       this.restClient.genericCreate(unexpectedCandidate, (savedUnexpected) => {
         this.setState([...this.unexpectedState, savedUnexpected]);
         this.saveListeners.forEach((saveListener) => saveListener());

@@ -16,6 +16,7 @@ package com.budgeta.sdk.api.controller;
 
 import com.budgeta.sdk.api.exception.ValidationCollectionException;
 import com.budgeta.sdk.api.model.CostAnalytic;
+import com.budgeta.sdk.api.model.Expense;
 import com.budgeta.sdk.api.repository.CostAnalyticRepository;
 import com.budgeta.sdk.api.service.CostAnalyticService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,20 @@ public class CostAnalyticController {
         if(!costAnalytics.isEmpty()) {
             return new ResponseEntity<>(costAnalytics.get(0), HttpStatus.OK);
         }
-        return new ResponseEntity<>("No CostAnalytics available", HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>("No CostAnalytics available", HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("/api/costAnalytics/{dashboardId}") // Update the request mapping
+    public ResponseEntity<?> getAllByDashboardId(@PathVariable String dashboardId) {
+        System.out.println("[GET][CostAnalytic] getAllByDashboardId called for dashboardId: " + dashboardId);
+        List<CostAnalytic> costAnalytics = costAnalyticRepository.findByDashboardId(dashboardId);
+        if(costAnalytics.size() > 1) {
+            return new ResponseEntity<>("Error: Found more cost analytics with the same Dashboard ID.", HttpStatus.BAD_REQUEST);
+        }
+        if (!costAnalytics.isEmpty()) {
+            return new ResponseEntity<>(costAnalytics.get(0), HttpStatus.OK);
+        }
+        return new ResponseEntity<>("No CostAnalytic available for the specified dashboardId.", HttpStatus.NOT_FOUND);
     }
 
     @PutMapping("/api/costAnalytics")

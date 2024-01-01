@@ -7,25 +7,29 @@ import config from '../resources/config';
 import DashboardState from "./DashboardState";
 import StateFactory from "./StateFactory";
 import { toast } from "material-react-toastify";
+import FactoryInitializable from "../data/interfaces/FactoryInitializable";
 
-export default class ExpensesState implements DashboardListener {
+export default class ExpensesState implements DashboardListener, FactoryInitializable<ExpensesState>{
   private expenseState: Expense[];
   private listeners: Array<(expenses: Expense[]) => void> = [];
   private saveListeners: Array<() => void> = [];
   private sumExpenses: number | undefined;
   private restClient: RestClient;
-  private dashboardState: DashboardState;
+  private dashboardState: DashboardState | any;
   private selectedDashboard: Dashboard | undefined;
 
-  constructor(stateFactory: StateFactory) { // Add the StateFactory parameter
+  constructor(stateFactory: StateFactory<ExpensesState>) { // Add the StateFactory parameter
     this.expenseState = [];
     this.listeners = [];
     this.saveListeners = [];
     this.sumExpenses = undefined;
     this.restClient = new RestClient(config.api.expensesEndpoint);
-    this.dashboardState = stateFactory.getDashboardState();
-    this.dashboardState.addListener(this.onDashboardStateChange.bind(this));
     this.selectedDashboard = undefined;
+  }
+
+  onFactoryReady(stateFactory: StateFactory<any>): void {
+    this.dashboardState = stateFactory.getState(DashboardState);
+    this.dashboardState.addListener(this.onDashboardStateChange.bind(this));
   }
 
   onDashboardStateChange(dashboard: Dashboard) {
@@ -79,7 +83,7 @@ export default class ExpensesState implements DashboardListener {
 
   addExpense(expenseCandidate: Expense) {
     if(this.selectedDashboard){
-      expenseCandidate.dashboardId = this.selectedDashboard.id;
+      expenseCandidate.dashboardId = this.selectedDashboard.id || '999999'; // TODO fix that
       this.restClient.genericCreate(expenseCandidate, (savedExpense) => {
         this.setState([...this.expenseState, savedExpense]);
         this.saveListeners.forEach((saveListener) => saveListener());

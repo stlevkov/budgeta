@@ -46,7 +46,7 @@ public class AccountBalanceScheduler {
     IncomeService incomeService;
 
     // Schedule the task for the last day of the month at 23:59
-    @Scheduled(cron = "0 59 23 L * ?")
+    // TODO remove and implement first opening mechanism in the new month
     public void performMonthlyTask() {
         System.out.println("[Account Balance Scheduler] Activated.");
         int currentYear = YearMonth.now().getYear();

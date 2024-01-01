@@ -9,7 +9,6 @@ import Tooltip from "@mui/material/Tooltip";
 import ViewIncomeDialog from "../../dialogs/ViewIncomesDialog";
 import Grid from "@mui/material/Unstable_Grid2";
 import config from "../../../resources/config";
-import data from "../../../resources/data.json";
 import CreateIncomeDialog from "../../dialogs/CreateIncomeDialog";
 import Divider from "@mui/material/Divider";
 import TextField from "@mui/material/TextField";
@@ -63,7 +62,7 @@ const TargetSavingEditable = styled(TextField)(({ theme }) => ({
 }));
 
 export default function CostAnalyticStack() {
-  console.log("[CostAnalytics] Initializing component.");
+  console.log("[CostAnalyticsStack] Initializing component.");
   const costAnalyticState = useContext(CostAnalyticContext);
   const expensesState = useContext(ExpensesContext); // TODO shall become property of CostAnalytic, move it
   const incomesState = useContext(IncomesContext); // TODO shall become property of CostAnalytic, move it
@@ -75,22 +74,22 @@ export default function CostAnalyticStack() {
 
   const handleCostAnalyticStateChange = (newState) => {
     // Do something with the new state
-    console.log("DO SOMETHING CostAnalytic in CostAnalyticSTACK has changed:", newState);
-
+    console.log("[CostAnalyticsStack] costAnalytic state has changed:", newState);
+    console.log('Will set target saving to: ', newState.targetSaving);
     setTargetSaving(newState.targetSaving);
     setCostAnalytic(newState);
   };
 
   const handleIncomesChange = () => { // TODO move this, as it shall become property of the CostAnalytic
-    console.log("DO SOMETHING Income in Incomes has changed:");
-    setSumIncomes(incomesState.getSumIncomes());
+    console.log("[CostAnalyticsStack] Incomes state has changed: " );
+    setSumIncomes(incomesState.getSumIncomes()); // TODO - see {expensesState.getSumExpenses()}
   };
 
   useEffect(() => {
     setSumIncomes(incomesState.getSumIncomes());
     // Add a listener to the costAnalyticState to track changes
     costAnalyticState.addListener(handleCostAnalyticStateChange);
-    incomesState.addListener(handleIncomesChange);
+    incomesState.addListener(handleIncomesChange); // TODO remove, see {expensesState.getSumExpenses()}
     // Cleanup function to remove the listener when the component unmounts
     return () => {
       costAnalyticState.removeListener(handleCostAnalyticStateChange);

@@ -2,6 +2,13 @@ import React from 'react';
 import { createContext } from 'react';
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import StateFactory from '../contexts/StateFactory';
+import DashboardState from '../contexts/DashboardState';
+import IncomesState from '../contexts/IncomesState';
+import ExpensesState from '../contexts/ExpensesState';
+import UnexpectedState from '../contexts/UnexpectedState';
+import BalanceAccountState from '../contexts/BalanceAccountState';
+import CostAnalyticState from '../contexts/CostAnalyticState';
+import SettingState from '../contexts/SettingState';
 
 // Create a context object to hold the instances
 export const ColorModeContext = React.createContext({ toggleColorMode: () => { }, });
@@ -15,14 +22,18 @@ export const BalanceAccountContext = createContext();
 const stateFactory = new StateFactory();
 
 // Create an instance of each state classes, order is also important
-const dashboardState = stateFactory.createDashboardState();
-const incomesState = stateFactory.createIncomesState();
-const expensesState = stateFactory.createExpensesState();
-const unexpectedState = stateFactory.createUnexpectedState();
-const balanceAccountState = stateFactory.createBalanceAccountState();
-const costAnalyticState = stateFactory.createCostAnalyticState();
+const incomesState = stateFactory.createState(IncomesState);
+const expensesState = stateFactory.createState(ExpensesState);
+const unexpectedState = stateFactory.createState(UnexpectedState)
+const balanceAccountState = stateFactory.createState(BalanceAccountState);
+const costAnalyticState = stateFactory.createState(CostAnalyticState);
+const settingState = stateFactory.createState(SettingState);
+const dashboardState = stateFactory.createState(DashboardState);
+
+stateFactory.ready(); // At this point any state can aquire another state
 
 export const DashboardContext = createContext(dashboardState);
+export const SettingContext = createContext(settingState);
 
 export default function withContexts(Component) {
   // TODO move this color theme stuffs in a separate state context class!!!

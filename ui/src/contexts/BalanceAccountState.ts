@@ -6,23 +6,27 @@ import config from  '../resources/config';
 import DashboardState from "./DashboardState";
 import StateFactory from "./StateFactory";
 import CostAnalyticState from "./CostAnalyticState";
+import FactoryInitializable from "../data/interfaces/FactoryInitializable";
 
-export default class BalanceAccountState {
+export default class BalanceAccountState implements FactoryInitializable<BalanceAccountState> {
    private state: BalanceTransaction[];
    private listeners: Array<(balanceTransactions: BalanceTransaction[]) => void> = [];
    private transactionListeners: Array<(balanceTransaction: BalanceTransaction) => void> = [];
    private restClient: RestClient;
-   private dashboardState: DashboardState;
+   private dashboardState: DashboardState | any;
    private selectedDashboard: Dashboard | undefined;
 
-  constructor(stateFactory: StateFactory) {
+  constructor(stateFactory: StateFactory<BalanceAccountState>) {
     this.state = [];
     this.listeners = [];
     this.transactionListeners = [];
     this.restClient = new RestClient(config.api.balanceAccountEndpoint);
-    this.dashboardState = stateFactory.getDashboardState();
-    this.dashboardState.addListener(this.onDashboardStateChange.bind(this));
     this.selectedDashboard = undefined;
+  }
+
+  onFactoryReady(stateFactory: StateFactory<any>): void {
+    this.dashboardState = stateFactory.getState(DashboardState);
+    this.dashboardState.addListener(this.onDashboardStateChange.bind(this));
   }
 
   onDashboardStateChange(dashboard: Dashboard) {
@@ -40,7 +44,7 @@ export default class BalanceAccountState {
   // TODO Update the state once the UI Component for the Account History is ready
   newTransaction(balanceTransaction: BalanceTransaction) {
     if(this.selectedDashboard){
-      balanceTransaction.dashboardId = this.selectedDashboard.id;
+      balanceTransaction.dashboardId = this.selectedDashboard.id || '999999'; // TODO fix that
       console.log('[BalanceAccountState] Creating new transaction: ', balanceTransaction);
       this.restClient.genericCreate(balanceTransaction, () => {
         this.transactionListeners.forEach((listener) => listener(balanceTransaction));

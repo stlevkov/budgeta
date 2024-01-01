@@ -6,25 +6,31 @@ import DashboardListener from "../data/interfaces/DashboardListener";
 import DashboardState from "./DashboardState";
 import Income from "../data/classes/Income";
 import { toast } from "material-react-toastify";
+import FactoryInitializable from "../data/interfaces/FactoryInitializable";
 
-export default class IncomesState implements DashboardListener {
+export default class IncomesState implements DashboardListener, FactoryInitializable<IncomesState> {
   private incomeState: Income[];
   private listeners: Array<(income: Income[]) => void> = [];
   private saveListeners: Array<() => void> = [];
   private sumIncomes: number | undefined;
   private restClient: RestClient;
-  private dashboardState: DashboardState;
+  private dashboardState: DashboardState | any;
   private selectedDashboard: Dashboard | undefined;
+  private stateFactory: StateFactory<IncomesState>;
 
-  constructor(stateFactory: StateFactory) {
+  constructor(stateFactory: StateFactory<IncomesState>) {
     this.incomeState = [];
     this.listeners = [];
     this.saveListeners = [];
     this.sumIncomes = undefined;
     this.restClient = new RestClient(config.api.incomesEndpoint);
-    this.dashboardState = stateFactory.getDashboardState();
-    this.dashboardState.addListener(this.onDashboardStateChange.bind(this));
+
     this.selectedDashboard = undefined;
+  }
+
+  onFactoryReady(factory: StateFactory<any>): void {
+    this.dashboardState = factory.getState(DashboardState);
+    this.dashboardState.addListener(this.onDashboardStateChange.bind(this));
   }
 
   onDashboardStateChange(dashboard: Dashboard) {
@@ -78,7 +84,7 @@ export default class IncomesState implements DashboardListener {
 
   addIncome(incomeCandidate: Income) {
     if (this.selectedDashboard) {
-      incomeCandidate.dashboardId = this.selectedDashboard.id;
+      incomeCandidate.dashboardId = this.selectedDashboard.id || '999999'; // TODO - fix that
       this.restClient.genericCreate(incomeCandidate, (savedIncome) => {
         this.setState([...this.incomeState, savedIncome]);
         this.saveListeners.forEach((saveListener) => saveListener());
