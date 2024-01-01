@@ -35,6 +35,23 @@ public class DashboardController {
     @Autowired
     private DashboardService dashboardService;
 
+    @GetMapping("/api/dashboards/delete_all")
+    public ResponseEntity<?> deleteAll(){
+        dashboardRepository.deleteAll();
+        return new ResponseEntity<>("All dashboard deleted", HttpStatus.OK);
+    }
+
+    @GetMapping("/api/dashboards/import_initial")
+    public ResponseEntity<?> importInitial(){
+        Dashboard dashboardOctober = new Dashboard("651b2fffeee58ca5e54c7b9d",
+                "October", 2023, false);
+        Dashboard dashboardNovember = new Dashboard("654194c40f244171d6e191ff",
+                "November", 2023, false);
+        dashboardRepository.save(dashboardOctober);
+        dashboardRepository.save(dashboardNovember);
+        return new ResponseEntity<>("All dashboard imported", HttpStatus.OK);
+    }
+
     @GetMapping("/api/dashboards")
     public ResponseEntity<?> getAll(){
         System.out.println("GetAllDashboards called");
@@ -47,14 +64,14 @@ public class DashboardController {
 
     @GetMapping("/api/dashboards/aggregation")
     public ResponseEntity<?> getAllAggregation(){
-        System.out.println("[GET][Dashboard Aggregation]");
+        System.out.println("[GET][Dashboard Aggregation] getAllAggregation");
         return new ResponseEntity<>(dashboardRepository.getAggregatedDashboards(), HttpStatus.ACCEPTED);
     }
 
     @GetMapping("/api/dashboards/{year}/{month}")
     public ResponseEntity<?> getDashboardByYearAndMonth(
             @PathVariable("year") int year, @PathVariable("month") String month) {
-        System.out.println("GetDashboardsByYearAndMonth called with Year: " + year + " and Month: " + month);
+        System.out.println("[GET][Dashboard] GetDashboardsByYearAndMonth called with Year: " + year + " and Month: " + month);
         List<Dashboard> dashboards = dashboardRepository.findByYearAndMonth(year, month);
 
         //TODO replace the body response message with object of type BudgetaError
@@ -91,6 +108,7 @@ public class DashboardController {
 
     @PostMapping("/api/dashboards")
     public ResponseEntity<?> createDashboard(@RequestBody Dashboard dashboard){
+        System.out.println("[POST][Dashboard] createDashboard: " + dashboard);
         try{
             dashboardService.createDashboard(dashboard);
             return new ResponseEntity<>(dashboard, HttpStatus.CREATED);

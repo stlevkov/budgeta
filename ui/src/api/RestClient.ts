@@ -42,7 +42,7 @@ export default class RestClient {
       }
     } catch (err) {
       console.log("Something is wrong: " + err);
-      return "error: " + err as T;
+      return Promise.reject("error");
     }
   }
   
@@ -84,7 +84,7 @@ export default class RestClient {
    * @param optional - notifySuccess, callback function which will be called if the operation passes
    * and providing the created object.
    */
-  async genericCreate(dto: DocumentInfo, notifySuccess?: (dto: DocumentInfo) => void): Promise<void> {
+  async genericCreate(dto: DocumentInfo | any, notifySuccess?: (dto: DocumentInfo) => void): Promise<void> {
     axios
       .post(`${config.server.uri}${this.endpoint}`, dto, {
         headers: {

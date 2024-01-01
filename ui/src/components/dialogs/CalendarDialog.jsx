@@ -18,6 +18,7 @@ export default function CalendarDialog({ open, setOpen }) {
     };
 
     const handleMonthChange = (newMonth) => {
+        console.log('%%% newMonth: ', newMonth)
         const month = newMonth.format('MMMM');
         const year = Number(newMonth.format('YYYY'));
         dashboardState.handleStateChanged(month, year);
@@ -35,14 +36,12 @@ export default function CalendarDialog({ open, setOpen }) {
             <DialogContent>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DateCalendar
-                        defaultValue={dayjs(selectedMonth)}
-                        maxDate={dayjs('2024-01')}
+                        maxDate={dayjs()}
                         minDate={dayjs('2022-01')}
                         views={['month', 'year']}
                         openTo="month"
                         monthsPerRow={3}
                         onMonthChange={handleMonthChange}
-                        value={selectedMonth}
                     />
                 </LocalizationProvider>
             </DialogContent>

@@ -1,6 +1,6 @@
 /*
     Budgeta Application
-    Copyright (C) 2023  S.Levkov, K.Ivanov
+    Copyright (C) 2022 - 2023  S.Levkov, K.Ivanov
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -14,18 +14,9 @@
  */
 package com.budgeta.sdk.api.repository;
 
-import com.budgeta.sdk.api.model.BalanceTransaction;
-import com.budgeta.sdk.api.model.Income;
+import com.budgeta.sdk.api.model.Setting;
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.data.mongodb.repository.Query;
 
-import java.util.List;
-import java.util.Optional;
+public interface SettingRepository extends MongoRepository<Setting, String> {
 
-public interface BalanceRepository extends MongoRepository<BalanceTransaction, String> {
-
-    @Query("{name : ?0}")
-    Optional<BalanceTransaction> findByName(String name);
-
-    List<Income> findByDashboardId(String dashboardId);
 }

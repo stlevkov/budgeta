@@ -14,7 +14,7 @@ export default class Dashboard {
      * @param readOnly - Indicates whether the dashboard is read-only.
      */
     constructor(
-      public id: string,
+      public id: string | null,
       public month: string, 
       public year: number, 
       public readOnly: boolean) {}

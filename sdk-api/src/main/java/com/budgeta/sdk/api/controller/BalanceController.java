@@ -35,6 +35,12 @@ public class BalanceController {
 
     private BalanceService balanceService;
 
+    @GetMapping("/api/balanceAccount/delete_all")
+    public ResponseEntity<?> deleteAll(){
+         balanceRepository.deleteAll();
+        return new ResponseEntity<>("All transactions deleted", HttpStatus.OK);
+    }
+
     @GetMapping("/api/balanceAccount")
     public ResponseEntity<?> GetBalanceAccount(){
         System.out.println("GetBalanceAccount called");

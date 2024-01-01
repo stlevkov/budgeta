@@ -14,7 +14,10 @@
  */
 package com.budgeta.sdk.api.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -22,35 +25,15 @@ import javax.validation.constraints.NotNull;
 
 @Setter
 @Getter
-@NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@Document(collection = "dashboards")
-public class Dashboard {
+@Document(collection = "settings")
+public class Setting {
 
     @Id
     private String id;
 
     @NotNull
-    private String month;
-
-    @NotNull
-    private Integer year;
-
-    @NotNull
-    private Boolean readOnly;
-
-    private Double totalExpenses;
-
-    private Double totalUnexpecteds;
-
-    private Double targetSaving;
-
-    public Dashboard(@NotNull String id, @NotNull String month, @NotNull Integer year, @NotNull Boolean readOnly) {
-        this.id = id;
-        this.month = month;
-        this.year = year;
-        this.readOnly = readOnly;
-    }
+    private Boolean initialized;
 
 }

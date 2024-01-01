@@ -1,18 +1,22 @@
 import "./App.css";
 import Dashboard from "./layouts/Dashboard";
-import React from "react";
 import SideNavBar from "./layouts/SideBar";
-import withContexts from './utils/AppUtil';
+import withContexts from './utils/AppUtil';   
+import RestClient from "./api/RestClient";
+import config from "./resources/config";
+import { useState, useEffect } from "react";
+import CreateDashboardDialog from "./components/dialogs/CreateDashboardDialog";
 
 export default function App() {
-const DashboardWithContexts = withContexts(Dashboard);
+  const DashboardWithContexts = withContexts(Dashboard);
 
-return (
-  <div id="app" className="App" style={({ display: "flex" })} >
-    <SideNavBar/>
-    <main style={{width: '100%', marginTop: '6px', marginRight: '6px'} }>
-    <DashboardWithContexts />
-    </main>
-  </div>
- );
+  return (
+    <div id="app" className="App" style={({ display: "flex" })} >
+          <SideNavBar />
+          <main style={{ width: '100%', marginTop: '6px', marginRight: '6px' }}>
+            <DashboardWithContexts />
+            <CreateDashboardDialog/>
+          </main>
+    </div>
+  );
 };

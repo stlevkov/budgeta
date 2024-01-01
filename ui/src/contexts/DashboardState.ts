@@ -16,21 +16,29 @@ import RestClient from "../api/RestClient";
 import Dashboard from "../data/classes/Dashboard";
 import DashboardAggregation from "../data/classes/DashboardAggregation";
 import config from  '../resources/config';
+import IncomesState from "./IncomesState";
 import StateFactory from "./StateFactory";
 import dayjs from 'dayjs';
+import UnexpectedState from "./UnexpectedState";
+import ExpensesState from "./ExpensesState";
+import FactoryInitializable from "../data/interfaces/FactoryInitializable";
 
-export default class DashboardState {
+export default class DashboardState implements FactoryInitializable<DashboardState> {
   private state: Dashboard;
   private aggregationState: DashboardAggregation[];
   private listeners: Function[] = [];
   private aggregationListeners: Function[] = [];
   private restClient: RestClient;
   private restClientAggregation: RestClient;
+  private incomeState: IncomesState | any;
+  private unexpectedState: UnexpectedState | any;
+  private expenseState: ExpensesState | any;
+
   private currentDate: dayjs.Dayjs;
   private month: string;
   private year: number;
 
-  constructor(stateFactory: StateFactory) {
+  constructor(stateFactory: StateFactory<DashboardState>) {
     this.restClient = new RestClient(config.api.dashboardEndpoint);
     this.restClientAggregation = new RestClient(config.api.dashboardAggregatedEndpoint);
     this.currentDate = dayjs();
@@ -38,6 +46,22 @@ export default class DashboardState {
     this.year = Number(this.currentDate.format('YYYY'));
     this.handleStateChanged(this.month, this.year);
     this.handleAggregationChanged(2020); // TODO Adjust when slider for time frame is implemented
+  }
+
+  onFactoryReady(stateFactory: StateFactory<any>): void {
+      console.log('[DashboardState] on factory in dashboard invoked');
+
+      this.incomeState = stateFactory.getState(IncomesState);
+      this.unexpectedState = stateFactory.getState(UnexpectedState);
+      this.expenseState = stateFactory.getState(ExpensesState);
+
+      this.incomeState.addListener(this.onChangeFetchAggregation.bind(this));
+      this.expenseState.addListener(this.onChangeFetchAggregation.bind(this));
+      this.unexpectedState.addListener(this.onChangeFetchAggregation.bind(this));
+  }
+
+  onChangeFetchAggregation(): void {
+     this.handleAggregationChanged(2020); // TODO Adjust when slider for time frame is implemented
   }
 
   getCurrentDate(): { month: string; year: number } {
