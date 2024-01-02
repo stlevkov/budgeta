@@ -9,6 +9,7 @@ export default {
     unexpectedsEndpoint: 'unexpecteds',
     balanceAccountEndpoint: 'balanceAccount',
     dashboardEndpoint: 'dashboards',
+    dashboardMinEndpoint: 'dashboards/min',
     dashboardAggregatedEndpoint: 'dashboards/aggregation',
     settingsEndpoint: 'settings',
     settingsInitDashoardEndpoint: 'settings/init_dashboard'

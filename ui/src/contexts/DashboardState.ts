@@ -29,20 +29,22 @@ export default class DashboardState implements FactoryInitializable<DashboardSta
   private listeners: Function[] = [];
   private aggregationListeners: Function[] = [];
   private restClient: RestClient;
+  private restClientMinDashboard: RestClient;
   private restClientAggregation: RestClient;
   private incomeState: IncomesState | any;
   private unexpectedState: UnexpectedState | any;
   private expenseState: ExpensesState | any;
 
   private currentDate: dayjs.Dayjs;
-  private month: string;
+  private month: number;
   private year: number;
 
   constructor(stateFactory: StateFactory<DashboardState>) {
     this.restClient = new RestClient(config.api.dashboardEndpoint);
+    this.restClientMinDashboard = new RestClient(config.api.dashboardMinEndpoint);
     this.restClientAggregation = new RestClient(config.api.dashboardAggregatedEndpoint);
     this.currentDate = dayjs();
-    this.month = this.currentDate.format('MMMM');
+    this.month = Number(this.currentDate.format('MM'));
     this.year = Number(this.currentDate.format('YYYY'));
     this.handleStateChanged(this.month, this.year);
     this.handleAggregationChanged(2020); // TODO Adjust when slider for time frame is implemented
@@ -64,10 +66,6 @@ export default class DashboardState implements FactoryInitializable<DashboardSta
      this.handleAggregationChanged(2020); // TODO Adjust when slider for time frame is implemented
   }
 
-  getCurrentDate(): { month: string; year: number } {
-    return { month: this.month, year: this.year };
-  }
-
   handleAggregationChanged(year: number): void {
     console.log("[DashboardState] Handle aggregation timeline changed: ");
     this.restClientAggregation.genericFetch<DashboardAggregation[]>([]).then((data) => {  // TODO Adjust when slider for time frame is implemented
@@ -76,7 +74,14 @@ export default class DashboardState implements FactoryInitializable<DashboardSta
     });
   }
 
-  handleStateChanged(month: string, year: number): void {
+  async getMinDashboard(): Promise<Dashboard> {
+    // Return the Promise from genericFetch
+    const data = await this.restClientMinDashboard.genericFetch<Dashboard>([]);
+    console.log('[DashboardState] Data: ', data);
+    return data as Dashboard;
+  }
+
+  handleStateChanged(month: number, year: number): void {
     console.log("[DashboardState] Handle selected month changed: ", month + ' ' + year);
     console.log('[DashboardState] Fetching the dashboard item from DB...');
     this.restClient.genericFetch<Dashboard>([year, month]).then((data) => {

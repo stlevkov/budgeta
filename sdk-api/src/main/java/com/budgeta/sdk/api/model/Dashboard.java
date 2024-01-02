@@ -32,7 +32,7 @@ public class Dashboard {
     private String id;
 
     @NotNull
-    private String month;
+    private Integer month;
 
     @NotNull
     private Integer year;
@@ -46,7 +46,7 @@ public class Dashboard {
 
     private Double targetSaving;
 
-    public Dashboard(@NotNull String id, @NotNull String month, @NotNull Integer year, @NotNull Boolean readOnly) {
+    public Dashboard(@NotNull String id, @NotNull Integer month, @NotNull Integer year, @NotNull Boolean readOnly) {
         this.id = id;
         this.month = month;
         this.year = year;

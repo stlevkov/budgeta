@@ -11,15 +11,14 @@ import { DashboardContext } from '../../utils/AppUtil';
 
 export default function CalendarDialog({ open, setOpen }) {
     const dashboardState = useContext(DashboardContext);
-    const [selectedMonth, setSelectedMonth] = useState(dayjs()); // Initialize with current date
+    const [minDashboard, setMinDashboard] = useState('2022-1');
 
     const handleClose = () => {
         setOpen(false);
     };
 
     const handleMonthChange = (newMonth) => {
-        console.log('%%% newMonth: ', newMonth)
-        const month = newMonth.format('MMMM');
+        const month = Number(newMonth.format('MM'));
         const year = Number(newMonth.format('YYYY'));
         dashboardState.handleStateChanged(month, year);
         setOpen(false);
@@ -27,6 +26,11 @@ export default function CalendarDialog({ open, setOpen }) {
 
     useEffect(() => {
         console.log("[Calendar Dialog][UseEffect] Initializing Component.");
+        console.log('[Calendar Dialog][UseEffect] Getting the min dashboard date...');
+        dashboardState.getMinDashboard().then(min => {
+            console.log('Min dashboard: ', min);
+            setMinDashboard(min.year + '-' + min.month);
+          });
     }, [open, dashboardState]);
 
     return (
@@ -37,7 +41,7 @@ export default function CalendarDialog({ open, setOpen }) {
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DateCalendar
                         maxDate={dayjs()}
-                        minDate={dayjs('2022-01')}
+                        minDate={dayjs(minDashboard)}
                         views={['month', 'year']}
                         openTo="month"
                         monthsPerRow={3}

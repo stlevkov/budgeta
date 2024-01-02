@@ -94,9 +94,8 @@ public class SettingController {
     public ResponseEntity<?> fabricDefaults() {
         System.out.println("[GET][SETTING] Fabric Defaults. This will remove all data from the DB");
         dashboardRepository.deleteAll();
-        List<Setting> all = settingRepository.findAll();
-        Setting setting = all.get(0);
-        Setting newSetting = new Setting(setting.getId(),false);
+        settingRepository.deleteAll();
+        Setting newSetting = new Setting(null,true);
         settingRepository.save(newSetting);
         costAnalyticRepository.deleteAll();
         expenseRepository.deleteAll();
@@ -111,15 +110,14 @@ public class SettingController {
         System.out.println("[GET][SETTING][FILL DUMMY DATA] filling database with several dashboards");
         Dashboard dashboard1 = new Dashboard();
         dashboard1.setYear(2023);
-        dashboard1.setMonth("October");
+        dashboard1.setMonth(10);
         dashboard1.setReadOnly(true);
         Dashboard dashboardSave1 = dashboardRepository.save(dashboard1);
         Dashboard dashboard2 = new Dashboard();
         dashboard2.setYear(2023);
-        dashboard2.setMonth("November");
+        dashboard2.setMonth(11);
         dashboard2.setReadOnly(true);
         Dashboard dashboardSave2 = dashboardRepository.save(dashboard2);
-        System.out.println("Dashboards created...");
 
         CostAnalytic costAnalytic = new CostAnalytic();
         costAnalytic.setTargetSaving(BigDecimal.valueOf(1500));

@@ -60,7 +60,7 @@ public class CostAnalyticServiceImpl implements CostAnalyticService {
     }
 
     @Override
-    public CostAnalytic getCurrentCostAnalytic(final int currentYear, final String currentMonth) throws ValidationCollectionException {
+    public CostAnalytic getCurrentCostAnalytic(final int currentYear, final int currentMonth) throws ValidationCollectionException {
 
         List<Dashboard> dashboards = dashboardRepository.findByYearAndMonth(currentYear, currentMonth);
         if(dashboards.size() == 1) {
