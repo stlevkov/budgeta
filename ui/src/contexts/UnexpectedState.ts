@@ -9,7 +9,7 @@ import { toast } from "material-react-toastify";
 import FactoryInitializable from "../data/interfaces/FactoryInitializable";
 
 export default class UnexpectedState implements DashboardListener, FactoryInitializable<UnexpectedState>{
-  private unexpectedState: Unexpected[]; // Change the type to Unexpected[]
+  private unexpectedState: Unexpected[];
   private listeners: Array<(unexpected: Unexpected[]) => void> = [];
   private saveListeners: Array<() => void> = [];
   private sumUnexpected: number | undefined;
@@ -17,7 +17,7 @@ export default class UnexpectedState implements DashboardListener, FactoryInitia
   private dashboardState: DashboardState | any;
   private selectedDashboard: Dashboard | undefined;
 
-  constructor(stateFactory: StateFactory<UnexpectedState>) { // Add the StateFactory parameter
+  constructor(stateFactory: StateFactory<UnexpectedState>) {
     this.unexpectedState = [];
     this.listeners = [];
     this.saveListeners = [];
@@ -62,7 +62,7 @@ export default class UnexpectedState implements DashboardListener, FactoryInitia
     return this.sumUnexpected;
   }
 
-  onChangeUnexpected(unexpected: Unexpected) {
+  onChange(unexpected: Unexpected) {
     console.log('Unexpected candidate: ', unexpected);
     this.unexpectedState = this.unexpectedState.map((item) => {
       return item.id === unexpected.id ? unexpected : item;

@@ -51,12 +51,12 @@ export default class CostAnalyticState implements DashboardListener, FactoryInit
     this.dashboardState = stateFactory.getState(DashboardState);
 
     this.dashboardState.addListener(this.onDashboardStateChange.bind(this));
-    this.incomesState.addSaveListener(this.onChangeCalculateDailyRecommended.bind(this));
-    this.expensesState.addSaveListener(this.onChangeCalculateDailyRecommended.bind(this));
-    this.unexpectedState.addSaveListener(this.onChangeCalculateDailyRecommended.bind(this));
+    this.incomesState.addListener(this.onChangeCalculateDailyRecommended.bind(this));
+    this.expensesState.addListener(this.onChangeCalculateDailyRecommended.bind(this));
+    this.unexpectedState.addListener(this.onChangeCalculateDailyRecommended.bind(this));
     this.balanceAccountState.addTransactionListener(this.onChangeUpdateBalanceAccount.bind(this));
 
-    // TODO review this listener, if they are only need to update the cost analytics and fix it
+    // Listeners when the user wants to actually save the changed values
     this.expensesState.addSaveListener(this.updateCostAnalytic.bind(this));
     this.unexpectedState.addSaveListener(this.updateCostAnalytic.bind(this));
     this.incomesState.addSaveListener(this.updateCostAnalytic.bind(this));

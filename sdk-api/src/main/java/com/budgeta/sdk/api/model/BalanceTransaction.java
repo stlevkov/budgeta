@@ -30,8 +30,8 @@ public class BalanceTransaction extends DocumentInfo {
     public static final String DEPOSIT = "DEPOSIT";
     public static final String WITHDRAW = "WITHDRAW";
     public static final String USER_UPDATE = "Balance update by User";
-    public static final String SYSTEM_UPDATE = "Balance update by System Account Scheduler";
-    public static final String SYSTEM_UPDATE_DESCR = "Monthly account balance update with target saving";
+    public static final String SYSTEM_UPDATE = "Balance update by the System Dashboard Creation Mechanism";
+    public static final String SYSTEM_UPDATE_DESCR = "The account balance has been transferred from the last Dashboard with adding the target saving";
 
     @NotNull
     private String type;

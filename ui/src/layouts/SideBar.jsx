@@ -4,6 +4,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import CalendarDialog from '../components/dialogs/CalendarDialog';
+import dayjs from 'dayjs';
 
 import { CalendarIcon } from '@mui/x-date-pickers';
 import { DashboardContext } from '../utils/AppUtil';
@@ -19,16 +20,13 @@ export default function SideNavBar() {
   };
 
   const handleDashboardChanged = (dashboard) => {
-     console.log('Dashboard: ', dashboard);
-     setCurrrentDate(dashboard.year + " / " + dashboard.month);
+    const result = dayjs(`${dashboard.year}-${dashboard.month}`, {format: 'YYYY-MM' });
+     setCurrrentDate(result.format("YYYY") + ' / ' + result.format("MMMM"));
   }
 
   useEffect(() => {
     console.log("[Sidebar][UseEffect] Initializing Component.");
-    const dashboardDate = dashboardState.getCurrentDate();
-    setCurrrentDate(dashboardDate.year + " / " + dashboardDate.month);
     dashboardState.addListener(handleDashboardChanged);
-    
   }, [dashboardState]);
 
   return (

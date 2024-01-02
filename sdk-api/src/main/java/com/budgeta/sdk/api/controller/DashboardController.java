@@ -19,6 +19,7 @@ import com.budgeta.sdk.api.model.Dashboard;
 import com.budgeta.sdk.api.repository.DashboardRepository;
 import com.budgeta.sdk.api.service.DashboardService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -41,17 +42,6 @@ public class DashboardController {
         return new ResponseEntity<>("All dashboard deleted", HttpStatus.OK);
     }
 
-    @GetMapping("/api/dashboards/import_initial")
-    public ResponseEntity<?> importInitial(){
-        Dashboard dashboardOctober = new Dashboard("651b2fffeee58ca5e54c7b9d",
-                "October", 2023, false);
-        Dashboard dashboardNovember = new Dashboard("654194c40f244171d6e191ff",
-                "November", 2023, false);
-        dashboardRepository.save(dashboardOctober);
-        dashboardRepository.save(dashboardNovember);
-        return new ResponseEntity<>("All dashboard imported", HttpStatus.OK);
-    }
-
     @GetMapping("/api/dashboards")
     public ResponseEntity<?> getAll(){
         System.out.println("GetAllDashboards called");
@@ -68,16 +58,29 @@ public class DashboardController {
         return new ResponseEntity<>(dashboardRepository.getAggregatedDashboards(), HttpStatus.ACCEPTED);
     }
 
+    @GetMapping("/api/dashboards/min")
+    public ResponseEntity<?> getFirstDashboard(){
+        System.out.println("[GET][Dashboard][Min] get the first available dashboard from the past");
+        return new ResponseEntity<>(dashboardRepository.findAll(Sort.by(Sort.Direction.ASC, "year", "month")).get(0), HttpStatus.OK);
+    }
+
     @GetMapping("/api/dashboards/{year}/{month}")
     public ResponseEntity<?> getDashboardByYearAndMonth(
-            @PathVariable("year") int year, @PathVariable("month") String month) {
+            @PathVariable("year") int year, @PathVariable("month") int month) {
         System.out.println("[GET][Dashboard] GetDashboardsByYearAndMonth called with Year: " + year + " and Month: " + month);
         List<Dashboard> dashboards = dashboardRepository.findByYearAndMonth(year, month);
 
         //TODO replace the body response message with object of type BudgetaError
 
         if (dashboards.isEmpty()) {
-            return new ResponseEntity<>("No dashboards available for the specified year and month", HttpStatus.NOT_FOUND);
+            System.out.println("No dashboards found. Will create new dashboard...");
+            Dashboard dashboard = null;
+            try {
+                dashboard = dashboardService.transferDataAndCreateDashboard(year, month);
+            } catch (ValidationCollectionException e) {
+                throw new RuntimeException(e);
+            }
+            return new ResponseEntity<>(dashboard, HttpStatus.OK);
         } else if (dashboards.size() == 1) {
             return new ResponseEntity<>(dashboards.get(0), HttpStatus.OK);
         } else {

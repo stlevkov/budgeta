@@ -87,7 +87,7 @@ export default function ViewIncomeDialog() {
 
   const handleChangeIncome = (income, event) => {
     income.value = Number(event.target.value);
-    incomesState.onChangeIncome(income);
+    incomesState.onChange(income);
   };
 
   const handleKeyDown = (income, event) => {

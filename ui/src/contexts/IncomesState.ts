@@ -64,7 +64,7 @@ export default class IncomesState implements DashboardListener, FactoryInitializ
     return this.sumIncomes;
   }
 
-  onChangeIncome(income: Income) {
+  onChange(income: Income) {
     console.log('Income candidate: ', income)
     this.incomeState.map((item) => {
       return item.id === income.id ? income : item;

@@ -19,8 +19,8 @@ import java.time.format.DateTimeFormatter;
 
 public final class DateUtils {
 
-    public static String getCurrentMonth(){
-        return YearMonth.now().format(DateTimeFormatter.ofPattern("MMMM"));
+    public static Integer getCurrentMonth(){
+        return Integer.parseInt(YearMonth.now().format(DateTimeFormatter.ofPattern("MM")));
     }
 
     public static int getCurrentYear() {

@@ -23,5 +23,7 @@ public interface DashboardService {
 
     Dashboard createDashboard(Dashboard dashboard) throws ConstraintViolationException, ValidationCollectionException;
 
-    Dashboard getCurrentDashboard(int currentYear, String currentMonth) throws ConstraintViolationException, ValidationCollectionException;
+    Dashboard getCurrentDashboard(int currentYear, int currentMonth) throws ConstraintViolationException, ValidationCollectionException;
+
+    Dashboard transferDataAndCreateDashboard(int year, int month) throws ValidationCollectionException;
 }
