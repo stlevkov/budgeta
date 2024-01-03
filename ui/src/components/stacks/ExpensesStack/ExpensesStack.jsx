@@ -13,6 +13,9 @@ import Divider from "@mui/material/Divider";
 import CreateExpenseDialog from "../../dialogs/CreateExpenseDialog";
 import { ExpensesContext, IncomesContext } from "../../../utils/AppUtil";
 import PropTypes from "prop-types";
+import LinearProgress from '@mui/material/LinearProgress';
+import dayjs from "dayjs";
+import ViewExpenseDialog from "../../dialogs/ViewExpensesDialog";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -79,15 +82,15 @@ export default function ExpensesDirectionStack() {
     setProgress((expensesState.getSumExpenses() / incomesState.getSumIncomes()) * 100);
   };
 
+  const calculateLoanProcess = (expense) => {
+    const today = dayjs();
+    const monthsSince = today.diff(dayjs(expense.startDate), 'month');
+    return (monthsSince / expense.maxPeriod) * 100;
+  };
+
   useEffect(() => {
-    setExpenses(descSort(expensesState.getState()));
-    setProgress((expensesState.getSumExpenses() / incomesState.getSumIncomes()) * 100);
-
     expensesState.addListener(handleExpensesStateChange);
-
     return () => {
-      setProgress(0);
-      setExpenses([]);
       expensesState.removeListener(handleExpensesStateChange);
     };
   }, [expensesState]);
@@ -150,14 +153,12 @@ export default function ExpensesDirectionStack() {
                     {expense.name}
                   </Typography>
                 </Tooltip>
-
-                <Tooltip title={"Remove " + expense.name} placement="top">
-                  <IconButton sx={{ mt: -1, mr: -1, float: "right" }} onClick={(event) => removeExpense(expense, event)} color="primary" aria-label="remove expense" size="small" align="right">
-                    <CloseIcon fontSize="inherit" />
-                  </IconButton>
-                </Tooltip>
+                <ViewExpenseDialog expense={expense} />
 
                 <ExpenseEditable id={`${expense.name}-input`} variant="standard" InputProps={{ disableUnderline: true }} onKeyDown={(event) => handleKeyDown(expense, event)} onChange={(e) => onExpenseChange(expense, e)} defaultValue={expense.value} />
+
+                {expense.loan ? <LinearProgress sx={{ borderRadius: 1, ml: -0.6, mr: -0.6, height: 8, mt: -1 }}
+                  variant="determinate" value={calculateLoanProcess(expense)} /> : <></>}
               </Item>
             </Grid>
           );

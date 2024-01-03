@@ -15,6 +15,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import TextField from "@mui/material/TextField";
 import { styled } from "@mui/material/styles";
 import { IncomesContext } from "../../utils/AppUtil";
+import dayjs from "dayjs";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -112,7 +113,7 @@ export default function ViewIncomeDialog() {
   for (let incomeIndex = 0; incomeIndex < incomes.length; incomeIndex++) {
     tabPanels.push(
       <TabPanel key={incomeIndex} value={value} index={incomeIndex}>
-        <IconButton sx={{ float: "right" }} onClick={(event) => removeIncome(incomes[incomeIndex], event)} color="primary" aria-label="remove expense" size="small" align="right">
+        <IconButton sx={{ float: "right" }} onClick={(event) => removeIncome(incomes[incomeIndex], event)} color="primary" aria-label="remove income" size="small" align="right">
           <DeleteIcon fontSize="medium" />
         </IconButton>
         <Typography component={"div"} variant="h4" gutterBottom>
@@ -123,7 +124,7 @@ export default function ViewIncomeDialog() {
           <IncomeEditable variant="standard" onKeyDown={(event) => handleKeyDown(incomes[incomeIndex], event)} InputProps={{ disableUnderline: true }} value={incomes[incomeIndex].value} onChange={(event) => handleChangeIncome(incomes[incomeIndex], event)} />
         </Typography>
         <Typography component={"div"} variant="h5" gutterBottom>
-          Last updated: {incomes[incomeIndex].updatedAt}
+          Last updated: {dayjs(incomes[incomeIndex].updatedAt).format("MMMM YYYY | hh:mm")}
         </Typography>
       </TabPanel>
     );
@@ -140,7 +141,7 @@ export default function ViewIncomeDialog() {
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle sx={{ float: "left" }}>
           All Incomes Details
-          <IconButton sx={{ float: "right" }} onClick={handleClose} color="primary" aria-label="remove expense" size="small" align="right">
+          <IconButton sx={{ float: "right" }} onClick={handleClose} color="primary" aria-label="remove income" size="small" align="right">
             <CloseIcon fontSize="inherit" />
           </IconButton>
         </DialogTitle>
