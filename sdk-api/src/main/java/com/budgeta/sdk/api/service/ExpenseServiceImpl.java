@@ -42,6 +42,15 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     @Override
     public void createExpense(Expense expense) throws ConstraintViolationException, ValidationCollectionException {
+
+        if(expense.isLoan() && (expense.getMaxPeriod() <= 1 || expense.getStartDate() == null)) {
+            throw new ValidationCollectionException("Loan type cannot have less then 1 month period for funds returns.");
+        }
+
+        if(expense.isScheduled() && (expense.getScheduledPeriod().length <= 1) ) {
+            throw new ValidationCollectionException("Scheduled type cannot have less then 1 month period for funds partial payments.");
+        }
+
         Optional<Expense> expenseOptional = expenseRepo.findByName(expense.getName());
         if (expenseOptional.isPresent() && expense.getDashboardId().equals(expenseOptional.get().getDashboardId())) {
             throw new ValidationCollectionException(ValidationCollectionException.alreadyExists());

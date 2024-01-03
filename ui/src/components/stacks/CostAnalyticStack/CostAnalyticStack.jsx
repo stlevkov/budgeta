@@ -147,21 +147,10 @@ export default function CostAnalyticStack() {
         <Grid xs={12} sm={6} md={4} lg={2.3}>
           <Item style={{ height: "120px" }}>
             <Tooltip title={<Typography fontSize="1.3em">All unexpecteds at one place</Typography>} placement="top">
-              <Typography
-                style={{
-                  float: "left",
-                  fontWeight: "bold",
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
+              <Typography style={{ float: "left", fontWeight: "bold", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
                   maxWidth: "100%", // Ensure the text doesn't overflow the box
                 }}
-                component="p"
-                color="orange"
-                fontSize="1.5em"
-                variant="standard"
-                align="left"
-              >
+                component="p" color="orange" fontSize="1.5em" variant="standard" align="left" >
                 BALANCE ACCOUNT
               </Typography>
             </Tooltip>
