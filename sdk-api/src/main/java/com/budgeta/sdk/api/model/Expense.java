@@ -15,6 +15,7 @@
 package com.budgeta.sdk.api.model;
 
 import lombok.Getter;
+import lombok.ToString;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotNull;
@@ -22,6 +23,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 @Getter
+@ToString
 @Document(collection = "expenses")
 public class Expense extends DocumentInfo {
 
@@ -30,7 +32,7 @@ public class Expense extends DocumentInfo {
     private Date startDate;
 
     private boolean scheduled;
-    private String[] scheduledPeriod; // ["January","June", "November"]
+    private int[] scheduledPeriod; // [1,6, 11]
 
     public Expense(String id, @NotNull String name, @NotNull String description, @NotNull BigDecimal value,
                    Date updatedAt, String dashboardId) {
