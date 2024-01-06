@@ -85,17 +85,8 @@ export default function StatisticChart() {
 
   return (
     <ResponsiveContainer width="100%" height="100%">
-      <ComposedChart
-        width={500}
-        height={300}
-        data={aggregationState}
-        margin={{
-          top: 5,
-          right: 30,
-          left: 0,
-          bottom: 5,
-        }}
-      >
+      <ComposedChart width={500} height={300} data={aggregationState}
+        margin={{ top: 5, right: 30, left: 0, bottom: 5, }}>
         {/* <CartesianGrid strokeDasharray="3 3" /> */}
         <XAxis dataKey="date" />
         <XAxis

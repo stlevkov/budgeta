@@ -70,15 +70,25 @@ export default function ExpensesDirectionStack() {
   const expensesState = useContext(ExpensesContext);
   const incomesState = useContext(IncomesContext);
 
-  const descSort = (expenses) => {
+  const loanSort = (expenses) => {
     const sortedData = [...expenses];
-    sortedData.sort((a, b) => b.value - a.value);
+    sortedData.sort((a, b) => {
+      // First, sort by the "loan" property (true comes first)
+      if (a.loan && !b.loan) {
+        return -1; // a comes first
+      } else if (!a.loan && b.loan) {
+        return 1; // b comes first
+      }
+      // If both have the same "loan" value or both don't have "loan", 
+      // then sort by the "value" property in descending order
+      return b.value - a.value;
+    });
     return sortedData;
-  }
+  };
 
   const handleExpensesStateChange = (newState) => {
     console.log("[ExpensesStack] Expenses has changed:", newState);
-    setExpenses(descSort(newState));
+    setExpenses(loanSort(newState));
     setProgress((expensesState.getSumExpenses() / incomesState.getSumIncomes()) * 100);
   };
 
@@ -100,8 +110,7 @@ export default function ExpensesDirectionStack() {
     expensesState.onChange(expense);
   };
 
-  // Edit expense event
-  const handleKeyDown = (expense, event) => {
+  const onExpenseSave = (expense, event) => {
     if (event.key === "Enter") {
       expense.value = Number(event.target.value);
       expensesState.updateExpense(expense);
@@ -148,14 +157,18 @@ export default function ExpensesDirectionStack() {
           return (
             <Grid xs={6} sm={4} md={3} lg={2} xl={1.5} key={expense.name}>
               <Item style={{ height: "70px" }}>
-                <Tooltip title={expense.description} placement="top">
-                  <Typography style={{ float: "left" }} component="p" align="left" color="#9ccc12" variant="standard">
-                    {expense.name}
-                  </Typography>
+                <ViewExpenseDialog expense={expense}/>
+                <Tooltip title={"Remove " + expense.name} placement="top">
+                  <IconButton sx={{ mt: -1, mr: -1, float: "right" }} onClick={(event) => removeExpense(expense, event)} color="primary" aria-label="remove expense" size="small" align="right">
+                    <CloseIcon fontSize="inherit" />
+                  </IconButton>
                 </Tooltip>
-                <ViewExpenseDialog expense={expense} />
 
-                <ExpenseEditable id={`${expense.name}-input`} variant="standard" InputProps={{ disableUnderline: true }} onKeyDown={(event) => handleKeyDown(expense, event)} onChange={(e) => onExpenseChange(expense, e)} defaultValue={expense.value} />
+                <ExpenseEditable id={`${expense.name}-input`} variant="standard"
+                  InputProps={{ disableUnderline: true }}
+                  onKeyDown={(event) => onExpenseSave(expense, event)}
+                  onChange={(e) => onExpenseChange(expense, e)} defaultValue={expense.value}
+                  value={expense.value} />
 
                 {expense.loan ? <LinearProgress sx={{ borderRadius: 1, ml: -0.6, mr: -0.6, height: 8, mt: -1 }}
                   variant="determinate" value={calculateLoanProcess(expense)} /> : <></>}

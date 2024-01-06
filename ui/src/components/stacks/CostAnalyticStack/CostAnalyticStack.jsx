@@ -74,9 +74,9 @@ export default function CostAnalyticStack() {
 
   const handleCostAnalyticStateChange = (newState) => {
     // Do something with the new state
-    console.log("[CostAnalyticsStack] costAnalytic state has changed:", newState);
-    console.log('Will set target saving to: ', newState.targetSaving);
-    setTargetSaving(newState.targetSaving);
+    console.log("[CostAnalyticsStack] CostAnalytic state has changed:", newState);
+    console.log('[CostAnalyticsStack] Will set target saving to: ', newState.targetSaving);
+    setTargetSaving(newState.targetSaving); // TODO replace - use the costAnalytic object
     setCostAnalytic(newState);
   };
 

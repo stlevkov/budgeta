@@ -64,7 +64,7 @@ export default class ExpensesState implements DashboardListener, FactoryInitiali
   }
 
   onChange(expense: Expense) {
-    console.log('Expense candidate: ', expense);
+    console.log('[ExpenseState] expense has changed: ', expense);
     this.expenseState = this.expenseState.map((item) => {
       return item.id === expense.id ? expense : item;
     });
