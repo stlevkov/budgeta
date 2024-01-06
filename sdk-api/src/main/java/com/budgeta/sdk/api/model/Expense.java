@@ -30,7 +30,7 @@ public class Expense extends DocumentInfo {
     private Date startDate;
 
     private boolean scheduled;
-    private Integer[] scheduledPeriod; // [5,8,11]
+    private String[] scheduledPeriod; // ["January","June", "November"]
 
     public Expense(String id, @NotNull String name, @NotNull String description, @NotNull BigDecimal value,
                    Date updatedAt, String dashboardId) {
