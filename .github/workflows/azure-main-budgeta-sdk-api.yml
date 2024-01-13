@@ -1,10 +1,14 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy WAR app to Azure Web App - budgeta-sdk-api
+name: Build and deploy Spring app to Azure Web App - budgeta-sdk-api
 
 env:
   APP_CONFIGURATION_CONNECTION_STRING: ${{ secrets.APP_CONFIGURATION_CONNECTION_STRING }}
+
+defaults:
+  run:
+    working-directory: sdk-api # The working directory path
 
 on:
   push:
