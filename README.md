@@ -31,10 +31,6 @@ Or install the dependencies manually:
 - npm v9.3.1
 - java v11.0.8
 
-#### Set the initial Mongodb state
-
-`mongorestore -d budgeta setup/db_init/mongodump/budgeta`
-
 ### Building
 
 Follow the deployment or development setup
@@ -44,10 +40,10 @@ Execute the [./build.sh](./setup/build.sh) script
 
 use `systemctl` to get information about the service processes
 
-| service name |
-| ------------ |
-| budgeta-ui   |
-| budgeta-sdk  |
+| service name | startup script dir |
+| ------------ |--------------------|
+| budgeta-ui   | /opt/budgeta/ui    |
+| budgeta-sdk  | /opt/budgeta/sdk   |
 
 #### Development
 Execute `npm install && npm start` in the [react ui](./ui/README.md) directory
@@ -67,6 +63,7 @@ Access:
 | BUDGETA_SDK_API_HOST | spring boot host       | localhost  |
 | BUDGETA_SDK_API_PORT | spring boot http port  | 8080       |
 | BUDGETA_MONGODB_PORT | mongodb port           | 27017      |
+| BUDGETA_MONGODB_HOST | mongodb host           | localhost  |
 
 ### Logging
 
