@@ -45,7 +45,10 @@ jobs:
         with:
           name: java-app
           path: '${{ github.workspace }}/target'
-
+          
+      - name: Azure Login
+        uses: Azure/login@v1.5.1
+            
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
