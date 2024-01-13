@@ -26,6 +26,14 @@ jobs:
         with:
           java-version: '17'
 
+      - name: Print Environment Variables
+        run: |
+          echo "BUDGETA_MONGODB_HOST=${BUDGETA_MONGODB_HOST}"
+          echo "BUDGETA_MONGODB_PORT=${BUDGETA_MONGODB_PORT}"
+      
+      - name: Print application.properties
+        run: cat sdk-api/src/main/resources/application.properties
+
       - name: Build with Maven
         run: mvn clean install
 
