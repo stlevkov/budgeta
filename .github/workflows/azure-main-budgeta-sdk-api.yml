@@ -38,6 +38,9 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build
+    environment:
+      name: 'production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
       - name: Download artifact from build job
@@ -55,4 +58,5 @@ jobs:
         uses: azure/webapps-deploy@v2
         with:
           app-name: 'budgeta-api'
+          slot-name: 'production'
           package: '${{ github.workspace }}/target/*.jar'
