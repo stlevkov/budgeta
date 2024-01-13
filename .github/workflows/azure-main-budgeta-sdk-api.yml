@@ -1,7 +1,7 @@
 name: Build and deploy Spring app to Azure Web App - budgeta-sdk-api
 
 env:
-  BUDGETA_MONGODB_HOST: ${{ secrets.BUDGETA_MONGODB_HOST }}
+  BUDGETA_MONGODB_HOST: ${{ variables.BUDGETA_MONGODB_HOST }}
 
 defaults:
   run:
@@ -30,9 +30,9 @@ jobs:
         run: |
           echo "BUDGETA_MONGODB_HOST=${BUDGETA_MONGODB_HOST}"
           echo "BUDGETA_MONGODB_PORT=${BUDGETA_MONGODB_PORT}"
-      
-      - name: Print application.properties
-        run: cat sdk-api/src/main/resources/application.properties
+
+      - name: Print All Environment Variables
+        run: env
 
       - name: Build with Maven
         run: mvn clean install
@@ -61,7 +61,7 @@ jobs:
         uses: azure/login@v1
         with:
           creds: '${{ secrets.AZURE_CREDENTIALS }}'
-            
+
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
