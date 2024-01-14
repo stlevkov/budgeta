@@ -1,4 +1,4 @@
-name: Build and deploy Spring app to Azure Web App - budgeta-sdk-api
+name: Azure Deploy Budgeta Backend
 
 defaults:
   run:
