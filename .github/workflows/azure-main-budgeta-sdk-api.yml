@@ -1,8 +1,5 @@
 name: Build and deploy Spring app to Azure Web App - budgeta-sdk-api
 
-env:
-  BUDGETA_MONGODB_HOST: ${{ vars.BUDGETA_MONGODB_HOST }}
-
 defaults:
   run:
     working-directory: sdk-api # The working directory path
@@ -16,7 +13,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    environment: production
 
     steps:
       - name: Checkout Repository
@@ -26,14 +22,6 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: '17'
-
-      - name: Print Environment Variables
-        run: |
-          echo "BUDGETA_MONGODB_HOST=${BUDGETA_MONGODB_HOST}"
-          echo "BUDGETA_MONGODB_PORT=${BUDGETA_MONGODB_PORT}"
-
-      - name: Print All Environment Variables
-        run: env
 
       - name: Build with Maven
         run: mvn clean install
