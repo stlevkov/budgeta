@@ -56,14 +56,15 @@ Access:
 
 ### Environment Setup
 
-| env name             | description            | set during | default    |
-|----------------------|------------------------|------------|------------|
-| BUDGETA_UI_DIST_PATH | path to ui dist folder | runtime    | ../ui/dist |
-| BUDGETA_UI_PORT      | express http port      | runtime    | 3006       |
-| BUDGETA_SDK_API_HOST | spring boot host       | build time | localhost  |
-| BUDGETA_SDK_API_PORT | spring boot http port  | build time | 8080       |
-| BUDGETA_MONGODB_PORT | mongodb port           | runtime    | 27017      |
-| BUDGETA_MONGODB_HOST | mongodb host           | runtime    | localhost  |
+| env name                 | description            | need by        | set during | default    |
+|--------------------------|------------------------|----------------|------------|------------|
+| BUDGETA_UI_DIST_PATH     | path to ui dist folder | express server | runtime    | ../ui/dist |
+| BUDGETA_UI_PORT          | express http port      | express server | runtime    | 3006       |
+| BUDGETA_SDK_API_HOST     | spring boot host       | react ui       | build time | localhost  |
+| BUDGETA_SDK_API_PORT     | spring boot http port  | react ui       | build time | 8080       |
+| BUDGETA_SDK_API_PROTOCOL | spring boot protocol   | react ui       | build time | http       |
+| BUDGETA_MONGODB_PORT     | mongodb port           | spring boot    | runtime    | 27017      |
+| BUDGETA_MONGODB_HOST     | mongodb host           | spring boot    | runtime    | localhost  |
 
 ### Logging
 
