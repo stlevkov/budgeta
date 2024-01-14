@@ -30,11 +30,8 @@ jobs:
       run: npm run build
       working-directory: ${{ github.workspace }}/ui
 
-    - name: Archive production artifacts React UI
-      uses: actions/upload-artifact@v2
-      with:
-        name: dist
-        path: ${{ github.workspace }}/ui/dist
+    - name: Copy React build to Express server
+      run: cp -R ${{ github.workspace }}/ui/dist ${{ github.workspace }}/setup/express_server/dist
 
     - name: Archive production artifacts Express Server
       uses: actions/upload-artifact@v2
@@ -47,20 +44,9 @@ jobs:
       with:
         creds: '${{ secrets.AZURE_CREDENTIALS_UI }}'
 
-    - name: Deploy React UI to Azure Web Service
-      uses: azure/webapps-deploy@v2
-      with:
-        app-name: 'budgeta'
-        slot-name: 'production'
-        package: ${{ github.workspace }}/ui/dist
-
     - name: Deploy Express Server to Azure Web Service
       uses: azure/webapps-deploy@v2
       with:
         app-name: 'budgeta'
         slot-name: 'production'
         package: ${{ github.workspace }}/setup/express_server
-
-    - name: Post-deployment cleanup (prune React app)
-      run: npm prune --production
-      working-directory: ${{ github.workspace }}/ui
