@@ -18,38 +18,48 @@ jobs:
       with:
         node-version: '20'
 
-    - name: Install dependencies
+    - name: Install dependencies UI
       run: npm install
       working-directory: ${{ github.workspace }}/ui
 
-    - name: Build React app
+    - name: Install Dependencies Express Server
+      run: npm install
+      working-directory: ${{ github.workspace }}/setup/express_server
+
+    - name: Build React app UI
       run: npm run build
       working-directory: ${{ github.workspace }}/ui
 
-    - name: Archive production artifacts
+    - name: Archive production artifacts React UI
       uses: actions/upload-artifact@v2
       with:
         name: dist
         path: ${{ github.workspace }}/ui/dist
+
+    - name: Archive production artifacts Express Server
+      uses: actions/upload-artifact@v2
+      with:
+        name: express_server
+        path: ${{ github.workspace }}/setup/express_server
 
     - name: Log in with Azure
       uses: azure/login@v1
       with:
         creds: '${{ secrets.AZURE_CREDENTIALS_UI }}'
 
-    - name: Deploy to Azure Web Service
+    - name: Deploy React UI to Azure Web Service
       uses: azure/webapps-deploy@v2
       with:
         app-name: 'budgeta'
         slot-name: 'production'
         package: ${{ github.workspace }}/ui/dist
 
-    - name: Start Express server
-      run: |
-        cd ${{ github.workspace }}/setup/express_server
-        npm install
-        npm start
-      working-directory: ${{ github.workspace }}/setup/express_server
+    - name: Deploy Express Server to Azure Web Service
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'budgeta'
+        slot-name: 'production'
+        package: ${{ github.workspace }}/setup/express_server
 
     - name: Post-deployment cleanup (prune React app)
       run: npm prune --production
