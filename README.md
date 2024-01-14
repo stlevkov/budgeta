@@ -56,14 +56,15 @@ Access:
 
 ### Environment Setup
 
-| env name             | description            | default    |
-|----------------------|------------------------|------------|
-| BUDGETA_UI_DIST_PATH | path to ui dist folder | ../ui/dist |
-| BUDGETA_UI_PORT      | express http port      | 3006       |
-| BUDGETA_SDK_API_HOST | spring boot host       | localhost  |
-| BUDGETA_SDK_API_PORT | spring boot http port  | 8080       |
-| BUDGETA_MONGODB_PORT | mongodb port           | 27017      |
-| BUDGETA_MONGODB_HOST | mongodb host           | localhost  |
+| env name             | description             | default    |
+|----------------------|-------------------------|------------|
+| BUDGETA_UI_DIST_PATH | path to ui dist folder  | ../ui/dist |
+| BUDGETA_UI_PORT      | express http port       | 3006       |
+| BUDGETA_SDK_API_HOST | spring boot host        | localhost  |
+| BUDGETA_SDK_API_PORT | spring boot http port   | 8080       |
+| BUDGETA_MONGODB_PORT | mongodb port            | 27017      |
+| BUDGETA_MONGODB_HOST | mongodb host            | localhost  |
+| PORT                 | pre def BUDGETA_UI_PORT | 3006       |
 
 ### Logging
 
