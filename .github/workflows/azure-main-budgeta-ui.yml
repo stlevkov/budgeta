@@ -10,20 +10,19 @@ env:
   BUDGETA_SDK_API_PORT: ${{ secrets.BUDGETA_SDK_API_PORT }}
 
 jobs:
-  print-env-variables:
-    runs-on: ubuntu-latest
-    environment:
-      name: 'production'
+  # print-env-variables:
+  #   runs-on: ubuntu-latest
+  #   environment:
+  #     name: 'production'
 
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+  #   steps:
+  #   - name: Checkout repository
+  #     uses: actions/checkout@v2
 
-    - name: Print Environment Variables
-      run: |
-        echo "BUDGETA_SDK_API_HOST: $BUDGETA_SDK_API_HOST"
-        echo "BUDGETA_SDK_API_PORT: $BUDGETA_SDK_API_PORT"
-        # Add more variables as needed
+  #   - name: Print Environment Variables
+  #     run: |
+  #       echo "BUDGETA_SDK_API_HOST: $BUDGETA_SDK_API_HOST"
+  #       echo "BUDGETA_SDK_API_PORT: $BUDGETA_SDK_API_PORT"
 
   build:
     runs-on: ubuntu-latest
@@ -71,7 +70,7 @@ jobs:
       - name: Download artifact from build job
         uses: actions/download-artifact@v2
         with:
-          name: budgeta-api
+          name: express_server
           path: '${{ github.workspace }}/setup/express_server'
 
       - name: Log in with Azure
