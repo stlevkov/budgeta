@@ -13,7 +13,7 @@ export default class SettingState implements FactoryInitializable<SettingState> 
 
   constructor(stateFactory: StateFactory<SettingState>) {
     this.restClient = new RestClient(config.api.dashboardEndpoint);
-    this.restClientInitDashboard = new RestClient(config.api.settingsInitDashoardEndpoint);
+    this.restClientInitDashboard = new RestClient(config.api.settingsInitDashboardEndpoint);
     this.factory = stateFactory; // Set the factory property
   }
 

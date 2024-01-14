@@ -1,6 +1,6 @@
 export default {
   server: {
-    uri: `http://${import.meta.env.BUDGETA_SDK_API_HOST || 'localhost'}:${import.meta.env.BUDGETA_SDK_API_PORT || '8080'}/api/`,
+    uri: `${import.meta.env.BUDGETA_SDK_API_PROTOCOL || 'http'}://${import.meta.env.BUDGETA_SDK_API_HOST || 'localhost'}:${import.meta.env.BUDGETA_SDK_API_PORT || '8080'}/api/`,
   },
   api: {
     costAnalyticEndpoint: 'costAnalytics',
@@ -12,6 +12,6 @@ export default {
     dashboardMinEndpoint: 'dashboards/min',
     dashboardAggregatedEndpoint: 'dashboards/aggregation',
     settingsEndpoint: 'settings',
-    settingsInitDashoardEndpoint: 'settings/init_dashboard'
+    settingsInitDashboardEndpoint: 'settings/init_dashboard'
   }
 };
