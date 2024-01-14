@@ -1,0 +1,52 @@
+name: Build and deploy React app to Azure Web App - budgeta-ui
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+
+    - name: Install dependencies
+      run: npm install
+      working-directory: ${{ github.workspace }}/ui
+
+    - name: Build React app
+      run: npm run build
+      working-directory: ${{ github.workspace }}/ui
+
+    - name: Archive production artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: dist
+        path: ${{ github.workspace }}/ui/dist
+
+    - name: Deploy to Azure Web Service
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'your-azure-web-service-name'
+        slot-name: 'production' # optional, remove this line if not using slots
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        package: ${{ github.workspace }}/ui/dist
+
+    - name: Start Express server
+      run: |
+        cd ${{ github.workspace }}/setup/express_server
+        npm install
+        npm start
+      working-directory: ${{ github.workspace }}/setup/express_server
+
+    - name: Post-deployment cleanup
+      run: npm prune --production
+      working-directory: ${{ github.workspace }}/setup/express_server
