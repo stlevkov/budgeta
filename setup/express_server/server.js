@@ -19,8 +19,7 @@ app.get('*', (req, res) => {
 });
 
 // Start the server
-const port = process.env.PORT || process.env.BUDGETA_UI_PORT || 3006;
+const port = process.env.BUDGETA_UI_PORT || 3006;
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);
-  console.log(`React deployed on http://localhost:${port}`);
 });
