@@ -77,13 +77,12 @@ export default function SavingsStack() {
     // Do something with the new state
     console.log("DO SOMETHING Unexpected in UNEXPECTED has changed:", newState);
     setSavings(descSort(newState));
-    setProgress((unexpectedState.getSumUnexpected() / incomesState.getSumIncomes()) * 100);
+    setProgress((unexpectedState.getSumUnexpecteds() / incomesState.getSumIncomes()) * 100);
   };
 
   useEffect(() => {
     setSavings(descSort(unexpectedState.getState()));
-    setProgress((unexpectedState.getSumUnexpected() / incomesState.getSumIncomes()) * 100);
-
+    setProgress((unexpectedState.getSumUnexpecteds() / incomesState.getSumIncomes()) * 100);
     unexpectedState.addListener(handleUnexpectedStateChange);
 
     return () => {
@@ -106,7 +105,7 @@ export default function SavingsStack() {
   };
 
   const deleteSaving = (unexpected, event) => {
-    console.log("[SavingStack]: Will delete item with id: " + unexpected.id);
+    console.log("[UnexpectedsStack]: Will delete item with id: " + unexpected.id);
     unexpectedState.removeUnexpected(unexpected);
   };
 
@@ -125,7 +124,7 @@ export default function SavingsStack() {
             </Box>
             <Box width={"100%"} height={"75%"} sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
               <Typography component="h4" align="center" variant="standard" style={{ width: "49%", fontSize: "1rem", color: "#78909c" }}>
-                {unexpectedState.getSumUnexpected()}
+                {unexpectedState.getSumUnexpecteds()}
               </Typography>
               <Divider orientation="vertical" variant="middle" flexItem />
               <CircularProgressWithLabel sx={{ w: "50%" }} align="right" value={progress} />

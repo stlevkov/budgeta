@@ -17,10 +17,10 @@ export default class CostAnalyticState implements DashboardListener, FactoryInit
   private state: CostAnalytic | any;
   private listeners: ((state: CostAnalytic) => void)[];
   private restClient: RestClient;
-  private expensesState: ExpensesState | any; // Assuming ExpensesState is your actual class for expenses
-  private incomesState: IncomesState | any; // Assuming IncomesState is your actual class for incomes
-  private unexpectedState: UnexpectedState | any; // Assuming UnexpectedState is your actual class for unexpected
-  private balanceAccountState: BalanceAccountState | any; // Assuming BalanceAccountState is your actual class for balance account
+  private expensesState: ExpensesState | any;
+  private incomesState: IncomesState | any;
+  private unexpectedState: UnexpectedState | any;
+  private balanceAccountState: BalanceAccountState | any;
   private dashboardState: DashboardState | any;
 
   /**
@@ -123,9 +123,9 @@ export default class CostAnalyticState implements DashboardListener, FactoryInit
    */
   setState(newState: Record<string, any>) {
     console.log("[CostAnalyticState] Setting the state to new state...", newState);
-    this.state = { ...newState }; // Assuming structuredClone is a deep clone function
+    this.state = { ...newState };
     console.log('[CostAnalyticState] Listeners: ', this.listeners.length);
-    this.listeners.forEach((listener) => listener(this.state)); // Notify all listeners that the state has changed
+    this.listeners.forEach((listener) => listener(this.state));
   }
 
   getState(): Record<string, any> {

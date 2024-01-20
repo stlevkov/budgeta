@@ -12,7 +12,7 @@ import config from "../../../resources/config";
 import CreateIncomeDialog from "../../dialogs/CreateIncomeDialog";
 import Divider from "@mui/material/Divider";
 import TextField from "@mui/material/TextField";
-import { CostAnalyticContext, IncomesContext, ExpensesContext, BalanceAccountContext } from "../../../utils/AppUtil";
+import { CostAnalyticContext, IncomesContext, ExpensesContext, BalanceAccountContext, UnexpectedContext } from "../../../utils/AppUtil";
 import CreateBalanceTransactionDialog from "../../dialogs/CreateBalanceTransactionDialog";
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -64,44 +64,54 @@ const TargetSavingEditable = styled(TextField)(({ theme }) => ({
 export default function CostAnalyticStack() {
   console.log("[CostAnalyticsStack] Initializing component.");
   const costAnalyticState = useContext(CostAnalyticContext);
-  const expensesState = useContext(ExpensesContext); // TODO shall become property of CostAnalytic, move it
-  const incomesState = useContext(IncomesContext); // TODO shall become property of CostAnalytic, move it
+  const expensesState = useContext(ExpensesContext);
+  const incomesState = useContext(IncomesContext);
+  const unexpectedsState = useContext(UnexpectedContext);
   const balanceAccountState = useContext(BalanceAccountContext);
 
   const [costAnalytic, setCostAnalytic] = useState({});
   const [targetSaving, setTargetSaving] = useState(0);
   const [sumIncomes, setSumIncomes] = useState(0);
+  const [sumAllExpenses, setSumAllExpenses] = useState(0);
 
   const handleCostAnalyticStateChange = (newState) => {
-    // Do something with the new state
-    console.log("[CostAnalyticsStack] CostAnalytic state has changed:", newState);
-    console.log('[CostAnalyticsStack] Will set target saving to: ', newState.targetSaving);
-    setTargetSaving(newState.targetSaving); // TODO replace - use the costAnalytic object
+    console.log(`[CostAnalyticsStack] CostAnalytic state has changed: ${newState}, target saving: ${newState.targetSaving}`);
+    setTargetSaving(newState.targetSaving);
     setCostAnalytic(newState);
   };
 
-  const handleIncomesChange = () => { // TODO move this, as it shall become property of the CostAnalytic
-    console.log("[CostAnalyticsStack] Incomes state has changed: " );
-    setSumIncomes(incomesState.getSumIncomes()); // TODO - see {expensesState.getSumExpenses()}
+  const handleIncomesChange = () => {
+    console.log("[CostAnalyticsStack] Incomes state has changed");
+    setSumIncomes(incomesState.getSumIncomes());
+  };
+
+  const handleUnexpectedsChange = () => {
+    console.log('[CostAnalyticsStack] Unexpected state changed');
+    setSumAllExpenses(expensesState.getSumExpenses() + unexpectedsState.getSumUnexpecteds());
+  };
+
+  const handleExpensesChange = () => {
+    console.log('[CostAnalyticsStack] Expenses state changed');
+    setSumAllExpenses(expensesState.getSumExpenses() + unexpectedsState.getSumUnexpecteds());
   };
 
   useEffect(() => {
-    setSumIncomes(incomesState.getSumIncomes());
-    // Add a listener to the costAnalyticState to track changes
     costAnalyticState.addListener(handleCostAnalyticStateChange);
-    incomesState.addListener(handleIncomesChange); // TODO remove, see {expensesState.getSumExpenses()}
-    // Cleanup function to remove the listener when the component unmounts
-    return () => {
+    incomesState.addListener(handleIncomesChange);
+    unexpectedsState.addListener(handleUnexpectedsChange);
+    expensesState.addListener(handleExpensesChange);
+    
+    return () => { // Cleanup function to remove the listener when the component unmounts
       costAnalyticState.removeListener(handleCostAnalyticStateChange);
       incomesState.removeListener(handleIncomesChange);
+      unexpectedsState.removeListener(handleUnexpectedsChange);
+      expensesState.removeListener(handleExpensesChange);
     };
-  }, [costAnalyticState, incomesState, sumIncomes]);
+  }, [costAnalyticState, incomesState, unexpectedsState, expensesState]);
 
-  // edit target unexpected
-  const handleKeyDown = (targetSaving, event) => {
+  const handleKeyDown = (targetSaving, event) => { // edit target unexpected
     if (event.key === "Enter") {
-      // Value is already set with onChange, so we just save it to DB
-      costAnalyticState.updateCostAnalytic();
+      costAnalyticState.updateCostAnalytic(); // Value is already set with onChange, so we just save it to DB
     }
   };
 
@@ -132,14 +142,14 @@ export default function CostAnalyticStack() {
 
         <Grid xs={12} sm={6} md={4} lg={2.3}>
           <Item style={{ height: "120px" }}>
-            <Tooltip title={<Typography fontSize="1.3em">All expenses each month</Typography>} placement="top">
+            <Tooltip title={<Typography fontSize="1.3em">Expenses and Unexpecteds sum</Typography>} placement="top">
               <Typography style={{ float: "left", fontWeight: "bold" }} component="p" color="orange" fontSize="1.5em" variant="standard" align="left">
                 ALL EXPENSES
               </Typography>
             </Tooltip>
             <Divider style={{ width: "100%", marginTop: "8px", marginBottom: "8px" }} />
             <Typography style={{ marginTop: "20px", width: "fit-content" }} component="p" color="#b0b0b0" fontSize="3.3em" align="left">
-              {expensesState.getSumExpenses()}
+              {sumAllExpenses}
             </Typography>
           </Item>
         </Grid>
