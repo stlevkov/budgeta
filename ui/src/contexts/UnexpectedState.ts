@@ -58,7 +58,7 @@ export default class UnexpectedState implements DashboardListener, FactoryInitia
     return this.unexpectedState;
   }
 
-  getSumUnexpected() {
+  getSumUnexpecteds() {
     return this.sumUnexpected;
   }
 
