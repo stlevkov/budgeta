@@ -86,8 +86,8 @@ export default class CostAnalyticState implements DashboardListener, FactoryInit
    */
   onChangeCalculateDailyRecommended() {
     console.log('[CostAnalyticState][onChangeCalculateDailyRecommended] calculating daily recomended...')
-    const costAnalytic = calculateDailyRecommended(this.expensesState.getState(), 
-    this.incomesState.getState(), this.unexpectedState.getState(), this.state);
+    const costAnalytic = calculateDailyRecommended(this.expensesState.getSumExpenses(),
+    this.incomesState.getSumIncomes(), this.unexpectedState.getSumUnexpecteds(), this.state);
     this.setState(costAnalytic);
   }
 
