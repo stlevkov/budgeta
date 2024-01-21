@@ -109,7 +109,6 @@ export default function ViewExpenseDialog({ expense }) {
   function initializeSelectedMonths() {
     let arr = [];
     expense.scheduledPeriod.map(monthNumber => {   // [ 1, 5, 11]
-      console.log('HHHH pushing, ', months[monthNumber-1]);
       arr.push(months[monthNumber -1]);
     });
     setSelectedMonths(arr);
