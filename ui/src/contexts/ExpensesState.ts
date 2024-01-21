@@ -8,6 +8,8 @@ import DashboardState from "./DashboardState";
 import StateFactory from "./StateFactory";
 import { toast } from "material-react-toastify";
 import FactoryInitializable from "../data/interfaces/FactoryInitializable";
+import dayjs from "dayjs";
+import DocumentInfo from "../data/classes/DocumentInfo";
 
 export default class ExpensesState implements DashboardListener, FactoryInitializable<ExpensesState>{
   private expenseState: Expense[];
@@ -47,7 +49,10 @@ export default class ExpensesState implements DashboardListener, FactoryInitiali
   setState(newState: Expense[]) {
     console.log("[ExpensesState] Setting the state to new state...", newState);
     if (newState.length > 0) {
-      this.sumExpenses = newState.map((expense) => expense.value).reduce((a: number, b: number) => a + b);
+      this.sumExpenses = newState
+      .filter(expense => !(expense.scheduled && !expense.scheduledPeriod.includes(dayjs().month() + 1)))
+      .map(expense => expense.value)
+      .reduce((a, b) => a + b, 0);
     } else {
       this.sumExpenses = 0;
     }
@@ -84,10 +89,14 @@ export default class ExpensesState implements DashboardListener, FactoryInitiali
   addExpense(expenseCandidate: Expense) {
     if(this.selectedDashboard){
       expenseCandidate.dashboardId = this.selectedDashboard.id || '999999'; // TODO fix that
-      this.restClient.genericCreate(expenseCandidate, (savedExpense) => {
-        this.setState([...this.expenseState, savedExpense]);
+      this.restClient.genericCreate(expenseCandidate, (savedExpense: DocumentInfo) => {
+        // Type assertion to Expense
+        const expenseObject = savedExpense as Expense;
+      
+        this.setState([...this.expenseState, expenseObject]);
         this.saveListeners.forEach((saveListener) => saveListener());
       });
+      
     } else {
        toast.error("Unable to create new Expense. Please refresh the page and try again or contact admin.");
     }

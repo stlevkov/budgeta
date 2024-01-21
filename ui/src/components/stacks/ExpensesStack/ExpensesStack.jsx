@@ -16,6 +16,7 @@ import PropTypes from "prop-types";
 import LinearProgress from '@mui/material/LinearProgress';
 import dayjs from "dayjs";
 import ViewExpenseDialog from "../../dialogs/ViewExpensesDialog";
+import "../../../styles/components.css";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -98,6 +99,12 @@ export default function ExpensesDirectionStack() {
     return (monthsSince / expense.maxPeriod) * 100;
   };
 
+  const checkScheduledPresence = (expense) => {
+    if(expense.scheduled && !expense.scheduledPeriod.includes((dayjs().month() + 1))) {
+      return 'blurry-parent';
+    }
+  };
+
   useEffect(() => {
     expensesState.addListener(handleExpensesStateChange);
     return () => {
@@ -156,23 +163,25 @@ export default function ExpensesDirectionStack() {
         {expenses.map((expense) => {
           return (
             <Grid xs={6} sm={4} md={3} lg={2} xl={1.5} key={expense.name}>
-              <Item style={{ height: "70px" }}>
-                <ViewExpenseDialog expense={expense}/>
-                <Tooltip title={"Remove " + expense.name} placement="top">
-                  <IconButton sx={{ mt: -1, mr: -1, float: "right" }} onClick={(event) => removeExpense(expense, event)} color="primary" aria-label="remove expense" size="small" align="right">
-                    <CloseIcon fontSize="inherit" />
-                  </IconButton>
-                </Tooltip>
+              <div>
+                <Item style={{ height: "70px" }} className={checkScheduledPresence(expense)}>
+                  <ViewExpenseDialog expense={expense} />
+                  <Tooltip title={"Remove " + expense.name} placement="top">
+                    <IconButton sx={{ mt: -1, mr: -1, float: "right" }} onClick={(event) => removeExpense(expense, event)} color="primary" aria-label="remove expense" size="small" align="right">
+                      <CloseIcon fontSize="inherit" />
+                    </IconButton>
+                  </Tooltip>
 
-                <ExpenseEditable id={`${expense.name}-input`} variant="standard"
-                  InputProps={{ disableUnderline: true }}
-                  onKeyDown={(event) => onExpenseSave(expense, event)}
-                  onChange={(e) => onExpenseChange(expense, e)} defaultValue={expense.value}
-                  value={expense.value} />
+                  <ExpenseEditable id={`${expense.name}-input`} variant="standard"
+                    InputProps={{ disableUnderline: true }}
+                    onKeyDown={(event) => onExpenseSave(expense, event)}
+                    onChange={(e) => onExpenseChange(expense, e)} defaultValue={expense.value}
+                    value={expense.value} />
 
-                {expense.loan ? <LinearProgress sx={{ borderRadius: 1, ml: -0.6, mr: -0.6, height: 8, mt: -1 }}
-                  variant="determinate" value={calculateLoanProcess(expense)} /> : <></>}
-              </Item>
+                  {expense.loan ? <LinearProgress sx={{ borderRadius: 1, ml: -0.6, mr: -0.6, height: 8, mt: -1 }}
+                    variant="determinate" value={calculateLoanProcess(expense)} /> : <></>}
+                </Item>
+              </div>
             </Grid>
           );
         })}
