@@ -16,6 +16,9 @@ import React, { PureComponent } from 'react';
 import { useState, useEffect, useContext } from "react";
 import { ComposedChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { DashboardContext } from '../../../utils/AppUtil';
+import { Skeleton } from '@mui/material';
+import { styled } from "@mui/material/styles";
+import Paper from "@mui/material/Paper";
 
 const monthTickFormatter = (tick) => {
   const date = new Date(tick);
@@ -25,6 +28,7 @@ const monthTickFormatter = (tick) => {
 export default function StatisticChart() {
   const dashboardState = useContext(DashboardContext);
   const [aggregationState, setAggregationState] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const [seriesVisibility, setSeriesVisibility] = useState({
     expenses: true,
@@ -37,6 +41,16 @@ export default function StatisticChart() {
     unexpecteds: "#8884d8",
     savings: "lightblue",
   });
+
+  // TODO - fix this redundand code block
+  const Item = styled(Paper)(({ theme }) => ({
+    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
+    ...theme.typography.body2,
+    padding: 6,
+    textAlign: "center",
+    color: theme.palette.text.secondary,
+    boxShadow: "0px 6px 8px #45464a"
+  }));
 
   const handleClick = (e) => {
     const { value } = e;
@@ -56,11 +70,11 @@ export default function StatisticChart() {
   };
 
   const transformAggregationState = (originalState) => {
-    if(!originalState) return;
+    if (!originalState) return;
 
     const transformedState = originalState.map((item) => {
       return {
-        date: `${item.year}-${item.month}`, 
+        date: `${item.year}-${item.month}`,
         expenses: item.totalExpenses,
         unexpecteds: item.totalUnexpecteds,
         savings: item.targetSaving,
@@ -68,55 +82,61 @@ export default function StatisticChart() {
     });
 
     transformedState.sort((a, b) => (a.date > b.date ? 1 : -1));
-  
+
     return transformedState;
   };
 
   const handleDashboardAggregationChanged = (aggregation) => {
     console.log('[StatisticChart][Aggregation]: ', aggregation);
+    setLoading(false);
     setAggregationState(transformAggregationState(dashboardState.getAggregationState()));
- }
+  }
 
- useEffect(() => {
-  console.log("[StatisticChart][UseEffect] Initializing Component.");
-  dashboardState.addAggregationListener(handleDashboardAggregationChanged);
-  setAggregationState(transformAggregationState(dashboardState.getAggregationState()));
-}, [dashboardState]);
+  useEffect(() => {
+    console.log("[StatisticChart][UseEffect] Initializing Component.");
+    dashboardState.addAggregationListener(handleDashboardAggregationChanged);
+    setAggregationState(transformAggregationState(dashboardState.getAggregationState()));
+  }, [dashboardState]);
 
   return (
-    <ResponsiveContainer width="100%" height="100%">
-      <ComposedChart width={500} height={300} data={aggregationState}
-        margin={{ top: 5, right: 30, left: 0, bottom: 5, }}>
-        {/* <CartesianGrid strokeDasharray="3 3" /> */}
-        <XAxis dataKey="date" />
-        <XAxis
-          dataKey="date"
-          axisLine={false}
-          tickLine={false}
-          interval={0}
-          tickFormatter={monthTickFormatter}
-          height={1}
-          scale="band"
+    loading ?
+      <Skeleton sx={{ bgcolor: 'grey.500' }} variant="rounded" height={385} />
+      :
+      <Item style={{ height: "376px" }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <ComposedChart width={500} height={300} data={aggregationState}
+            margin={{ top: 5, right: 30, left: 0, bottom: 5, }}>
+            {/* <CartesianGrid strokeDasharray="3 3" /> */}
+            <XAxis dataKey="date" />
+            <XAxis
+              dataKey="date"
+              axisLine={false}
+              tickLine={false}
+              interval={0}
+              tickFormatter={monthTickFormatter}
+              height={1}
+              scale="band"
 
-          xAxisId="quarter"
-        />
-        <YAxis  />
-        <Tooltip>updatedVisibility</Tooltip>
-        <Legend
-          onClick={(e) => handleClick(e)}
-          payload={Object.keys(seriesVisibility).map((dataKey) => ({ // adjust square box icon next to the text
-            value: dataKey,
-            type: 'square',
-            color: seriesVisibility[dataKey] ? seriesColor[dataKey] : 'gray',
-          }))}
-          formatter={renderColorfulLegendText}
-        />
+              xAxisId="quarter"
+            />
+            <YAxis />
+            <Tooltip>updatedVisibility</Tooltip>
+            <Legend
+              onClick={(e) => handleClick(e)}
+              payload={Object.keys(seriesVisibility).map((dataKey) => ({ // adjust square box icon next to the text
+                value: dataKey,
+                type: 'square',
+                color: seriesVisibility[dataKey] ? seriesColor[dataKey] : 'gray',
+              }))}
+              formatter={renderColorfulLegendText}
+            />
 
-        <Bar dataKey="expenses" hide={!seriesVisibility["expenses"]} fill={seriesColor["expenses"]} />
-        <Bar dataKey="unexpecteds" hide={!seriesVisibility["unexpecteds"]} fill={seriesColor["unexpecteds"]} />
-        <Line dataKey="savings" type="monotone" hide={!seriesVisibility["savings"]} stroke={seriesColor["savings"]} strokeWidth="10" />
-      </ComposedChart>
-    </ResponsiveContainer>
+            <Bar dataKey="expenses" hide={!seriesVisibility["expenses"]} fill={seriesColor["expenses"]} />
+            <Bar dataKey="unexpecteds" hide={!seriesVisibility["unexpecteds"]} fill={seriesColor["unexpecteds"]} />
+            <Line dataKey="savings" type="monotone" hide={!seriesVisibility["savings"]} stroke={seriesColor["savings"]} strokeWidth="10" />
+          </ComposedChart>
+        </ResponsiveContainer>
+      </Item>
   );
 
 }

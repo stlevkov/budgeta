@@ -1,3 +1,17 @@
+/*
+    Budgeta Application
+    Copyright (C) 2022 - 2023  S.Levkov, K.Ivanov
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+ */
 import * as React from "react";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
@@ -14,6 +28,7 @@ import Divider from "@mui/material/Divider";
 import TextField from "@mui/material/TextField";
 import { CostAnalyticContext, IncomesContext, ExpensesContext, BalanceAccountContext, UnexpectedContext } from "../../../utils/AppUtil";
 import CreateBalanceTransactionDialog from "../../dialogs/CreateBalanceTransactionDialog";
+import { Skeleton } from "@mui/material";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -74,8 +89,11 @@ export default function CostAnalyticStack() {
   const [sumIncomes, setSumIncomes] = useState(0);
   const [sumAllExpenses, setSumAllExpenses] = useState(0);
 
+  const [loading, setLoading] = useState(true);
+
   const handleCostAnalyticStateChange = (newState) => {
     console.log(`[CostAnalyticsStack] CostAnalytic state has changed: ${newState}, target saving: ${newState.targetSaving}`);
+    setLoading(false);
     setTargetSaving(newState.targetSaving);
     setCostAnalytic(newState);
   };
@@ -100,7 +118,7 @@ export default function CostAnalyticStack() {
     incomesState.addListener(handleIncomesChange);
     unexpectedsState.addListener(handleUnexpectedsChange);
     expensesState.addListener(handleExpensesChange);
-    
+
     return () => { // Cleanup function to remove the listener when the component unmounts
       costAnalyticState.removeListener(handleCostAnalyticStateChange);
       incomesState.removeListener(handleIncomesChange);
@@ -123,24 +141,32 @@ export default function CostAnalyticStack() {
     <Box sx={{ flexGrow: 1 }}>
       <Grid container disableEqualOverflow spacing={{ xs: 2, md: 2 }} columns={{ xs: 12, sm: 12, md: 12, lg: 12, xl: 12 }}>
         <Grid xs={12} sm={6} md={4} lg={2.3}>
-          <Item style={{ height: "120px" }}>
-            <Tooltip title={<Typography fontSize="1.3em">All Collected Incomes each month</Typography>} placement="top">
-              <Typography style={{ float: "left", fontWeight: "bold" }} component="p" color="orange" fontSize="1.5em" variant="standard" align="left">
-                INCOMES
+          {loading ? (
+            <Skeleton sx={{ bgcolor: 'grey.500' }} variant="rounded" height={130} />
+          ) : (
+            <Item style={{ height: "120px" }}>
+              <Tooltip title={<Typography fontSize="1.3em">All Collected Incomes each month</Typography>} placement="top">
+                <Typography style={{ float: "left", fontWeight: "bold" }} component="p" color="orange" fontSize="1.5em" variant="standard" align="left">
+                  INCOMES
+                </Typography>
+              </Tooltip>
+
+              <ViewIncomeDialog />
+              <Divider style={{ width: "100%", marginTop: "8px", marginBottom: "8px" }} />
+              <Typography style={{ marginTop: "20px", width: "fit-content" }} variant="standard" component="p" color="#b0b0b0" fontSize="3.3em" align="left">
+                {sumIncomes}
               </Typography>
-            </Tooltip>
 
-            <ViewIncomeDialog />
-            <Divider style={{ width: "100%", marginTop: "8px", marginBottom: "8px" }} />
-            <Typography style={{ marginTop: "20px", width: "fit-content" }} variant="standard" component="p" color="#b0b0b0" fontSize="3.3em" align="left">
-              {sumIncomes}
-            </Typography>
-
-            <CreateIncomeDialog />
-          </Item>
+              <CreateIncomeDialog />
+            </Item>
+          )}
         </Grid>
 
+
         <Grid xs={12} sm={6} md={4} lg={2.3}>
+        {loading ? (
+            <Skeleton sx={{ bgcolor: 'grey.500' }} variant="rounded" height={130} />
+          ) : (
           <Item style={{ height: "120px" }}>
             <Tooltip title={<Typography fontSize="1.3em">Expenses and Unexpecteds sum</Typography>} placement="top">
               <Typography style={{ float: "left", fontWeight: "bold" }} component="p" color="orange" fontSize="1.5em" variant="standard" align="left">
@@ -152,14 +178,19 @@ export default function CostAnalyticStack() {
               {sumAllExpenses}
             </Typography>
           </Item>
+          )}
         </Grid>
 
         <Grid xs={12} sm={6} md={4} lg={2.3}>
+        {loading ? (
+            <Skeleton sx={{ bgcolor: 'grey.500' }} variant="rounded" height={130} />
+          ) : (
           <Item style={{ height: "120px" }}>
             <Tooltip title={<Typography fontSize="1.3em">All unexpecteds at one place</Typography>} placement="top">
-              <Typography style={{ float: "left", fontWeight: "bold", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
-                  maxWidth: "100%", // Ensure the text doesn't overflow the box
-                }}
+              <Typography style={{
+                float: "left", fontWeight: "bold", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+                maxWidth: "100%", // Ensure the text doesn't overflow the box
+              }}
                 component="p" color="orange" fontSize="1.5em" variant="standard" align="left" >
                 BALANCE ACCOUNT
               </Typography>
@@ -172,10 +203,14 @@ export default function CostAnalyticStack() {
 
             <CreateBalanceTransactionDialog balanceAccount={balanceAccountState} />
           </Item>
+          )}
         </Grid>
 
 
         <Grid xs={12} sm={6} md={4} lg={2.3}>
+        {loading ? (
+            <Skeleton sx={{ bgcolor: 'grey.500' }} variant="rounded" height={130} />
+          ) : (
           <Item style={{ height: "120px" }}>
             <Tooltip title={<Typography fontSize="1.3em">Savings each month</Typography>} placement="top">
               <Typography style={{ float: "left", fontWeight: "bold" }} component="p" color="orange" fontSize="1.5em" variant="standard" align="left">
@@ -191,9 +226,13 @@ export default function CostAnalyticStack() {
               }}
             />
           </Item>
+          )}
         </Grid>
 
         <Grid xs={12} sm={6} md={4} lg={2.8}>
+        {loading ? (
+            <Skeleton sx={{ bgcolor: 'grey.500' }} variant="rounded" height={130} />
+          ) : (
           <Item style={{ height: "120px", backgroundColor: "#07233e" }}>
             <Tooltip title={<Typography fontSize="1.3em">Daily recommended - try not to exceed</Typography>} placement="top">
               <Typography style={{ fontWeight: "bold" }} component="p" align="left" color="orange" fontSize="1.5em" variant="standard">
@@ -206,6 +245,7 @@ export default function CostAnalyticStack() {
               {costAnalytic.dailyRecommended < 0 ? 'no funds' : costAnalytic.dailyRecommended}
             </Typography>
           </Item>
+          )}
         </Grid>
       </Grid>
     </Box>

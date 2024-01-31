@@ -1,3 +1,17 @@
+/*
+    Budgeta Application
+    Copyright (C) 2022 - 2023  S.Levkov, K.Ivanov
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+ */
 import { useState, useEffect, useContext } from "react";
 import { styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
@@ -17,6 +31,7 @@ import LinearProgress from '@mui/material/LinearProgress';
 import dayjs from "dayjs";
 import ViewExpenseDialog from "../../dialogs/ViewExpensesDialog";
 import "../../../styles/components.css";
+import { Skeleton } from "@mui/material";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -68,28 +83,14 @@ CircularProgressWithLabel.propTypes = {
 export default function ExpensesDirectionStack() {
   const [expenses, setExpenses] = useState([]);
   const [progress, setProgress] = useState(0);
+  const [loading, setLoading] = useState(true);
   const expensesState = useContext(ExpensesContext);
   const incomesState = useContext(IncomesContext);
 
-  const loanSort = (expenses) => {
-    const sortedData = [...expenses];
-    sortedData.sort((a, b) => {
-      // First, sort by the "loan" property (true comes first)
-      if (a.loan && !b.loan) {
-        return -1; // a comes first
-      } else if (!a.loan && b.loan) {
-        return 1; // b comes first
-      }
-      // If both have the same "loan" value or both don't have "loan", 
-      // then sort by the "value" property in descending order
-      return b.value - a.value;
-    });
-    return sortedData;
-  };
-
   const handleExpensesStateChange = (newState) => {
     console.log("[ExpensesStack] Expenses has changed:", newState);
-    setExpenses(loanSort(newState));
+    setLoading(false);
+    setExpenses(newState);
     setProgress((expensesState.getSumExpenses() / incomesState.getSumIncomes()) * 100);
   };
 
@@ -100,7 +101,7 @@ export default function ExpensesDirectionStack() {
   };
 
   const checkScheduledPresence = (expense) => {
-    if(expense.scheduled && !expense.scheduledPeriod.includes((dayjs().month() + 1))) {
+    if (expense.scheduled && !expense.scheduledPeriod.includes((dayjs().month() + 1))) {
       return 'blurry-parent';
     }
   };
@@ -139,53 +140,55 @@ export default function ExpensesDirectionStack() {
         xl, extra-large: 1536px
   */
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <Grid container disableEqualOverflow spacing={{ xs: 2, md: 2 }}>
-        <Grid xs={6} sm={4} md={3} lg={2} xl={1.5}>
-          <Item style={{ backgroundColor: "#321f36", height: "70px" }}>
-            <Box width={"100%"} height={"12%"}>
-              <Tooltip title="All Monthly Expenses as a % from the Incomes" placement="top">
-                <Typography style={{ float: "left", fontWeight: "bold" }} component="p" align="left" color="#9ccc12" variant="standard">
-                  EXPENSES
+    loading ?
+      <Skeleton sx={{ bgcolor: 'grey.500' }} variant="rounded" width={220} height={80} />
+      :
+      <Box sx={{ flexGrow: 1 }}>
+        <Grid container disableEqualOverflow spacing={{ xs: 2, md: 2 }}>
+          <Grid xs={6} sm={4} md={3} lg={2} xl={1.5}>
+            <Item style={{ backgroundColor: "#321f36", height: "70px" }}>
+              <Box width={"100%"} height={"12%"}>
+                <Tooltip title="All Monthly Expenses as a % from the Incomes" placement="top">
+                  <Typography style={{ float: "left", fontWeight: "bold" }} component="p" align="left" color="#9ccc12" variant="standard">
+                    EXPENSES
+                  </Typography>
+                </Tooltip>
+                <CreateExpenseDialog />
+              </Box>
+              <Box width={"100%"} height={"75%"} sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <Typography component="h4" align="center" variant="standard" style={{ width: "49%", fontSize: "1rem", color: "#78909c" }}>
+                  {expensesState.getSumExpenses()}
                 </Typography>
-              </Tooltip>
-              <CreateExpenseDialog />
-            </Box>
-            <Box width={"100%"} height={"75%"} sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <Typography component="h4" align="center" variant="standard" style={{ width: "49%", fontSize: "1rem", color: "#78909c" }}>
-                {expensesState.getSumExpenses()}
-              </Typography>
-              <Divider orientation="vertical" variant="middle" flexItem />
-              <CircularProgressWithLabel sx={{ w: "50%" }} align="right" value={progress} />
-            </Box>
-          </Item>
+                <Divider orientation="vertical" variant="middle" flexItem />
+                <CircularProgressWithLabel sx={{ w: "50%" }} align="right" value={progress} />
+              </Box>
+            </Item>
+          </Grid>
+          {expenses.map((expense) => {
+            return (
+              <Grid xs={6} sm={4} md={3} lg={2} xl={1.5} key={expense.name}>
+                <div>
+                  <Item style={{ height: "70px" }} className={checkScheduledPresence(expense)}>
+                    <ViewExpenseDialog expense={expense} />
+                    <Tooltip title={"Remove " + expense.name} placement="top">
+                      <IconButton sx={{ mt: -1, mr: -1, float: "right" }} onClick={(event) => removeExpense(expense, event)} color="primary" aria-label="remove expense" size="small" align="right">
+                        <CloseIcon fontSize="inherit" />
+                      </IconButton>
+                    </Tooltip>
+
+                    <ExpenseEditable id={`${expense.name}-input`} variant="standard"
+                      InputProps={{ disableUnderline: true }}
+                      onKeyDown={(event) => onExpenseSave(expense, event)}
+                      onChange={(e) => onExpenseChange(expense, e)} defaultValue={expense.value} />
+
+                    {expense.loan ? <LinearProgress sx={{ borderRadius: 1, ml: -0.6, mr: -0.6, height: 8, mt: -1 }}
+                      variant="determinate" value={calculateLoanProcess(expense)} /> : <></>}
+                  </Item>
+                </div>
+              </Grid>
+            );
+          })}
         </Grid>
-        {expenses.map((expense) => {
-          return (
-            <Grid xs={6} sm={4} md={3} lg={2} xl={1.5} key={expense.name}>
-              <div>
-                <Item style={{ height: "70px" }} className={checkScheduledPresence(expense)}>
-                  <ViewExpenseDialog expense={expense} />
-                  <Tooltip title={"Remove " + expense.name} placement="top">
-                    <IconButton sx={{ mt: -1, mr: -1, float: "right" }} onClick={(event) => removeExpense(expense, event)} color="primary" aria-label="remove expense" size="small" align="right">
-                      <CloseIcon fontSize="inherit" />
-                    </IconButton>
-                  </Tooltip>
-
-                  <ExpenseEditable id={`${expense.name}-input`} variant="standard"
-                    InputProps={{ disableUnderline: true }}
-                    onKeyDown={(event) => onExpenseSave(expense, event)}
-                    onChange={(e) => onExpenseChange(expense, e)} defaultValue={expense.value}
-                    value={expense.value} />
-
-                  {expense.loan ? <LinearProgress sx={{ borderRadius: 1, ml: -0.6, mr: -0.6, height: 8, mt: -1 }}
-                    variant="determinate" value={calculateLoanProcess(expense)} /> : <></>}
-                </Item>
-              </div>
-            </Grid>
-          );
-        })}
-      </Grid>
-    </Box>
+      </Box>
   );
 }
