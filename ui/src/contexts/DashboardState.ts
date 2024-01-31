@@ -57,9 +57,9 @@ export default class DashboardState implements FactoryInitializable<DashboardSta
       this.unexpectedState = stateFactory.getState(UnexpectedState);
       this.expenseState = stateFactory.getState(ExpensesState);
 
-      this.incomeState.addListener(this.onChangeFetchAggregation.bind(this));
-      this.expenseState.addListener(this.onChangeFetchAggregation.bind(this));
-      this.unexpectedState.addListener(this.onChangeFetchAggregation.bind(this));
+      this.incomeState.addSaveListener(this.onChangeFetchAggregation.bind(this));
+      this.expenseState.addSaveListener(this.onChangeFetchAggregation.bind(this));
+      this.unexpectedState.addSaveListener(this.onChangeFetchAggregation.bind(this));
   }
 
   onChangeFetchAggregation(): void {

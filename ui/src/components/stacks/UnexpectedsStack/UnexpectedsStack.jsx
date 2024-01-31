@@ -1,3 +1,17 @@
+/*
+    Budgeta Application
+    Copyright (C) 2022 - 2023  S.Levkov, K.Ivanov
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+ */
 import { useState, useEffect, useContext } from "react";
 import { styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
@@ -13,6 +27,7 @@ import IconButton from "@mui/material/IconButton";
 import Divider from "@mui/material/Divider";
 import CreateSavingDialog from "../../dialogs/CreateSavingDialog";
 import { IncomesContext, UnexpectedContext } from "../../../utils/AppUtil";
+import { Skeleton } from "@mui/material";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -64,6 +79,7 @@ CircularProgressWithLabel.propTypes = {
 export default function SavingsStack() {
   const [unexpecteds, setSavings] = useState([]);
   const [progress, setProgress] = useState(0);
+  const [loading, setLoading] = useState(true);
   const unexpectedState = useContext(UnexpectedContext);
   const incomesState = useContext(IncomesContext)
 
@@ -74,8 +90,8 @@ export default function SavingsStack() {
   }
 
   const handleUnexpectedStateChange = (newState) => {
-    // Do something with the new state
-    console.log("DO SOMETHING Unexpected in UNEXPECTED has changed:", newState);
+    console.log("[UnexpectedsStack] Unexpected state has changed:", newState);
+    setLoading(false);
     setSavings(descSort(newState));
     setProgress((unexpectedState.getSumUnexpecteds() / incomesState.getSumIncomes()) * 100);
   };
@@ -110,6 +126,9 @@ export default function SavingsStack() {
   };
 
   return (
+    loading ?
+    <Skeleton sx={{ bgcolor: 'grey.500' }} variant="rounded" width={220} height={80} />
+    :
     <Box sx={{ flexGrow: 1 }}>
       <Grid container disableEqualOverflow spacing={{ xs: 2, md: 2 }}>
         <Grid xs={6} sm={4} md={3} lg={2} xl={1.5}>
@@ -147,7 +166,9 @@ export default function SavingsStack() {
                   </IconButton>
                 </Tooltip>
 
-                <SavingsEditable id={`${unexpected.name}-input`} variant="standard" InputProps={{ disableUnderline: true }} onKeyDown={(event) => handleKeyDown(unexpected, event)} onChange={(e) => onUnexpectedChange(unexpected, e)} defaultValue={unexpected.value} />
+                <SavingsEditable id={`${unexpected.name}-input`} variant="standard" 
+                InputProps={{ disableUnderline: true }} onKeyDown={(event) => handleKeyDown(unexpected, event)} 
+                onChange={(e) => onUnexpectedChange(unexpected, e)} defaultValue={unexpected.value} />
               </Item>
             </Grid>
           );

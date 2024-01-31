@@ -10,6 +10,7 @@ import { toast } from "material-react-toastify";
 import FactoryInitializable from "../data/interfaces/FactoryInitializable";
 import dayjs from "dayjs";
 import DocumentInfo from "../data/classes/DocumentInfo";
+import loanSort from "../utils/Util"
 
 export default class ExpensesState implements DashboardListener, FactoryInitializable<ExpensesState>{
   private expenseState: Expense[];
@@ -39,7 +40,7 @@ export default class ExpensesState implements DashboardListener, FactoryInitiali
     this.selectedDashboard = dashboard;
     this.restClient.genericFetch<Expense[]>([dashboard.id]).then((data) => {
         console.log('[ExpensesState] Data: ', data);
-        this.setState(data);
+        this.setState(loanSort(data));
       }).catch((error) => {
         console.error('[ExpensesState] Error:', error);
         this.setState([]);
@@ -81,7 +82,7 @@ export default class ExpensesState implements DashboardListener, FactoryInitiali
       this.expenseState = this.expenseState.map((item) => {
         return item.id === expense.id ? expense : item;
       });
-      this.setState(this.expenseState);
+      this.setState(loanSort(this.expenseState));
       this.saveListeners.forEach((saveListener) => saveListener());
     });
   }
@@ -93,7 +94,7 @@ export default class ExpensesState implements DashboardListener, FactoryInitiali
         // Type assertion to Expense
         const expenseObject = savedExpense as Expense;
       
-        this.setState([...this.expenseState, expenseObject]);
+        this.setState(loanSort([...this.expenseState, expenseObject]));
         this.saveListeners.forEach((saveListener) => saveListener());
       });
       
@@ -108,7 +109,7 @@ export default class ExpensesState implements DashboardListener, FactoryInitiali
       if (index !== -1) {
         this.expenseState.splice(index, 1);
       }
-      this.setState(this.expenseState);
+      this.setState(loanSort(this.expenseState));
       this.saveListeners.forEach((saveListener) => saveListener());
     });
   }
@@ -128,4 +129,5 @@ export default class ExpensesState implements DashboardListener, FactoryInitiali
   removeSaveListener(saveListener: () => void) {
     this.saveListeners = this.saveListeners.filter((l) => l !== saveListener);
   }
+
 }
