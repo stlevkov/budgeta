@@ -1,6 +1,24 @@
-# Budgeta
+# Budgeta [Hobby Project]
 A web application that helps plan the family budget and save funds without requiring daily inputs. 
 Once configured, the application will monitor the savings. The UI has hooks which allows you to get result from the render while you edit values on the board. This functionality allows you, to visualise your planned budget interactively while changing the expenses on the dashboard - e.g. daily recommended will be automatically updated based on the change on any value on the dashboard.
+
+# Purpose
+This project was created with the primary goal of learning and implementing new technologies. It serves as a personal exploration of learning how React works with Spring and MongoDB, allowing me to gain hands-on experience and deepen my understanding of these tools.
+
+## Project Intentions:
+- Learning: The main purpose of this project is educational, aiming to expand my knowledge and skills in react, node.js and spring technologies.
+- Personal Use: While I've designed this project for my own learning journey, I also find it useful for personal use. It's tailored to address certain needs or interests that I have.
+
+## Development Information
+- Free Time: This project has been developed during my free time, reflecting a passion for continuous learning and a commitment to personal growth.
+- No Commercial Intent: It's important to note that this project is not intended for commercial purposes. It's a personal endeavor driven by a genuine interest in technology and its applications.
+
+## Contributing
+While contributions are welcome, please keep in mind the project's origin as a learning exercise. Feel free to share feedback or suggest improvements, but understand that the primary focus is on personal development.
+
+Thank you for your interest in Budgeta project!
+
+# Technical Information
 
 [![Node.js CI](https://github.com/stlevkov/budgeta/actions/workflows/node.js.yml/badge.svg?branch=main)](https://github.com/stlevkov/budgeta/actions/workflows/node.js.yml)  [![Spring CI with Maven](https://github.com/stlevkov/budgeta/actions/workflows/maven.yml/badge.svg?branch=main)](https://github.com/stlevkov/budgeta/actions/workflows/maven.yml)  [![Azure Deploy Budgeta UI](https://github.com/stlevkov/budgeta/actions/workflows/azure-main-budgeta-ui.yml/badge.svg)](https://github.com/stlevkov/budgeta/actions/workflows/azure-main-budgeta-ui.yml)  [![Azure Deploy Budgeta Backend](https://github.com/stlevkov/budgeta/actions/workflows/azure-main-budgeta-sdk-api.yml/badge.svg?branch=main)](https://github.com/stlevkov/budgeta/actions/workflows/azure-main-budgeta-sdk-api.yml)
 
