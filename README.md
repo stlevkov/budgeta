@@ -70,7 +70,7 @@ Execute  `mvn spring-boot:run` in the [java sdk-api](./sdk-api/README.md) direct
 
 ### Running
 Access:
-``` http://localhost:3006 ``` to use the Budgeta App
+``` http://localhost:3006 ``` to use the Budgeta Project
 
 ### Environment Setup
 
