@@ -51,8 +51,8 @@ public class ExpenseServiceImpl implements ExpenseService {
             throw new ValidationCollectionException("Scheduled type cannot have less then 1 month period for funds partial payments.");
         }
 
-        Optional<Expense> expenseOptional = expenseRepo.findByName(expense.getName());
-        if (expenseOptional.isPresent() && expense.getDashboardId().equals(expenseOptional.get().getDashboardId())) {
+        Optional<Expense> expenseOptional = expenseRepo.findByNameAndDashboardId(expense.getName(), expense.getDashboardId());
+        if (expenseOptional.isPresent()) {
             throw new ValidationCollectionException(ValidationCollectionException.alreadyExists());
         }
         expense.setUpdatedAt(new Date());

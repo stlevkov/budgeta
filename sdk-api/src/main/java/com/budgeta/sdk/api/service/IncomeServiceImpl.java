@@ -34,8 +34,8 @@ public class IncomeServiceImpl implements IncomeService{
 
     @Override
     public void createIncome(Income income) throws ConstraintViolationException, ValidationCollectionException {
-        Optional<Income> incomeOptional = incomeRepo.findByName(income.getName());
-        if(incomeOptional.isPresent() && income.getDashboardId().equals(incomeOptional.get().getDashboardId())){
+        Optional<Income> incomeOptional = incomeRepo.findByNameAndDashboardId(income.getName(), income.getDashboardId());
+        if(incomeOptional.isPresent()){
             throw new ValidationCollectionException(ValidationCollectionException.alreadyExists());
         }
         income.setUpdatedAt(new Date());

@@ -69,8 +69,8 @@ export default class RestClient {
         }
       })
       .catch((error) => {
-        console.log("[EDIT][" + this.endpoint + "]: RESPONSE ERROR: " + error);
-        toast.error(`Unable to edit ${dto.name}. Try again, or check your internet connection!`);
+        console.log("[EDIT][" + this.endpoint + "]: RESPONSE ERROR: " + error.response.data);
+        toast.error(`Unable to edit ${dto.name}.Reason: ${error.response.data}!`);
       });
   }
 
@@ -96,8 +96,8 @@ export default class RestClient {
         processCallback(notifySuccess, response.data);
       })
       .catch((error) => {
-        console.log("[POST][" + this.endpoint + "]: RESPONSE ERROR: " + error);
-        toast.error(`Unable to create ${dto.name}. Try again, or check your internet connection!`);
+        console.log("[POST][" + this.endpoint + "]: RESPONSE ERROR: ", error.response.data);
+        toast.error(`Unable to create ${dto.name}.Reason: ${error.response.data}!`);
       });
   }
 
