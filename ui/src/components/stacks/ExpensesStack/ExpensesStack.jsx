@@ -25,7 +25,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import CreateExpenseDialog from "../../dialogs/CreateExpenseDialog";
-import { ExpensesContext, IncomesContext } from "../../../utils/AppUtil";
+import { DashboardContext, ExpensesContext, IncomesContext } from "../../../utils/AppUtil";
 import PropTypes from "prop-types";
 import LinearProgress from '@mui/material/LinearProgress';
 import dayjs from "dayjs";
@@ -85,12 +85,17 @@ export default function ExpensesDirectionStack() {
   const [progress, setProgress] = useState(0);
   const [loading, setLoading] = useState(true);
   const expensesState = useContext(ExpensesContext);
+  const dashboardState = useContext(DashboardContext);
   const incomesState = useContext(IncomesContext);
 
   const handleExpensesStateChange = (newState) => {
-    console.log("[ExpensesStack] Expenses has changed:", newState);
+    console.log("[ExpensesStack] Expenses has changed: ", newState);
     setLoading(false);
     setExpenses(newState);
+    setProgress((expensesState.getSumExpenses() / incomesState.getSumIncomes()) * 100);
+  };
+
+  const handleIncomesStateChange = () => { // we are interested only on the event
     setProgress((expensesState.getSumExpenses() / incomesState.getSumIncomes()) * 100);
   };
 
@@ -101,17 +106,21 @@ export default function ExpensesDirectionStack() {
   };
 
   const checkScheduledPresence = (expense) => {
-    if (expense.scheduled && !expense.scheduledPeriod.includes((dayjs().month() + 1))) {
+    const dashboard =  dashboardState.getState();
+    if (expense.scheduled && !expense.scheduledPeriod.includes(dashboard.month)) {
       return 'blurry-parent';
     }
   };
 
   useEffect(() => {
     expensesState.addListener(handleExpensesStateChange);
+    incomesState.addListener(handleIncomesStateChange);
+
     return () => {
       expensesState.removeListener(handleExpensesStateChange);
+      incomesState.removeListener(handleIncomesStateChange);
     };
-  }, [expensesState]);
+  }, [expensesState, dashboardState, incomesState]);
 
   const onExpenseChange = (expense, event) => {
     expense.value = Number(event.target.value);
@@ -166,7 +175,7 @@ export default function ExpensesDirectionStack() {
           </Grid>
           {expenses.map((expense) => {
             return (
-              <Grid xs={6} sm={4} md={3} lg={2} xl={1.5} key={expense.name}>
+              <Grid xs={6} sm={4} md={3} lg={2} xl={1.5} key={expense.id}>
                 <div>
                   <Item style={{ height: "70px" }} className={checkScheduledPresence(expense)}>
                     <ViewExpenseDialog expense={expense} />

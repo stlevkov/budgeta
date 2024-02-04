@@ -15,6 +15,7 @@
 package com.budgeta.sdk.api.model;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -23,6 +24,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 @Getter
+@Setter
 @ToString
 @Document(collection = "expenses")
 public class Expense extends DocumentInfo {

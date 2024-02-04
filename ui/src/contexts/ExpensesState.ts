@@ -16,18 +16,18 @@ export default class ExpensesState implements DashboardListener, FactoryInitiali
   private expenseState: Expense[];
   private listeners: Array<(expenses: Expense[]) => void> = [];
   private saveListeners: Array<() => void> = [];
-  private sumExpenses: number | undefined;
+  private sumExpenses: number;
   private restClient: RestClient;
   private dashboardState: DashboardState | any;
-  private selectedDashboard: Dashboard | undefined;
+  private selectedDashboard: Dashboard | any;
 
   constructor(stateFactory: StateFactory<ExpensesState>) { // Add the StateFactory parameter
     this.expenseState = [];
     this.listeners = [];
     this.saveListeners = [];
-    this.sumExpenses = undefined;
+    this.sumExpenses = 0;
     this.restClient = new RestClient(config.api.expensesEndpoint);
-    this.selectedDashboard = undefined;
+    this.selectedDashboard = {};
   }
 
   onFactoryReady(stateFactory: StateFactory<any>): void {
@@ -39,7 +39,6 @@ export default class ExpensesState implements DashboardListener, FactoryInitiali
     console.log('[ExpensesState] Dashboard has changed, fetching by dashboardId: ', dashboard.id);
     this.selectedDashboard = dashboard;
     this.restClient.genericFetch<Expense[]>([dashboard.id]).then((data) => {
-        console.log('[ExpensesState] Data: ', data);
         this.setState(loanSort(data));
       }).catch((error) => {
         console.error('[ExpensesState] Error:', error);
@@ -51,7 +50,7 @@ export default class ExpensesState implements DashboardListener, FactoryInitiali
     console.log("[ExpensesState] Setting the state to new state...", newState);
     if (newState.length > 0) {
       this.sumExpenses = newState
-      .filter(expense => !(expense.scheduled && !expense.scheduledPeriod.includes(dayjs().month() + 1)))
+      .filter(expense => !(expense.scheduled && !expense.scheduledPeriod.includes(this.selectedDashboard.month)))
       .map(expense => expense.value)
       .reduce((a, b) => a + b, 0);
     } else {

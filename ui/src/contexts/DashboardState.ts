@@ -22,6 +22,7 @@ import dayjs from 'dayjs';
 import UnexpectedState from "./UnexpectedState";
 import ExpensesState from "./ExpensesState";
 import FactoryInitializable from "../data/interfaces/FactoryInitializable";
+import CostAnalyticState from "./CostAnalyticState";
 
 export default class DashboardState implements FactoryInitializable<DashboardState> {
   private state: Dashboard;
@@ -34,6 +35,7 @@ export default class DashboardState implements FactoryInitializable<DashboardSta
   private incomeState: IncomesState | any;
   private unexpectedState: UnexpectedState | any;
   private expenseState: ExpensesState | any;
+  private costAnalyticState: CostAnalyticState | any;
 
   private currentDate: dayjs.Dayjs;
   private month: number;
@@ -56,12 +58,17 @@ export default class DashboardState implements FactoryInitializable<DashboardSta
       this.incomeState = stateFactory.getState(IncomesState);
       this.unexpectedState = stateFactory.getState(UnexpectedState);
       this.expenseState = stateFactory.getState(ExpensesState);
+      this.costAnalyticState = stateFactory.getState(CostAnalyticState);
 
       this.incomeState.addSaveListener(this.onChangeFetchAggregation.bind(this));
       this.expenseState.addSaveListener(this.onChangeFetchAggregation.bind(this));
       this.unexpectedState.addSaveListener(this.onChangeFetchAggregation.bind(this));
+      this.costAnalyticState.addSaveListener(this.onChangeFetchAggregation.bind(this));
   }
 
+  /**
+   * We ignore the actual state object passed to the function, because we are interested only to the event
+   */
   onChangeFetchAggregation(): void {
      this.handleAggregationChanged(2020); // TODO Adjust when slider for time frame is implemented
   }
@@ -85,7 +92,6 @@ export default class DashboardState implements FactoryInitializable<DashboardSta
     console.log("[DashboardState] Handle selected month changed: ", month + ' ' + year);
     console.log('[DashboardState] Fetching the dashboard item from DB...');
     this.restClient.genericFetch<Dashboard>([year, month]).then((data) => {
-      console.log('[DashboardState] Data: ', data);
       this.setState(data);
     });
   }

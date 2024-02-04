@@ -77,11 +77,11 @@ CircularProgressWithLabel.propTypes = {
 };
 
 export default function SavingsStack() {
-  const [unexpecteds, setSavings] = useState([]);
+  const [unexpecteds, setUnexpecteds] = useState([]);
   const [progress, setProgress] = useState(0);
   const [loading, setLoading] = useState(true);
   const unexpectedState = useContext(UnexpectedContext);
-  const incomesState = useContext(IncomesContext)
+  const incomesState = useContext(IncomesContext);
 
   const descSort = (expenses) => {
     const sortedData = [...expenses];
@@ -92,21 +92,26 @@ export default function SavingsStack() {
   const handleUnexpectedStateChange = (newState) => {
     console.log("[UnexpectedsStack] Unexpected state has changed:", newState);
     setLoading(false);
-    setSavings(descSort(newState));
+    setUnexpecteds(descSort(newState));
+    setProgress((unexpectedState.getSumUnexpecteds() / incomesState.getSumIncomes()) * 100);
+  };
+
+  const handleIncomesStateChange = () => { // we are interested only on the event
     setProgress((unexpectedState.getSumUnexpecteds() / incomesState.getSumIncomes()) * 100);
   };
 
   useEffect(() => {
-    setSavings(descSort(unexpectedState.getState()));
-    setProgress((unexpectedState.getSumUnexpecteds() / incomesState.getSumIncomes()) * 100);
+    setUnexpecteds(descSort(unexpectedState.getState()));
     unexpectedState.addListener(handleUnexpectedStateChange);
+    incomesState.addListener(handleIncomesStateChange);
 
     return () => {
       setProgress(0);
-      setSavings([]);
+      setUnexpecteds([]);
       unexpectedState.removeListener(handleUnexpectedStateChange);
+      incomesState.removeListener(handleIncomesStateChange);
     };
-  }, [unexpectedState]);
+  }, [unexpectedState, incomesState]);
 
   const onUnexpectedChange = (unexpected, event) => {
     unexpected.value = Number(event.target.value);
@@ -152,7 +157,7 @@ export default function SavingsStack() {
         </Grid>
         {unexpecteds.map((unexpected) => {
           return (
-            <Grid xs={6} sm={4} md={3} lg={2} xl={1.5} key={unexpected.name}>
+            <Grid xs={6} sm={4} md={3} lg={2} xl={1.5} key={unexpected.id}>
               <Item style={{ height: "70px" }}>
                 <Tooltip title={unexpected.description} placement="top">
                   <Typography style={{ float: "left" }} component="p" align="left" color="#9ccc12" variant="standard">
@@ -161,7 +166,7 @@ export default function SavingsStack() {
                 </Tooltip>
 
                 <Tooltip title={"Remove " + unexpected.name} placement="top">
-                  <IconButton sx={{ mt: -1, mr: -1, float: "right" }} color="primary" aria-label="remove unexpected" size="small" align="right" onClick={(event) => deleteSaving(unexpected, unexpecteds, setSavings, event)}>
+                  <IconButton sx={{ mt: -1, mr: -1, float: "right" }} color="primary" aria-label="remove unexpected" size="small" align="right" onClick={(event) => deleteSaving(unexpected, unexpecteds, setUnexpecteds, event)}>
                     <CloseIcon fontSize="inherit" />
                   </IconButton>
                 </Tooltip>

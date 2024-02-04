@@ -12,18 +12,18 @@ export default class UnexpectedState implements DashboardListener, FactoryInitia
   private unexpectedState: Unexpected[];
   private listeners: Array<(unexpected: Unexpected[]) => void> = [];
   private saveListeners: Array<() => void> = [];
-  private sumUnexpected: number | undefined;
+  private sumUnexpected: number;
   private restClient: RestClient;
   private dashboardState: DashboardState | any;
-  private selectedDashboard: Dashboard | undefined;
+  private selectedDashboard: Dashboard | any;
 
   constructor(stateFactory: StateFactory<UnexpectedState>) {
     this.unexpectedState = [];
     this.listeners = [];
     this.saveListeners = [];
-    this.sumUnexpected = undefined;
+    this.sumUnexpected = 0;
     this.restClient = new RestClient(config.api.unexpectedsEndpoint);
-    this.selectedDashboard = undefined;
+    this.selectedDashboard = {};
   }
 
   onFactoryReady(factory: StateFactory<any>): void {
@@ -35,7 +35,6 @@ export default class UnexpectedState implements DashboardListener, FactoryInitia
     console.log('[UnexpectedState] Dashboard has changed, fetching by dashboardId: ', dashboard.id);
     this.selectedDashboard = dashboard;
     this.restClient.genericFetch<Unexpected[]>([dashboard.id]).then((data) => {
-      console.log('[UnexpectedState] Data: ', data);
       this.setState(data);
     }).catch((error) => {
       console.error('[UnexpectedState] Error:', error);

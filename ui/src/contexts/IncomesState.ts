@@ -12,20 +12,20 @@ export default class IncomesState implements DashboardListener, FactoryInitializ
   private incomeState: Income[];
   private listeners: Array<(income: Income[]) => void> = [];
   private saveListeners: Array<() => void> = [];
-  private sumIncomes: number | undefined;
+  private sumIncomes: number;
   private restClient: RestClient;
   private dashboardState: DashboardState | any;
-  private selectedDashboard: Dashboard | undefined;
+  private selectedDashboard: Dashboard | any;
   private stateFactory: StateFactory<IncomesState>;
 
   constructor(stateFactory: StateFactory<IncomesState>) {
     this.incomeState = [];
     this.listeners = [];
     this.saveListeners = [];
-    this.sumIncomes = undefined;
+    this.sumIncomes = 0;
     this.restClient = new RestClient(config.api.incomesEndpoint);
 
-    this.selectedDashboard = undefined;
+    this.selectedDashboard = {};
   }
 
   onFactoryReady(factory: StateFactory<any>): void {
@@ -37,7 +37,6 @@ export default class IncomesState implements DashboardListener, FactoryInitializ
     console.log('[IncomesState] Dashboard has changed, fetching by dashboardId: ', dashboard.id);
     this.selectedDashboard = dashboard;
     this.restClient.genericFetch<Income[]>([dashboard.id]).then((data) => {
-      console.log('[IncomesState] Data: ', data);
       this.setState(data);
     }).catch((error) => {
       console.error('[IncomesState] Error:', error);

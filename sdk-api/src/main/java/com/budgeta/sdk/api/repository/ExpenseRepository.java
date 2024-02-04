@@ -26,5 +26,8 @@ public interface ExpenseRepository extends MongoRepository<Expense, String> {
     @Query("{name : ?0}")
     Optional<Expense> findByName(String name);
 
+    @Query("{ \"scheduled\": { \"$exists\": false }}")
+    List<Expense> findWithoutSchedule();
+
     List<Expense> findByDashboardId(String dashboardId);
 }

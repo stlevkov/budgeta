@@ -5,7 +5,6 @@ import Dashboard from "../data/classes/Dashboard";
 import config from  '../resources/config';
 import DashboardState from "./DashboardState";
 import StateFactory from "./StateFactory";
-import CostAnalyticState from "./CostAnalyticState";
 import FactoryInitializable from "../data/interfaces/FactoryInitializable";
 
 export default class BalanceAccountState implements FactoryInitializable<BalanceAccountState> {
@@ -14,14 +13,14 @@ export default class BalanceAccountState implements FactoryInitializable<Balance
    private transactionListeners: Array<(balanceTransaction: BalanceTransaction) => void> = [];
    private restClient: RestClient;
    private dashboardState: DashboardState | any;
-   private selectedDashboard: Dashboard | undefined;
+   private selectedDashboard: Dashboard | any;
 
   constructor(stateFactory: StateFactory<BalanceAccountState>) {
     this.state = [];
     this.listeners = [];
     this.transactionListeners = [];
     this.restClient = new RestClient(config.api.balanceAccountEndpoint);
-    this.selectedDashboard = undefined;
+    this.selectedDashboard = {};
   }
 
   onFactoryReady(stateFactory: StateFactory<any>): void {

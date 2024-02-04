@@ -34,14 +34,13 @@ export default class RestClient {
       const response = await axios.get(uri);
       if (response.data !== "") {
         console.log("[FETCH][" + this.endpoint + "] Response OK");
-        console.log("Data: " + JSON.stringify(response.data));
         return response.data as T;
       } else {
-        console.log("Something is wrong");
-        return Promise.reject("error");
+        console.log("[FETCH][" + this.endpoint + "] Something is wrong");
+        return Promise.reject(`Error: ${JSON.stringify(response)}`);
       }
     } catch (err) {
-      console.log("Something is wrong: " + err);
+      console.log("[FETCH][" + this.endpoint + "] Something is wrong: " + err);
       return Promise.reject("error");
     }
   }
