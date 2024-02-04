@@ -14,13 +14,7 @@ export function calculateDailyRecommended(sumExpenses, sumIncomes, sumUnexpected
   const totalExpenses = sumExpenses;
   const totalIncomes = sumIncomes;
   const totalUnexpected = sumUnexpecteds;
-  console.log('[CostAnalyticUtil] sum Incomes: ', totalIncomes);
-  console.log('[CostAnalyticUtil] sum Expenses: ', totalExpenses);
-  console.log('[CostAnalyticUtil] sum Unexpected: ', totalUnexpected);
-  console.log('[CostAnalyticUtil] target Savin: ', costAnalytic.targetSaving);
-  console.log('[CostAnalyticUtil] lastDayOfMonth: ', lastDayOfMonth);
   console.log('[CostAnalyticUtil] Calculating daily Recommended: old', costAnalytic.dailyRecommended);
-
   costAnalytic.dailyRecommended = (
     (totalIncomes - (totalExpenses + totalUnexpected + costAnalytic.targetSaving)) / lastDayOfMonth
   ).toFixed(2);

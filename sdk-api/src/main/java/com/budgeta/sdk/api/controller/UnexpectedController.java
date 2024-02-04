@@ -38,22 +38,14 @@ public class UnexpectedController {
 
     @GetMapping("/api/unexpecteds")
     public ResponseEntity<?> getAll() {
-        System.out.println("Get All Unexpected called");
-        List<Unexpected> unexpectedItems = unexpectedRepository.findAll();
-        if (!unexpectedItems.isEmpty()) {
-            return new ResponseEntity<>(unexpectedItems, HttpStatus.OK);
-        }
-        return new ResponseEntity<>("No Unexpected items available", HttpStatus.NO_CONTENT);
+        System.out.println("[GET][UNEXPECTED] Get All Unexpected called");
+        return new ResponseEntity<>(unexpectedRepository.findAll(), HttpStatus.OK);
     }
 
     @GetMapping("/api/unexpecteds/{dashboardId}")
     public ResponseEntity<?> getAllByDashboardId(@PathVariable String dashboardId) {
         System.out.println("[GET][UNEXPECTED] getAllByDashboardId called for dashboardId: " + dashboardId);
-        List<Unexpected> unexpectedItems = unexpectedRepository.findByDashboardId(dashboardId);
-        if (!unexpectedItems.isEmpty()) {
-            return new ResponseEntity<>(unexpectedItems, HttpStatus.OK);
-        }
-        return new ResponseEntity<>("No Unexpected items available for the specified dashboardId.", HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(unexpectedRepository.findByDashboardId(dashboardId), HttpStatus.OK);
     }
 
     @DeleteMapping("/api/unexpecteds/{id}")
@@ -69,7 +61,7 @@ public class UnexpectedController {
 
     @PostMapping("/api/unexpecteds")
     public ResponseEntity<?> createUnexpected(@RequestBody Unexpected unexpected){
-        System.out.println("[POST][Unexpected] Creating Unexpected: " + unexpected);
+        System.out.println("[POST][UNEXPECTED] Creating Unexpected: " + unexpected);
         try{
             unexpectedService.createUnexpected(unexpected);
             return new ResponseEntity<>(unexpected, HttpStatus.CREATED);
@@ -83,7 +75,7 @@ public class UnexpectedController {
     @PutMapping("/api/unexpecteds")
     public ResponseEntity<?> updateUnexpected(@RequestBody Unexpected unexpected){
         try {
-            System.out.println("[PUT][Unexpected] Updating Unexpected: " + unexpected);
+            System.out.println("[PUT][UNEXPECTED] Updating Unexpected: " + unexpected);
             unexpectedService.updateUnexpected(unexpected);
             return new ResponseEntity<>(unexpected, HttpStatus.ACCEPTED);
         } catch (ConstraintViolationException e) {

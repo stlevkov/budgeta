@@ -31,7 +31,7 @@ export default function CalendarDialog({ open, setOpen }) {
             console.log('Min dashboard: ', min);
             setMinDashboard(min.year + '-' + min.month);
           });
-    }, [open, dashboardState]);
+    }, [dashboardState]);
 
     return (
         <Dialog open={open} onClose={handleClose} aria-labelledby="responsive-dialog-title">

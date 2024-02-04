@@ -24,7 +24,6 @@ export default class SettingState implements FactoryInitializable<SettingState> 
   createInitDashboard(callback: Function, month: string, year: number): void {
     console.log('[SettingState] Creating initial dashboard.');
     this.restClientInitDashboard.genericFetch<[]>([]).then((data) => {
-      console.log('[SettingState] created init dashboard: ', data);
       callback(data);
     }).catch((error) => {
       console.log('[SettingState] unable to create init dashboard: ', error);

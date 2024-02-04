@@ -33,6 +33,8 @@ public interface DashboardRepository extends MongoRepository<Dashboard, String> 
     @Aggregation(pipeline = {
             "{$lookup: {from: 'expenses', let: {id: '$_id'}, pipeline: [{$match: {$expr: {$eq: [{$toObjectId: '$dashboardId'}, '$$id']}}}], as: 'expenses'}}",
             "{$unwind: { path: '$expenses', preserveNullAndEmptyArrays: true }}",
+            "{$addFields: { dashboardMonth: '$month' }}",
+            "{$match: { $or: [{$expr: {$eq: ['$expenses.scheduled', false]}}, {$expr: {$and: [{$eq: ['$expenses.scheduled', true]}, {$in: ['$dashboardMonth', '$expenses.scheduledPeriod']} ]}}]}}",
             "{$group: { _id: '$_id', month: {$first: '$month'}, year: {$first: '$year'}, readOnly: {$first: '$readOnly'}, totalExpenses: {$sum: {$toDouble: '$expenses.value'}}}}",
             "{$lookup: {from: 'unexpecteds', let: {id: '$_id'}, pipeline: [{$match: {$expr: {$eq: [{$toObjectId: '$dashboardId'}, '$$id']}}}], as: 'unexpecteds'}}",
             "{$unwind: { path: '$unexpecteds', preserveNullAndEmptyArrays: true }}",
@@ -42,6 +44,17 @@ public interface DashboardRepository extends MongoRepository<Dashboard, String> 
             "{$group: { _id: '$_id', month: {$first: '$month'}, year: {$first: '$year'}, readOnly: {$first: '$readOnly'}, totalExpenses: {$first: '$totalExpenses'}, totalUnexpecteds: {$first: '$totalUnexpecteds'}, targetSaving: {$first: '$costAnalytics.targetSaving'}}}"
     })
     List<Dashboard> getAggregatedDashboards();
+
+
+
+
+
+
+
+
+
+
+
 
     List<Dashboard> findByYearOrderByMonthDesc(int i);
 

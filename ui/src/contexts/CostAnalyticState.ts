@@ -16,6 +16,7 @@ import DashboardState from "./DashboardState";
 export default class CostAnalyticState implements DashboardListener, FactoryInitializable<CostAnalyticState>{
   private state: CostAnalytic | any;
   private listeners: ((state: CostAnalytic) => void)[];
+  private saveListeners: ((state: CostAnalytic) => void)[];
   private restClient: RestClient;
   private expensesState: ExpensesState | any;
   private incomesState: IncomesState | any;
@@ -30,12 +31,12 @@ export default class CostAnalyticState implements DashboardListener, FactoryInit
   constructor(stateFactory: StateFactory<any>) {
     this.state = {};
     this.listeners = [];
+    this.saveListeners = [];
     this.restClient = new RestClient(config.api.costAnalyticEndpoint);
   }
 
   onDashboardStateChange(dashboard: Dashboard): void {
     this.restClient.genericFetch<CostAnalytic[]>([dashboard.id]).then((data) => {
-      console.log('[CostAnalyticState][onDashboardStateChange] Data: ', data);
       this.setState(data);
     }).catch((error) => {
       console.error('[CostAnalyticState][onDashboardStateChange] Error:', error);
@@ -112,6 +113,7 @@ export default class CostAnalyticState implements DashboardListener, FactoryInit
     console.log(`[CostAnalyticState] Saving the state to the backend: ${this.state}`);
     this.restClient.genericEdit(this.state, () => {
        this.setState(this.state);
+       this.saveListeners.forEach((listener) => listener(this.state)); // notify save listeners upon save in DB
     });
   }
 
@@ -137,7 +139,16 @@ export default class CostAnalyticState implements DashboardListener, FactoryInit
     this.listeners.push(listener);
   }
 
+  addSaveListener(listener: (state: Record<string, any>) => void) {
+    console.log("[CostAnalyticState] Someone just added an Save listener to CostAnalytic state class: ", listener);
+    this.saveListeners.push(listener);
+  }
+
   removeListener(listener: (state: Record<string, any>) => void) {
     this.listeners = this.listeners.filter((l) => l !== listener);
+  }
+
+  removeSaveListener(listener: (state: Record<string, any>) => void) {
+    this.saveListeners = this.saveListeners.filter((l) => l !== listener);
   }
 }

@@ -25,6 +25,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.ConstraintViolationException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,9 +54,16 @@ public class DashboardController {
     }
 
     @GetMapping("/api/dashboards/aggregation")
-    public ResponseEntity<?> getAllAggregation(){
+    public ResponseEntity<?> getAllAggregation() {
         System.out.println("[GET][Dashboard Aggregation] getAllAggregation");
-        return new ResponseEntity<>(dashboardRepository.getAggregatedDashboards(), HttpStatus.ACCEPTED);
+
+        // Get the current month as a number
+        int currentMonth = LocalDate.now().getMonthValue();
+        System.out.println("Current Month: " + currentMonth);
+        // Call the repository method with the current month
+        List<Dashboard> aggregatedDashboards = dashboardRepository.getAggregatedDashboards();
+
+        return new ResponseEntity<>(aggregatedDashboards, HttpStatus.ACCEPTED);
     }
 
     @GetMapping("/api/dashboards/min")
