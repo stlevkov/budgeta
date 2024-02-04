@@ -15,6 +15,7 @@
 package com.budgeta.sdk.api.repository;
 
 import com.budgeta.sdk.api.model.BalanceTransaction;
+import com.budgeta.sdk.api.model.Expense;
 import com.budgeta.sdk.api.model.Income;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
@@ -24,8 +25,8 @@ import java.util.Optional;
 
 public interface BalanceRepository extends MongoRepository<BalanceTransaction, String> {
 
-    @Query("{name : ?0}")
-    Optional<BalanceTransaction> findByName(String name);
+    @Query("{name : ?0, dashboardId: ?1}")
+    Optional<BalanceTransaction> findByNameAndDashboardId(String name, String dashboardId);
 
-    List<Income> findByDashboardId(String dashboardId);
+    List<BalanceTransaction> findByDashboardId(String dashboardId);
 }

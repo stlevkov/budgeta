@@ -24,8 +24,8 @@ import java.util.Optional;
 
 public interface UnexpectedRepository extends MongoRepository<Unexpected, String> {
 
-    @Query("{name : ?0}")
-    Optional<Unexpected> findByName(String name);
+    @Query("{name : ?0, dashboardId: ?1}")
+    Optional<Unexpected> findByNameAndDashboardId(String name, String dashboardId);
 
     List<Unexpected> findByDashboardId(String dashboardId);
 }

@@ -33,7 +33,7 @@ public class UnexpectedServiceImpl implements UnexpectedService {
 
     @Override
     public void createUnexpected(Unexpected unexpected) throws ConstraintViolationException, ValidationCollectionException {
-        Optional<Unexpected> unexpectedOptional = unexpectedRepo.findByName(unexpected.getName());
+        Optional<Unexpected> unexpectedOptional = unexpectedRepo.findByNameAndDashboardId(unexpected.getName(), unexpected.getDashboardId());
         if(unexpectedOptional.isPresent()){
             throw new ValidationCollectionException(ValidationCollectionException.alreadyExists());
         }
