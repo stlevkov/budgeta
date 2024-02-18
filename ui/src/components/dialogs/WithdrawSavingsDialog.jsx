@@ -40,10 +40,10 @@ export default function WithdrawSavingsDialog({onCreate}) {
     setOpen(false);
   };
 
-  const handleClose = () => {
+  const handleClose = () => {  // TODO move this in the state
     console.log("Sending POST request");
     axios
-      .post(config.server.uri + "incomes", state)
+      .post(config.server.uriAPI + "incomes", state)
       .then((response) => {
         console.log("RESPONSE OK: " + response.data);
         onCreate(response.data);

@@ -83,7 +83,7 @@ export default class IncomesState implements DashboardListener, FactoryInitializ
 
   addIncome(incomeCandidate: Income) {
     if (this.selectedDashboard) {
-      incomeCandidate.dashboardId = this.selectedDashboard.id || '999999'; // TODO - fix that
+      incomeCandidate.dashboardId = this.selectedDashboard.id;
       this.restClient.genericCreate(incomeCandidate, (savedIncome) => {
         this.setState([...this.incomeState, savedIncome]);
         this.saveListeners.forEach((saveListener) => saveListener());

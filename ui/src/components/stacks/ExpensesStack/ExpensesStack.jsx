@@ -92,12 +92,21 @@ export default function ExpensesDirectionStack() {
     console.log("[ExpensesStack] Expenses has changed: ", newState);
     setLoading(false);
     setExpenses(newState);
-    setProgress((expensesState.getSumExpenses() / incomesState.getSumIncomes()) * 100);
+    setProgressWithCheck();
   };
 
   const handleIncomesStateChange = () => { // we are interested only on the event
-    setProgress((expensesState.getSumExpenses() / incomesState.getSumIncomes()) * 100);
+    setProgressWithCheck();
   };
+
+  const setProgressWithCheck = () => {
+    if ((expensesState.getSumExpenses() != undefined || expensesState.getSumExpenses() <= 0) ||
+      (incomesState.getSumExpenses() != undefined || incomesState.getSumExpenses() <= 0)) {
+      setProgress(0);
+    } else {
+      setProgress((expensesState.getSumExpenses() / incomesState.getSumIncomes()) * 100);
+    }
+  }
 
   const calculateLoanProcess = (expense) => {
     const today = dayjs();
@@ -106,7 +115,7 @@ export default function ExpensesDirectionStack() {
   };
 
   const checkScheduledPresence = (expense) => {
-    const dashboard =  dashboardState.getState();
+    const dashboard = dashboardState.getState();
     if (expense.scheduled && !expense.scheduledPeriod.includes(dashboard.month)) {
       return 'blurry-parent';
     }
@@ -115,7 +124,7 @@ export default function ExpensesDirectionStack() {
   useEffect(() => {
     expensesState.addListener(handleExpensesStateChange);
     incomesState.addListener(handleIncomesStateChange);
-
+    handleExpensesStateChange(expensesState.getState());
     return () => {
       expensesState.removeListener(handleExpensesStateChange);
       incomesState.removeListener(handleIncomesStateChange);

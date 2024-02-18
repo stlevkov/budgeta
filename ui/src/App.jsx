@@ -1,10 +1,7 @@
 import "./App.css";
 import Dashboard from "./layouts/Dashboard";
 import SideNavBar from "./layouts/SideBar";
-import withContexts from './utils/AppUtil';   
-import RestClient from "./api/RestClient";
-import config from "./resources/config";
-import { useState, useEffect } from "react";
+import withContexts from './utils/AppUtil';
 import CreateDashboardDialog from "./components/dialogs/CreateDashboardDialog";
 
 export default function App() {

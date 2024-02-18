@@ -88,7 +88,7 @@ export default class ExpensesState implements DashboardListener, FactoryInitiali
 
   addExpense(expenseCandidate: Expense) {
     if(this.selectedDashboard){
-      expenseCandidate.dashboardId = this.selectedDashboard.id || '999999'; // TODO fix that
+      expenseCandidate.dashboardId = this.selectedDashboard.id;
       this.restClient.genericCreate(expenseCandidate, (savedExpense: DocumentInfo) => {
         // Type assertion to Expense
         const expenseObject = savedExpense as Expense;

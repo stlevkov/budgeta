@@ -93,18 +93,26 @@ export default function SavingsStack() {
     console.log("[UnexpectedsStack] Unexpected state has changed:", newState);
     setLoading(false);
     setUnexpecteds(descSort(newState));
-    setProgress((unexpectedState.getSumUnexpecteds() / incomesState.getSumIncomes()) * 100);
+    setProgressWithCheck();
   };
 
   const handleIncomesStateChange = () => { // we are interested only on the event
-    setProgress((unexpectedState.getSumUnexpecteds() / incomesState.getSumIncomes()) * 100);
+    setProgressWithCheck();
   };
 
+  const setProgressWithCheck = () => {
+    if ((unexpectedState.getSumUnexpecteds() != undefined || unexpectedState.getSumUnexpecteds() <= 0) ||
+      (incomesState.getSumExpenses() != undefined || incomesState.getSumExpenses() <= 0)) {
+      setProgress(0);
+    } else {
+      setProgress((unexpectedState.getSumUnexpecteds() / incomesState.getSumIncomes()) * 100);
+    }
+  }
+
   useEffect(() => {
-    setUnexpecteds(descSort(unexpectedState.getState()));
     unexpectedState.addListener(handleUnexpectedStateChange);
     incomesState.addListener(handleIncomesStateChange);
-
+    handleUnexpectedStateChange(unexpectedState.getState());
     return () => {
       setProgress(0);
       setUnexpecteds([]);

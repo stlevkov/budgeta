@@ -74,18 +74,30 @@ Access:
 
 ### Environment Setup
 
-| env name                 | description            | need by        | set during | default    |
-|--------------------------|------------------------|----------------|------------|------------|
-| BUDGETA_UI_DIST_PATH     | path to ui dist folder | express server | runtime    | ../ui/dist |
-| BUDGETA_UI_PORT          | express http port      | express server | runtime    | 3006       |
-| BUDGETA_SDK_API_HOST     | spring boot host       | react ui       | build time | localhost  |
-| BUDGETA_SDK_API_PORT     | spring boot http port  | react ui       | build time | 8080       |
-| BUDGETA_SDK_API_PROTOCOL | spring boot protocol   | react ui       | build time | http       |
-| BUDGETA_MONGODB_PORT     | mongodb port           | spring boot    | runtime    | 27017      |
-| BUDGETA_MONGODB_HOST     | mongodb host           | spring boot    | runtime    | localhost  |
+| env name                         | description                 | need by        | set during | default    |
+|----------------------------------|-----------------------------|----------------|------------|------------|
+| BUDGETA_UI_DIST_PATH             | path to ui dist folder      | express server | runtime    | ../ui/dist |
+| BUDGETA_UI_HOST                  | react ui host               | spring boot    | build time | localhost  |
+| BUDGETA_UI_PORT                  | express http port           | express server | runtime    | 3006       |
+| BUDGETA_UI_PROTOCOL              | http or https               | spring, react  | build time | http       |
+|                                  |                             |                |            |            |
+| BUDGETA_SDK_API_HOST             | spring boot host            | react ui       | build time | localhost  |
+| BUDGETA_SDK_API_PORT             | spring boot http port       | react ui       | build time | 8080       |
+| BUDGETA_SDK_API_PROTOCOL         | http or https               | react ui       | build time | http       |
+|                                  |                             |                |            |            |
+| BUDGETA_MONGODB_PORT             | mongodb port                | spring boot    | runtime    | 27017      |
+| BUDGETA_MONGODB_HOST             | mongodb host                | spring boot    | runtime    | localhost  |
+|                                  |                             |                |            |            |
+| BUDGETA_GITHUB_APP_CLIENT_ID     | github app reg client       | spring boot    | build time |            |
+| BUDGETA_GITHUB_APP_CLIENT_SECRET | github app reg secret       | spring boot    | build time |            |
+| BUDGETA_GOOGLE_APP_CLIENT_ID     | github app reg client       | spring boot    | build time |            |
+| BUDGETA_GOOGLE_APP_CLIENT_SECRET | github app reg secret       | spring boot    | build time |            |
+|                                  |                             |                |            |            |
+| BUDGETA_SINGLE_USER_EMAIL        | register enabled for 1 user | spring boot    | build time |            |
+| BUDGETA_SDK_API_SECURITY_LEVEL   | enable spring security log  | spring boot    | build time | INFO       |
 
 ### Logging
 
 To see the logs from the applications check the systemd service logs
 
-To enable spring security debug, set `@EnableWebSecurity(debug = true)` in [WebSecurityConfig](./sdk-api/src/main/java/com/budgeta/sdk/api/config/WebSecurityConfig.java)
+To enable spring security debug, set BUDGETA_SDK_API_SECURITY_LEVEL to DEBUG.

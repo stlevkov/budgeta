@@ -15,11 +15,7 @@
 package com.budgeta.sdk.api.service;
 
 import com.budgeta.sdk.api.exception.ValidationCollectionException;
-import com.budgeta.sdk.api.model.BalanceTransaction;
-import com.budgeta.sdk.api.model.CostAnalytic;
-import com.budgeta.sdk.api.model.Dashboard;
-import com.budgeta.sdk.api.model.Setting;
-import com.budgeta.sdk.api.repository.BalanceRepository;
+import com.budgeta.sdk.api.model.*;
 import com.budgeta.sdk.api.repository.CostAnalyticRepository;
 import com.budgeta.sdk.api.repository.DashboardRepository;
 import com.budgeta.sdk.api.repository.SettingRepository;
@@ -30,7 +26,6 @@ import org.springframework.stereotype.Service;
 
 import javax.validation.ConstraintViolationException;
 import java.math.BigDecimal;
-import java.util.Date;
 
 @Service
 @AllArgsConstructor
@@ -45,19 +40,20 @@ public class SettingServiceImpl implements SettingService {
     @Autowired
     SettingRepository settingRepository;
 
+    @Autowired
+    UserService userService;
+
     @Override
     public Setting createInitDatabaseSetup() throws ConstraintViolationException, ValidationCollectionException {
-        // TODO - here create the setting itself, not in the PostConstruct
+        User currentLoggedUser = userService.getCurrentLoggedUser();
         Dashboard dashboard = dashboardRepository.save(new Dashboard(null, DateUtils.getCurrentMonth(), DateUtils.getCurrentYear(),
-                false));
-        Setting setting = settingRepository.findAll().get(0);
+                false, currentLoggedUser.getId()));
+        Setting setting = settingRepository.findByUserId(currentLoggedUser.getId()).get(0);
         setting.setInitialized(true);
-        settingRepository.save(setting);
-
+        System.out.println("Creating initial Dashboard for user: " + currentLoggedUser.getName());
         costAnalyticRepository.save(new CostAnalytic( null, "Analytics",
                 BigDecimal.ZERO, BigDecimal.ZERO,  BigDecimal.ZERO,  BigDecimal.ZERO,  dashboard.getId()
         ));
-
-        return setting;
+        return settingRepository.save(setting);
     }
 }

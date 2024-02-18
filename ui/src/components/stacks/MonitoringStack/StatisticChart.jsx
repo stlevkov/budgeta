@@ -86,16 +86,16 @@ export default function StatisticChart() {
     return transformedState;
   };
 
-  const handleDashboardAggregationChanged = (aggregation) => {
-    console.log('[StatisticChart][Aggregation]: ', aggregation);
+  const handleDashboardAggregationChanged = (state) => {
+    console.log('[StatisticChart][Aggregation]: ', state);
     setLoading(false);
-    setAggregationState(transformAggregationState(dashboardState.getAggregationState()));
+    setAggregationState(transformAggregationState(state));
   }
 
   useEffect(() => {
     console.log("[StatisticChart][UseEffect] Initializing Component.");
     dashboardState.addAggregationListener(handleDashboardAggregationChanged);
-    setAggregationState(transformAggregationState(dashboardState.getAggregationState()));
+    handleDashboardAggregationChanged(dashboardState.getAggregationState());
   }, [dashboardState]);
 
   return (

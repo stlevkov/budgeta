@@ -68,7 +68,7 @@ public class CostAnalytic {
      * automatically at the end of each month or manually updated by user.
      */
     @NotNull
-    private BigDecimal balanceAccount;
+    private BigDecimal balanceAccount; // TODO shall be separate model and multiple accounts should be possible
 
     /**
      * Provides reference to its corresponding dashboard

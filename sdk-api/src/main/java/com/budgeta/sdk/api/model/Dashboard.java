@@ -40,17 +40,21 @@ public class Dashboard {
     @NotNull
     private Boolean readOnly;
 
-    private Double totalExpenses;
+    @NotNull
+    private String userId;
 
-    private Double totalUnexpecteds;
+    private Double totalExpenses; // TODO make it in DTO
 
-    private Double targetSaving;
+    private Double totalUnexpecteds; // TODO make it in DTO
 
-    public Dashboard(@NotNull String id, @NotNull Integer month, @NotNull Integer year, @NotNull Boolean readOnly) {
+    private Double targetSaving; // // TODO make it in DTO
+
+    public Dashboard(@NotNull String id, @NotNull Integer month, @NotNull Integer year, @NotNull Boolean readOnly, @NotNull String userId) {
         this.id = id;
         this.month = month;
         this.year = year;
         this.readOnly = readOnly;
+        this.userId = userId;
     }
 
 }

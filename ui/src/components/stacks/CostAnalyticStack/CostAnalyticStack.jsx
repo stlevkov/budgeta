@@ -16,13 +16,11 @@ import * as React from "react";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
-import axios from "axios";
 import { useState, useEffect, useContext } from "react";
 import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
 import ViewIncomeDialog from "../../dialogs/ViewIncomesDialog";
 import Grid from "@mui/material/Unstable_Grid2";
-import config from "../../../resources/config";
 import CreateIncomeDialog from "../../dialogs/CreateIncomeDialog";
 import Divider from "@mui/material/Divider";
 import TextField from "@mui/material/TextField";
@@ -38,22 +36,6 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
   boxShadow: "0px 6px 8px #45464a"
 }));
-
-async function fetchIncomes() {
-  try {
-    const response = await axios.get(config.server.uri + "incomes");
-    if (response.data !== "") {
-      console.log("[CostAnalytics][Incomes] response data", response.data); //Prints out my three objects in an array in my console. works great
-      return response.data;
-    } else {
-      console.log("[CostAnalytics][Incomes] Something is wrong obtaining the incomes");
-      return data.defaultIncomes;
-    }
-  } catch (err) {
-    // console.log(err); // TODO makes tests fail because of network delay response
-    return data.defaultIncomes;
-  }
-}
 
 const TargetSavingEditable = styled(TextField)(({ theme }) => ({
   "& .MuiInput-root": {
@@ -118,6 +100,11 @@ export default function CostAnalyticStack() {
     incomesState.addListener(handleIncomesChange);
     unexpectedsState.addListener(handleUnexpectedsChange);
     expensesState.addListener(handleExpensesChange);
+    
+    handleCostAnalyticStateChange(costAnalyticState.getState());
+    handleIncomesChange();
+    handleUnexpectedsChange();
+    handleExpensesChange();
 
     return () => { // Cleanup function to remove the listener when the component unmounts
       costAnalyticState.removeListener(handleCostAnalyticStateChange);
