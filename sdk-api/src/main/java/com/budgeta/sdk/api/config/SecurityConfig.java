@@ -35,6 +35,9 @@ public class SecurityConfig {
     @Value("${frontend.url}")
     private String frontendURL;
 
+    @Value("${frontend.port}")
+    private String frontendPORT;
+
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.debug(webSecurityDebug);
@@ -61,7 +64,8 @@ public class SecurityConfig {
     @Bean
     UrlBasedCorsConfigurationSource corsConfiguration() {
         CorsConfiguration cors = new CorsConfiguration();
-        System.out.println("FrontendURL: " + frontendURL);
+        if(!frontendPORT.equals("443")) frontendURL = frontendURL + ':' + frontendPORT;
+        System.out.println("FrontendURL: " + frontendURL + ", port: " + frontendPORT);
         cors.setAllowedOrigins(List.of(frontendURL)); //"Access-Control-Allow-Origin" response header
         cors.setAllowCredentials(true);
         cors.addAllowedMethod("*");
