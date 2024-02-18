@@ -9,6 +9,9 @@ env:
   BUDGETA_SDK_API_HOST: ${{ secrets.BUDGETA_SDK_API_HOST }}
   BUDGETA_SDK_API_PORT: ${{ secrets.BUDGETA_SDK_API_PORT }}
   BUDGETA_SDK_API_PROTOCOL: ${{ secrets.BUDGETA_SDK_API_PROTOCOL }}
+  BUDGETA_UI_HOST: ${{secrets.BUDGETA_UI_HOST}}
+  BUDGETA_UI_PROTOCOL: ${{secrets.BUDGETA_UI_PROTOCOL}}
+  BUDGETA_UI_PORT: ${{secrets.BUDGETA_UI_PORT}}
 
 jobs:
   # print-env-variables:
