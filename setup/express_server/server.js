@@ -1,40 +1,44 @@
-const express = require('express');
-const path = require('path');
-const cors = require('cors');
-const fs = require('fs');
+import express from 'express';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import cors from 'cors';
+import fs from 'fs';
 
+const distDir = process.env.BUDGETA_UI_DIST_PATH || '../../ui/dist';
+const port = process.env.BUDGETA_UI_PORT || 3006;
 const app = express();
+
+
+console.log('[Server] dist path from env: ', distDir);
+
+if(!fs.existsSync(distDir)) {
+  console.log('[Server] Unable to start. Did you forget to build dist? Try with \'npm run build\'.');
+  process.exit(1);
+}
 
 // Enable CORS
 app.use(cors());
 
-const distPath = process.env.BUDGETA_UI_DIST_PATH || path.join(__dirname, '../../ui/dist');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const distPath = path.join(__dirname, distDir);
 
 // Serve the static files from the dist directory
 app.use(express.static(distPath));
 
-// Serve the index.html file for all routes
 app.get('*', (req, res) => {
-  // Extract the path requested by the client
-  const requestedPath = req.url;
-
-  // Construct the absolute path to the file based on the requested path
-  const filePath = path.join(distPath, requestedPath);
-  console.log('requested path: ', filePath)
-  // Check if the file exists
-  fs.access(filePath, fs.constants.F_OK, (err) => {
-    if (err) {
-      // File does not exist, send the index.html file
-      res.sendFile(path.join(distPath, 'index.html'));
-    } else {
-      // File exists, send the requested file
-      res.sendFile(filePath);
-    }
+  console.log('[Server] Receiving req path: ', req.url)
+  res.sendFile(path.join(__dirname, distDir + '/index.html'), (err) => { // found
+      if(err) { // not found
+        console.log('[Error] path not found, navigating to index. Reason: ', err)
+        res.sendFile(path.join(__dirname, distDir + '/error.html')); 
+      }
   });
 });
 
 // Start the server
-const port = process.env.BUDGETA_UI_PORT || 3006;
+
 app.listen(port, () => {
-  console.log(`Server started on port ${port}`);
+  console.log(`[Server] started on port ${port}`);
 });
