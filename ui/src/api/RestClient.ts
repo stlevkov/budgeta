@@ -4,6 +4,7 @@ import { toast } from 'material-react-toastify';
 import { processCallback, embedPathVariables } from '../utils/RestUtil';
 import DocumentInfo from '../data/classes/DocumentInfo';
 
+axios.defaults.withCredentials = true;
 
 export default class RestClient {
   private endpoint: string;
