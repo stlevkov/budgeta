@@ -18,6 +18,7 @@ import com.budgeta.sdk.api.exception.ValidationCollectionException;
 import com.budgeta.sdk.api.model.Dashboard;
 
 import javax.validation.ConstraintViolationException;
+import java.util.List;
 
 public interface DashboardService {
 
@@ -26,4 +27,11 @@ public interface DashboardService {
     Dashboard getCurrentDashboard(int currentYear, int currentMonth) throws ConstraintViolationException, ValidationCollectionException;
 
     Dashboard transferDataAndCreateDashboard(int year, int month) throws ValidationCollectionException;
+
+    /**
+     *  Returns all dashboards of the user.
+     *
+     * @return all dashboards associated for the current logged-in user.
+     */
+    List<Dashboard> getDashboards();
 }

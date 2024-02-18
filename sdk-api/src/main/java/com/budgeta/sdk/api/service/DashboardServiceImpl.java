@@ -18,11 +18,9 @@ import com.budgeta.sdk.api.exception.ValidationCollectionException;
 import com.budgeta.sdk.api.model.*;
 import com.budgeta.sdk.api.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.validation.ConstraintViolationException;
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -43,6 +41,9 @@ public class DashboardServiceImpl implements DashboardService{
 
     @Autowired
     private BalanceRepository balanceRepository;
+
+    @Autowired
+    private UserService userService;
 
     @Override
     public Dashboard createDashboard(Dashboard dashboard) throws ConstraintViolationException {
@@ -66,7 +67,7 @@ public class DashboardServiceImpl implements DashboardService{
         System.out.println("[DashboardService] Trying to found the last dashboard to the specified period of: " + year + "-" + month);
         Dashboard closestDashboard = findClosestDashboard(year, month);
         System.out.println("[DashboardService] Creating the new Dashboard...");
-        Dashboard candidateDashboard = new Dashboard(null, month, year, true);
+        Dashboard candidateDashboard = new Dashboard(null, month, year, true, userService.getCurrentLoggedUser().getId());
         Dashboard savedDashboard = dashboardRepo.save(candidateDashboard);
         System.out.println("[DashboardService] Copying CostAnalytics...");
         copyCostAnalytics(closestDashboard, savedDashboard);
@@ -76,6 +77,11 @@ public class DashboardServiceImpl implements DashboardService{
         copyIncomes(closestDashboard, savedDashboard);
         System.out.println("[DashboardService] Returning the new Dashboard: " + savedDashboard);
         return savedDashboard;
+    }
+
+    @Override
+    public List<Dashboard> getDashboards() {
+        return dashboardRepo.findByUserId(userService.getCurrentLoggedUser().getId());
     }
 
     private void copyIncomes(final Dashboard closestDashboard, final Dashboard savedDashboard) {
@@ -116,7 +122,7 @@ public class DashboardServiceImpl implements DashboardService{
     private Dashboard findClosestDashboard(final int year, final int month) throws ValidationCollectionException {
         // List<Dashboard> dashboards = dashboardRepo.findAll(Sort.by(Sort.Direction.ASC, "year", "month"));
         System.out.println("Checking if there are records for this year... " + year);
-        List<Dashboard> dashboardsForCurrentYear = dashboardRepo.findByYearOrderByMonthAsc(year);
+        List<Dashboard> dashboardsForCurrentYear = dashboardRepo.findByYearAndUserIdOrderByMonthAsc(year, userService.getCurrentLoggedUser().getId());
         if(month == 1 || dashboardsForCurrentYear.isEmpty()) {
             System.out.println("Target month is 1-January OR there are none records in the current year - will search only in the past year...");
             System.out.println("Getting only the last year records: " + (year -1));

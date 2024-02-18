@@ -1,5 +1,5 @@
 import config from '../resources/config';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { toast } from 'material-react-toastify';
 import { processCallback, embedPathVariables } from '../utils/RestUtil';
 import DocumentInfo from '../data/classes/DocumentInfo';
@@ -12,39 +12,39 @@ export default class RestClient {
     this.endpoint = endpoint;
   }
 
-/**
- * Makes a get request to fetch a resource from the back-end.
- *
- * @param pathVariables - Array of variables for fetching the specific resource (e.g., `api/var/var/var...`).
- * @returns A promise that resolves to the requested data of type `T`, or an error if the operation fails.
- *
- * @example
- * // Fetch and set data of type `TypeClass[]` from the specified dashboard.
- *   this.restClient.genericFetch<DocumentInfo[]>([dashboard.id]).then((data) => {
- *       this.setState(data);
- *     }).catch((error) => {
- *       this.setState([]);
- *     });
- */
+  /**
+   * Makes a get request to fetch a resource from the back-end.
+   *
+   * @param pathVariables - Array of variables for fetching the specific resource (e.g., `api/var/var/var...`).
+   * @returns A promise that resolves to the requested data of type `T`, or an error if the operation fails.
+   *
+   * @example
+   * // Fetch and set data of type `TypeClass[]` from the specified dashboard.
+   *   this.restClient.genericFetch<DocumentInfo[]>([dashboard.id]).then((data) => {
+   *       this.setState(data);
+   *     }).catch((error) => {
+   *       this.setState([]);
+   *     });
+   */
   async genericFetch<T>(pathVariables: any[]): Promise<T> {
-    console.log("[API] Fetching " + this.endpoint + ", path vars: ", pathVariables);
+    console.log("[API][GET] Fetching " + this.endpoint + ", path vars: ", pathVariables);
+    let response = {} as AxiosResponse;
     try {
-      const uri = config.server.uri + embedPathVariables(pathVariables, this.endpoint);
-      console.log('URI: ', uri);
-      const response = await axios.get(uri);
-      if (response.data !== "") {
-        console.log("[FETCH][" + this.endpoint + "] Response OK");
-        return response.data as T;
-      } else {
-        console.log("[FETCH][" + this.endpoint + "] Something is wrong");
-        return Promise.reject(`Error: ${JSON.stringify(response)}`);
+      const uri = config.server.uriAPI + embedPathVariables(pathVariables, this.endpoint);
+      console.log('[API][GET] URI: ', uri);
+      response = await axios.get(uri, {withCredentials: true})
+      console.log('responseURL: ', response.request.responseURL)
+      if(response.request.responseURL != uri){
+        window.location.href = config.server.frontendUri + "/login"; // TODO this is not the best routing in case not authenticated
+        return Promise.reject('redirected to login');
       }
+      return this.validateResponse<T>(response);
     } catch (err) {
-      console.log("[FETCH][" + this.endpoint + "] Something is wrong: " + err);
-      return Promise.reject("error");
+      console.log("[API][GET][" + this.endpoint + "] Something is wrong: ", err);
+      return Promise.reject(err);
     }
   }
-  
+
 
   /**
    * Generic Edit, serves all POST operations to the back-end for DTOs,
@@ -56,7 +56,8 @@ export default class RestClient {
    */
   async genericEdit(dto: DocumentInfo, notifySuccess?: () => void): Promise<void> {
     axios
-      .put(`${config.server.uri}${this.endpoint}`, dto, {
+      .put(`${config.server.uriAPI}${this.endpoint}`, dto, {
+        withCredentials: true,
         headers: {
           "Content-Type": "application/json",
         },
@@ -85,7 +86,8 @@ export default class RestClient {
    */
   async genericCreate(dto: DocumentInfo | any, notifySuccess?: (dto: DocumentInfo) => void): Promise<void> {
     axios
-      .post(`${config.server.uri}${this.endpoint}`, dto, {
+      .post(`${config.server.uriAPI}${this.endpoint}`, dto, {
+        withCredentials: true,
         headers: {
           "Content-Type": "application/json",
         },
@@ -111,7 +113,8 @@ export default class RestClient {
    */
   async genericDelete(dto: DocumentInfo, notifySuccess?: () => void): Promise<void> {
     axios
-      .delete(`${config.server.uri}${this.endpoint}/${dto.id}`, {
+      .delete(`${config.server.uriAPI}${this.endpoint}/${dto.id}`, {
+        withCredentials: true,
         headers: {
           "Content-Type": "application/json",
         },
@@ -125,5 +128,15 @@ export default class RestClient {
         console.log("[DELETE][" + this.endpoint + "]: RESPONSE ERROR: " + error);
         toast.error(`Unable to delete ${dto.name}. Try again, or check your internet connection!`);
       });
+  }
+
+  validateResponse<T>(response: any): T {
+    if (response.data !== "") {
+      console.log("[FETCH][" + this.endpoint + "] Response OK");
+      return response.data as T;
+    } else {
+      console.log("[FETCH][" + this.endpoint + "] Something is wrong");
+      throw new Error(`Error: ${JSON.stringify(response)}`);
+    }
   }
 }

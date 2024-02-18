@@ -20,12 +20,15 @@ export default function SideNavBar() {
   };
 
   const handleDashboardChanged = (dashboard) => {
-    const result = dayjs(`${dashboard.year}-${dashboard.month}`, {format: 'YYYY-MM' });
-     setCurrrentDate(result.format("YYYY") + ' / ' + result.format("MMMM"));
+    if (dashboard != undefined) { // On initial configurations, there aren't any dashbaords
+      const result = dayjs(`${dashboard.year}-${dashboard.month}`, { format: 'YYYY-MM' });
+      setCurrrentDate(result.format("YYYY") + ' / ' + result.format("MMMM"));
+    }
   }
 
   useEffect(() => {
     console.log("[Sidebar][UseEffect] Initializing Component.");
+    handleDashboardChanged(dashboardState.getState());
     dashboardState.addListener(handleDashboardChanged);
   }, [dashboardState]);
 
@@ -68,6 +71,6 @@ export default function SideNavBar() {
       </Menu>
       <CalendarDialog open={open} setOpen={setOpen} />
     </Sidebar>
-    
+
   );
 }

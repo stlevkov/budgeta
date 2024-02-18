@@ -18,9 +18,11 @@ import com.budgeta.sdk.api.exception.ValidationCollectionException;
 import com.budgeta.sdk.api.model.*;
 import com.budgeta.sdk.api.repository.*;
 import com.budgeta.sdk.api.service.SettingService;
+import com.budgeta.sdk.api.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
@@ -34,14 +36,8 @@ import static com.budgeta.sdk.api.utils.DBUtil.getIncomeList;
 @RestController
 public class SettingController {
 
-    @PostConstruct
-    public void init() {
-        List<Setting> all = settingRepository.findAll();
-        if (all.isEmpty()) {
-            System.out.println("[SettingController] Initial setup detected. Creating initial Setting");
-            settingRepository.save(new Setting(null, false));
-        }
-    }
+    @Autowired
+    UserService userService;
 
     @Autowired
     private SettingRepository settingRepository;
@@ -70,9 +66,9 @@ public class SettingController {
     @GetMapping("/api/settings")
     public ResponseEntity<?> getAll() {
         System.out.println("[GET][SETTING] find all called");
-        List<Setting> settings = settingRepository.findAll();
+        List<Setting> settings = settingRepository.findByUserId(userService.getCurrentLoggedUser().getId());
         if(settings.isEmpty()) {
-            return new ResponseEntity<>("No settings found. Initial setting needs to be created", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("No settings found. Initial setting needs to be created for the current user", HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(settings.get(0), HttpStatus.OK);
     }
@@ -92,20 +88,23 @@ public class SettingController {
 
     @GetMapping("/api/settings/fabric_defaults")
     public ResponseEntity<?> fabricDefaults() {
+        // TODO - Remove only the user associated resources, not all of them
         System.out.println("[GET][SETTING] Fabric Defaults. This will remove all data from the DB");
         dashboardRepository.deleteAll();
         settingRepository.deleteAll();
-        Setting newSetting = new Setting(null,true);
-        settingRepository.save(newSetting);
         costAnalyticRepository.deleteAll();
         expenseRepository.deleteAll();
         incomeRepository.deleteAll();
         unexpectedRepository.deleteAll();
         balanceRepository.deleteAll();
+        System.out.println("Current user: " + userService.getCurrentLoggedUser());
+        Setting newSetting = new Setting(null,false, userService.getCurrentLoggedUser().getId());
+        settingRepository.save(newSetting);
         return new ResponseEntity<>("All data from DB erased", HttpStatus.OK);
     }
 
     @GetMapping("/api/setting/fill_dummy_data")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> fillDummyData() {
         System.out.println("[GET][SETTING][FILL DUMMY DATA] filling database with several dashboards");
         Dashboard dashboard1 = new Dashboard();

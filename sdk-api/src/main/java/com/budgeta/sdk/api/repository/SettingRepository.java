@@ -17,6 +17,9 @@ package com.budgeta.sdk.api.repository;
 import com.budgeta.sdk.api.model.Setting;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
+import java.util.List;
+
 public interface SettingRepository extends MongoRepository<Setting, String> {
 
+    List<Setting> findByUserId(String userId);
 }

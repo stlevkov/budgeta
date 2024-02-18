@@ -40,6 +40,7 @@ export default function Dashboard() {
     console.log("[Dashboard][UseEffect] Initializing Component.");
     dashboardState.addListener(handleDashboardStateChanged);
     expensesState.addListener(handleExpensesStateChanged);
+    handleExpensesStateChanged("ignore");
   }, [dashboardState, expensesState]);
 
   const toggleSidebar = () => {

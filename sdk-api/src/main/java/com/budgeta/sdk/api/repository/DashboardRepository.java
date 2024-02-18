@@ -49,5 +49,7 @@ public interface DashboardRepository extends MongoRepository<Dashboard, String> 
 
     List<Dashboard> findByYear(int year);
 
-    List<Dashboard> findByYearOrderByMonthAsc(int year);
+    List<Dashboard> findByYearAndUserIdOrderByMonthAsc(int year, String userId);
+
+    List<Dashboard> findByUserId(String userId);
 }

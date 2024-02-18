@@ -43,7 +43,7 @@ export default class BalanceAccountState implements FactoryInitializable<Balance
   // TODO Update the state once the UI Component for the Account History is ready
   newTransaction(balanceTransaction: BalanceTransaction) {
     if(this.selectedDashboard){
-      balanceTransaction.dashboardId = this.selectedDashboard.id || '999999'; // TODO fix that
+      balanceTransaction.dashboardId = this.selectedDashboard.id;
       console.log('[BalanceAccountState] Creating new transaction: ', balanceTransaction);
       this.restClient.genericCreate(balanceTransaction, () => {
         this.transactionListeners.forEach((listener) => listener(balanceTransaction));

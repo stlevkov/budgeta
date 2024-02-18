@@ -14,19 +14,14 @@
  */
 package com.budgeta.sdk.api.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotNull;
 
-@Setter
-@Getter
+@Data
 @AllArgsConstructor
-@ToString
 @Document(collection = "settings")
 public class Setting {
 
@@ -35,5 +30,8 @@ public class Setting {
 
     @NotNull
     private Boolean initialized;
+
+    @NotNull
+    private String userId;
 
 }

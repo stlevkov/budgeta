@@ -81,7 +81,7 @@ export default class UnexpectedState implements DashboardListener, FactoryInitia
 
   addUnexpected(unexpectedCandidate: Unexpected) {
     if (this.selectedDashboard) {
-      unexpectedCandidate.dashboardId = this.selectedDashboard.id || '999999'; // TODO - fix that
+      unexpectedCandidate.dashboardId = this.selectedDashboard.id;
       this.restClient.genericCreate(unexpectedCandidate, (savedUnexpected) => {
         this.setState([...this.unexpectedState, savedUnexpected]);
         this.saveListeners.forEach((saveListener) => saveListener());

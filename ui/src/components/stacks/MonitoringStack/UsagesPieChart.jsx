@@ -42,7 +42,7 @@ export default function UsagesPieChart() {
   useEffect(() => {
     console.log("[UsagesPieChart][UseEffect] Initializing Component.");
     expensesState.addListener(handleExpensesChanged);
-    setExpenses(expensesState.getState());
+    handleExpensesChanged(expensesState.getState());
   }, [expensesState]);
 
   return (

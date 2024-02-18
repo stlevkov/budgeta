@@ -37,6 +37,7 @@ export default function CreateDashboardDialog() {
       setSetting(data);
       if(!data.initialized){
         setOpen(true);
+        console.log('[App][UseEffect] dialog set to true - open')
       }
     }).catch((error) => {
       console.error('[App][UseEffect] data setting error: ', error);
