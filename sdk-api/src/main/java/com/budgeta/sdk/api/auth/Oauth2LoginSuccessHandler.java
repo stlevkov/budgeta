@@ -32,6 +32,9 @@ public class Oauth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
     @Value("${frontend.url}")
     private String frontendURL;
 
+    @Value("${frontend.port}")
+    private String frontendPORT;
+
     @Value("${single.user.email}")
     private String singleUserEmail;
 
@@ -44,6 +47,7 @@ public class Oauth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
         this.setAlwaysUseDefaultTargetUrl(true);
+        if(!frontendPORT.equals("443")) frontendURL = frontendURL + ':' + frontendPORT;
         this.setDefaultTargetUrl(frontendURL); // TODO - implement router if the Rest API will be used for other purposes
 
         OAuth2AuthenticationToken oAuth2AuthenticationToken = (OAuth2AuthenticationToken) authentication;
