@@ -46,7 +46,6 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .headers().httpStrictTransportSecurity().disable().disable()
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfiguration()))
                 .authorizeHttpRequests(auth -> {
@@ -71,6 +70,7 @@ public class SecurityConfig {
         cors.setAllowCredentials(true);
         cors.addAllowedMethod("*");
         cors.addAllowedHeader("*");
+        cors.setAllowCredentials(true); // Without this, the frontend will not be able to read the response
         cors.setMaxAge(60L);
         UrlBasedCorsConfigurationSource urlConfigSource = new UrlBasedCorsConfigurationSource();
         urlConfigSource.registerCorsConfiguration("/**", cors);
