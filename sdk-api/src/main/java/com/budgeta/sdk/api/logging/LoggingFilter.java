@@ -16,6 +16,9 @@ public class LoggingFilter extends OncePerRequestFilter { // TODO This works wel
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         log.info("Handling incoming request: {}, {}", request.getRequestURI(), request.getMethod());
+
+        response.setHeader("Access-Control-Allow-Credentials", "true"); // Test if it's working with Azure App Service
+
         filterChain.doFilter(request, response);
     }
 }
