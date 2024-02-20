@@ -67,10 +67,9 @@ public class SecurityConfig {
         if(!frontendPORT.equals("443")) frontendURL = frontendURL + ':' + frontendPORT;
         System.out.println("FrontendURL: " + frontendURL + ", port: " + frontendPORT);
         cors.setAllowedOrigins(List.of(frontendURL)); //"Access-Control-Allow-Origin" response header
-        cors.setAllowCredentials(true);
+       // cors.setAllowCredentials(true);
         cors.addAllowedMethod("*");
         cors.addAllowedHeader("*");
-        cors.setAllowCredentials(true); // Without this, the frontend will not be able to read the response
         cors.setMaxAge(60L);
         UrlBasedCorsConfigurationSource urlConfigSource = new UrlBasedCorsConfigurationSource();
         urlConfigSource.registerCorsConfiguration("/**", cors);
