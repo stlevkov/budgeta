@@ -34,9 +34,10 @@ export default class RestClient {
       const uri = config.server.uriAPI + embedPathVariables(pathVariables, this.endpoint);
       console.log('[API][GET] URI: ', uri);
       response = await axios.get(uri, {withCredentials: true})
-      console.log('responseURL: ', response.request.responseURL)
+      console.log(`requestURL: ${uri}, responseURL: ${response.request.responseURL}`);
       if(response.request.responseURL != uri){
         window.location.href = config.server.frontendUri + "/login"; // TODO this is not the best routing in case not authenticated
+        console.log(`Redirecting to Login. Reason: Url missmatch.`);
         return Promise.reject('redirected to login');
       }
       return this.validateResponse<T>(response);
