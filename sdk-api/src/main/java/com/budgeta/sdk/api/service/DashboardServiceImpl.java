@@ -20,6 +20,7 @@ import com.budgeta.sdk.api.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import javax.validation.ConstraintViolationException;
 import java.util.Date;
 import java.util.List;
@@ -54,7 +55,7 @@ public class DashboardServiceImpl implements DashboardService{
 
     @Override
     public Dashboard getCurrentDashboard(int currentYear, int currentMonth) throws ConstraintViolationException, ValidationCollectionException {
-        List<Dashboard> dashboards = dashboardRepo.findByYearAndMonth(currentYear, currentMonth);
+        List<Dashboard> dashboards = dashboardRepo.findByYearAndMonthAndUserId(currentYear, currentMonth, userService.getCurrentLoggedUser().getId());
         if(dashboards.size() == 1) {
             return dashboards.get(0);
         } else {
@@ -64,10 +65,11 @@ public class DashboardServiceImpl implements DashboardService{
 
     @Override
     public Dashboard transferDataAndCreateDashboard(int year, int month) throws ValidationCollectionException {
+        String userId = userService.getCurrentLoggedUser().getId();
         System.out.println("[DashboardService] Trying to found the last dashboard to the specified period of: " + year + "-" + month);
-        Dashboard closestDashboard = findClosestDashboard(year, month);
+        Dashboard closestDashboard = findClosestDashboard(year, month, userId);
         System.out.println("[DashboardService] Creating the new Dashboard...");
-        Dashboard candidateDashboard = new Dashboard(null, month, year, true, userService.getCurrentLoggedUser().getId());
+        Dashboard candidateDashboard = new Dashboard(null, month, year, true, userId);
         Dashboard savedDashboard = dashboardRepo.save(candidateDashboard);
         System.out.println("[DashboardService] Copying CostAnalytics...");
         copyCostAnalytics(closestDashboard, savedDashboard);
@@ -119,15 +121,16 @@ public class DashboardServiceImpl implements DashboardService{
         System.out.println("Saved new CostAnalytic: " + savedCostAnalytic);
     }
 
-    private Dashboard findClosestDashboard(final int year, final int month) throws ValidationCollectionException {
-        // List<Dashboard> dashboards = dashboardRepo.findAll(Sort.by(Sort.Direction.ASC, "year", "month"));
-        System.out.println("Checking if there are records for this year... " + year);
-        List<Dashboard> dashboardsForCurrentYear = dashboardRepo.findByYearAndUserIdOrderByMonthAsc(year, userService.getCurrentLoggedUser().getId());
+    private Dashboard findClosestDashboard(final int year, final int month, final String userId) throws ValidationCollectionException {
+        System.out.println("Checking if there are records for this year: " + year + ", month: " + month);
+        List<Dashboard> dashboardsForCurrentYear = dashboardRepo.findByYearAndUserIdOrderByMonthAsc(year, userId);
+        System.out.println("Found dashboardsForCurrentYear: " + dashboardsForCurrentYear);
         if(month == 1 || dashboardsForCurrentYear.isEmpty()) {
-            System.out.println("Target month is 1-January OR there are none records in the current year - will search only in the past year...");
+            System.out.println("Target month is 1-January OR there are none records in the current year - " +
+                    "will search only in the past year...");
             System.out.println("Getting only the last year records: " + (year -1));
-            List<Dashboard> byYear = dashboardRepo.findByYearOrderByMonthDesc(year - 1);
-            System.out.println("found by year: " + byYear);
+            List<Dashboard> byYear = dashboardRepo.findByYearAndUserIdOrderByMonthDesc(year - 1, userId);
+            System.out.println("found by year for the pass year: " + byYear);
             if(byYear.isEmpty()){
                 throw new ValidationCollectionException("Unable to fetch data from the past 1 year. Check with Admin");
             }
@@ -146,8 +149,10 @@ public class DashboardServiceImpl implements DashboardService{
             }
         }
 
-        System.out.println("Getting the last closest dashboard for month: " + closestMonthInCurrentYear + ", year: " + year);
-        List<Dashboard> byYearAndMonth = dashboardRepo.findByYearAndMonth(year, closestMonthInCurrentYear);
+        System.out.println("Getting the last closest dashboard complete. Result is month: " +
+                closestMonthInCurrentYear + ", year: " + year);
+        List<Dashboard> byYearAndMonth = dashboardRepo.findByYearAndMonthAndUserId(year, closestMonthInCurrentYear,
+                userId);
 
         System.out.println("[DashboardService] Getting the last closest dashboard: " + byYearAndMonth);
         return byYearAndMonth.get(0);

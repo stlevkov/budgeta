@@ -15,7 +15,6 @@
 package com.budgeta.sdk.api.service;
 
 import com.budgeta.sdk.api.exception.ValidationCollectionException;
-import com.budgeta.sdk.api.model.BalanceTransaction;
 import com.budgeta.sdk.api.model.CostAnalytic;
 import com.budgeta.sdk.api.model.Dashboard;
 import com.budgeta.sdk.api.repository.*;
@@ -23,9 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.validation.ConstraintViolationException;
-import java.math.BigDecimal;
-import java.time.YearMonth;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,6 +38,8 @@ public class CostAnalyticServiceImpl implements CostAnalyticService {
     private UnexpectedRepository unexpectedRepository;
     @Autowired
     private DashboardRepository dashboardRepository;
+    @Autowired
+    private UserService userService;
 
     @Override
     public void createCostAnalytic(CostAnalytic costAnalytic) throws ConstraintViolationException, ValidationCollectionException {
@@ -62,7 +60,7 @@ public class CostAnalyticServiceImpl implements CostAnalyticService {
     @Override
     public CostAnalytic getCurrentCostAnalytic(final int currentYear, final int currentMonth) throws ValidationCollectionException {
 
-        List<Dashboard> dashboards = dashboardRepository.findByYearAndMonth(currentYear, currentMonth);
+        List<Dashboard> dashboards = dashboardRepository.findByYearAndMonthAndUserId(currentYear, currentMonth, userService.getCurrentLoggedUser().getId());
         if(dashboards.size() == 1) {
             final String dashboardId = dashboards.get(0).getId();
             List<CostAnalytic> costAnalytics = costAnalyticRepo.findByDashboardId(dashboardId);
