@@ -91,7 +91,7 @@ public class DashboardController {
     public ResponseEntity<?> getDashboardByYearAndMonth(
             @PathVariable("year") int year, @PathVariable("month") int month) {
         System.out.println("[GET][Dashboard] GetDashboardsByYearAndMonth called with Year: " + year + " and Month: " + month);
-        List<Dashboard> dashboards = dashboardRepository.findByYearAndMonth(year, month);
+        List<Dashboard> dashboards = dashboardRepository.findByYearAndMonthAndUserId(year, month, userService.getCurrentLoggedUser().getId());
         List<Setting> settings = settingRepository.findAll();
         //TODO replace the body response message with object of type BudgetaError
         System.out.println("Called for user: " + userService.getCurrentLoggedUser());

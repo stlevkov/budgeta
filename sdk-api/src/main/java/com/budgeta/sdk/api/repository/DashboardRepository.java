@@ -21,7 +21,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.List;
 
 public interface DashboardRepository extends MongoRepository<Dashboard, String> {
-    List<Dashboard> findByYearAndMonth(int year, int month);
+    List<Dashboard> findByYearAndMonthAndUserId(int year, int month, String userId);
 
     /**
      * The aggregation query will group Expenses, Unexpecteds and Savings for each month based on the dashboardId association.
@@ -45,7 +45,7 @@ public interface DashboardRepository extends MongoRepository<Dashboard, String> 
     })
     List<Dashboard> getAggregatedDashboards();
 
-    List<Dashboard> findByYearOrderByMonthDesc(int i);
+    List<Dashboard> findByYearAndUserIdOrderByMonthDesc(int year, String userId);
 
     List<Dashboard> findByYear(int year);
 
