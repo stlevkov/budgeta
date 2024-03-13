@@ -14,6 +14,7 @@
  */
 package com.budgeta.sdk.api.model;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -25,7 +26,7 @@ import java.util.Date;
 @Getter
 @Setter
 @Document(collection = "balance_transactions")
-public class BalanceTransaction extends DocumentInfo {
+public class BalanceAccountTransaction extends DocumentInfo {
 
     public static final String DEPOSIT = "DEPOSIT";
     public static final String WITHDRAW = "WITHDRAW";
@@ -36,8 +37,11 @@ public class BalanceTransaction extends DocumentInfo {
     @NotNull
     private String type;
 
-    public BalanceTransaction(String id, @NotNull String name, @NotNull String description, @NotNull BigDecimal value,
-                              Date updatedAt, String type, @NotNull String dashboardId) {
+    @NotNull
+    private BalanceAccount balanceAccount;
+
+    public BalanceAccountTransaction(String id, @NotNull String name, @NotNull String description, @NotNull BigDecimal value,
+                                     Date updatedAt, @NotNull String type, @NotNull BalanceAccount balanceAccount, @NotNull String dashboardId) {
         super(id, name, description, value, updatedAt, dashboardId);
         this.type = type;
     }

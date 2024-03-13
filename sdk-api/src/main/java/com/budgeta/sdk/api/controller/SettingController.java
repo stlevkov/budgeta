@@ -25,7 +25,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -61,11 +60,11 @@ public class SettingController {
     private DashboardRepository dashboardRepository;
 
     @Autowired
-    private BalanceRepository balanceRepository;
+    private BalanceAccountTransactionRepository balanceAccountTransactionRepository;
 
     @GetMapping("/api/settings")
     public ResponseEntity<?> getAll() {
-        System.out.println("[GET][SETTING] find all called");
+        System.out.println("[GET][Setting] find all called");
         List<Setting> settings = settingRepository.findByUserId(userService.getCurrentLoggedUser().getId());
         if(settings.isEmpty()) {
             return new ResponseEntity<>("No settings found. Initial setting needs to be created for the current user", HttpStatus.BAD_REQUEST);
@@ -75,7 +74,7 @@ public class SettingController {
 
     @GetMapping("/api/settings/init_dashboard")
     public ResponseEntity<?> createInitDashboard() {
-        System.out.println("[GET][SETTING] Create Init Dashboard");
+        System.out.println("[GET][Setting] Create Init Dashboard");
         Setting setting = null;
         try {
             setting = settingService.createInitDatabaseSetup();
@@ -86,27 +85,27 @@ public class SettingController {
         return new ResponseEntity<>(setting, HttpStatus.OK);
     }
 
-    @GetMapping("/api/settings/fabric_defaults")
+    @GetMapping("/admin/api/settings/fabric_defaults")
     public ResponseEntity<?> fabricDefaults() {
         // TODO - Remove only the user associated resources, not all of them
-        System.out.println("[GET][SETTING] Fabric Defaults. This will remove all data from the DB");
+        System.out.println("[GET][Setting] Fabric Defaults. This will remove all data from the DB");
         dashboardRepository.deleteAll();
         settingRepository.deleteAll();
         costAnalyticRepository.deleteAll();
         expenseRepository.deleteAll();
         incomeRepository.deleteAll();
         unexpectedRepository.deleteAll();
-        balanceRepository.deleteAll();
+        balanceAccountTransactionRepository.deleteAll();
         System.out.println("Current user: " + userService.getCurrentLoggedUser());
         Setting newSetting = new Setting(null,false, userService.getCurrentLoggedUser().getId());
         settingRepository.save(newSetting);
         return new ResponseEntity<>("All data from DB erased", HttpStatus.OK);
     }
 
-    @GetMapping("/api/setting/fill_dummy_data")
+    @GetMapping("/admin/api/setting/fill_dummy_data")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> fillDummyData() {
-        System.out.println("[GET][SETTING][FILL DUMMY DATA] filling database with several dashboards");
+        System.out.println("[GET][Setting] filling database with several dashboards");
         Dashboard dashboard1 = new Dashboard();
         dashboard1.setYear(2023);
         dashboard1.setMonth(10);

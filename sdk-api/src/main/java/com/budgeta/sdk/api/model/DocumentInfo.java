@@ -44,8 +44,8 @@ public abstract class DocumentInfo {
     private Date updatedAt;
 
     /**
-     * Provides reference to its corresponding dashboard
+     * Provides reference to its corresponding dashboard. Can be null if only extended by specific classes
      */
-    @NotNull
+   // @NotNull TODO - add conditional NotNull check
     private String dashboardId;
 }

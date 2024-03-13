@@ -27,7 +27,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @ToString
 @Document(collection = "cost_analytics")
-public class CostAnalytic {
+public class CostAnalytic { // TODO can simply extend DocumentInfo, fix it
 
     @Id
     private String id;
@@ -68,7 +68,7 @@ public class CostAnalytic {
      * automatically at the end of each month or manually updated by user.
      */
     @NotNull
-    private BigDecimal balanceAccount; // TODO shall be separate model and multiple accounts should be possible
+    private BigDecimal balanceAccount; // TODO replaced by BalanceAccount, remove it as its no longer used
 
     /**
      * Provides reference to its corresponding dashboard

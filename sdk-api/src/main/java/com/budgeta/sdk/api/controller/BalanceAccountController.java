@@ -15,12 +15,13 @@
 package com.budgeta.sdk.api.controller;
 
 import com.budgeta.sdk.api.exception.ValidationCollectionException;
-import com.budgeta.sdk.api.model.BalanceTransaction;
-import com.budgeta.sdk.api.repository.BalanceRepository;
-import com.budgeta.sdk.api.service.BalanceService;
+import com.budgeta.sdk.api.model.BalanceAccount;
+import com.budgeta.sdk.api.repository.BalanceAccountRepository;
+import com.budgeta.sdk.api.service.BalanceAccountService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.ConstraintViolationException;
@@ -29,32 +30,33 @@ import java.util.Optional;
 
 @RestController
 @AllArgsConstructor
-public class BalanceController {
+public class BalanceAccountController {
 
-    private BalanceRepository balanceRepository;
+    private BalanceAccountRepository balanceAccountRepository;
 
-    private BalanceService balanceService;
+    private BalanceAccountService balanceAccountService;
 
-    @GetMapping("/api/balanceAccount/delete_all")
+    @GetMapping("/admin/api/balanceAccount/delete_all")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteAll(){
-         balanceRepository.deleteAll();
-        return new ResponseEntity<>("All transactions deleted", HttpStatus.OK);
+         balanceAccountRepository.deleteAll();
+        return new ResponseEntity<>("All balance accounts deleted", HttpStatus.OK);
     }
 
     @GetMapping("/api/balanceAccount")
-    public ResponseEntity<?> GetBalanceAccount(){
-        System.out.println("GetBalanceAccount called");
-        List<BalanceTransaction> balanceTransactions = balanceRepository.findAll();
-        if(!balanceTransactions.isEmpty()) {
-            return new ResponseEntity<>(balanceTransactions, HttpStatus.OK);
+    public ResponseEntity<?> getBalanceAccounts(){
+        System.out.println("[GET][BalanceAccount] GetBalanceAccounts called");
+        List<BalanceAccount> balanceAccounts = balanceAccountRepository.findAll();
+        if(!balanceAccounts.isEmpty()) {
+            return new ResponseEntity<>(balanceAccounts, HttpStatus.OK);
         }
-        return new ResponseEntity<>("No BalanceTransactions available", HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>("No BalanceAccounts available", HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/api/balanceAccount/{id}")
-    public ResponseEntity<?> getBalanceTransaction(@PathVariable("id") String id){
-        System.out.println("Get single Balance Account Transaction");
-        Optional<BalanceTransaction> balanceTransaction = balanceRepository.findById(id);
+    public ResponseEntity<?> getBalanceAccount(@PathVariable("id") String id){
+        System.out.println("[GET][BalanceAccount] Get single Balance Account");
+        Optional<BalanceAccount> balanceTransaction = balanceAccountRepository.findById(id);
         if(balanceTransaction.isPresent()) {
             return new ResponseEntity<>(balanceTransaction.get(), HttpStatus.OK);
         }
@@ -62,11 +64,11 @@ public class BalanceController {
     }
 
     @PostMapping("/api/balanceAccount")
-    public ResponseEntity<?> createBalanceTransaction(@RequestBody BalanceTransaction balanceTransaction){
-        System.out.println("[POST][BalanceAccount] Create new Balance transaction: " + balanceTransaction);
+    public ResponseEntity<?> createBalanceTransaction(@RequestBody BalanceAccount balanceAccount){
+        System.out.println("[POST][BalanceAccount] Create new Balance account: " + balanceAccount);
         try{
-            balanceService.createBalanceTransaction(balanceTransaction);
-            return new ResponseEntity<>(balanceTransaction, HttpStatus.CREATED);
+            balanceAccountService.createBalanceAccount(balanceAccount);
+            return new ResponseEntity<>(balanceAccount, HttpStatus.CREATED);
         } catch (ConstraintViolationException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         } catch (ValidationCollectionException e) {

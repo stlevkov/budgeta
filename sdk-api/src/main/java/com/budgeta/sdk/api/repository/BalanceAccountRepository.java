@@ -1,6 +1,6 @@
 /*
     Budgeta Application
-    Copyright (C) 2022  S.K.Levkov, K.K.Ivanov
+    Copyright (C) 2023  S.Levkov, K.Ivanov
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -12,13 +12,17 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
  */
-package com.budgeta.sdk.api.service;
+package com.budgeta.sdk.api.repository;
 
-import com.budgeta.sdk.api.exception.ValidationCollectionException;
-import com.budgeta.sdk.api.model.BalanceTransaction;
+import com.budgeta.sdk.api.model.BalanceAccount;
+import com.budgeta.sdk.api.model.BalanceAccountTransaction;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 
-import javax.validation.ConstraintViolationException;
+import java.util.List;
+import java.util.Optional;
 
-public interface BalanceService {
-    void createBalanceTransaction(BalanceTransaction balanceTransaction) throws ConstraintViolationException, ValidationCollectionException;
+public interface BalanceAccountRepository extends MongoRepository<BalanceAccount, String> {
+
+    List<BalanceAccount> findByUserId(String userId);
 }

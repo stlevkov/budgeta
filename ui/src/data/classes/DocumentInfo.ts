@@ -17,7 +17,7 @@ class DocumentInfo {
     public description: string,
     public value: number,
     public updatedAt: Date | null,
-    public dashboardId: string
+    public dashboardId: string | null
   ) {}
 }
 
