@@ -11,6 +11,7 @@ export default {
     expensesEndpoint: 'expenses',
     unexpectedsEndpoint: 'unexpecteds',
     balanceAccountEndpoint: 'balanceAccount',
+    balanceAccountTransactionEndpoint: 'balanceAccount/transaction',
     dashboardEndpoint: 'dashboards',
     dashboardMinEndpoint: 'dashboards/min',
     dashboardAggregatedEndpoint: 'dashboards/aggregation',

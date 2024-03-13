@@ -30,14 +30,14 @@ let balanceTransaction = {
   type: {},
 };
 
-export default function CreateBalanceTransactionDialog({balanceAccount}) {
+export default function CreateBalanceTransactionDialog({balanceAccountState, balanceAccount}) {
   const [open, setOpen] = React.useState(false);
   const [description, setDescription] = React.useState('');
   const [amount, setAmount] = React.useState(0);
   const [type, setType] = React.useState(BalanceTransactionType.DEPOSIT);
 
   const newBalanceTransaction = (balanceTransaction) => {
-    balanceAccount.newTransaction(balanceTransaction);
+    balanceAccountState.newTransaction(balanceTransaction, balanceAccount);
   };
 
   const clearStates = () => {
@@ -68,11 +68,10 @@ export default function CreateBalanceTransactionDialog({balanceAccount}) {
     clearStates();
   };
   
-
   return (
-    <>
+    <div>
       <Tooltip title={"New Balance Transcation"} placement="top">
-        <IconButton onClick={handleClickOpen} style={{ float: "right", marginTop: "-40px" }} color="primary" aria-label="add income" size="small">
+        <IconButton onClick={handleClickOpen} color="primary" aria-label="add income" size="small">
           <AccountBalanceWalletIcon fontSize="large" />
         </IconButton>
       </Tooltip>
@@ -110,6 +109,6 @@ export default function CreateBalanceTransactionDialog({balanceAccount}) {
           <Button onClick={handleClose}>Save</Button>
         </DialogActions>
       </Dialog>
-    </>
+    </div>
   );
 }

@@ -2,6 +2,7 @@ package com.budgeta.sdk.api.model;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotNull;
@@ -31,4 +32,7 @@ public class User {
 
     @NotNull
     private RegisterProvider registerProvider;
+
+    @DBRef
+    private List<BalanceAccount> balanceAccounts;
 }

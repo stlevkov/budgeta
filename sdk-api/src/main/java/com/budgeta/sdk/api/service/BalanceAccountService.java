@@ -15,23 +15,20 @@
 package com.budgeta.sdk.api.service;
 
 import com.budgeta.sdk.api.exception.ValidationCollectionException;
-import com.budgeta.sdk.api.model.BalanceTransaction;
-import com.budgeta.sdk.api.repository.BalanceRepository;
-import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
+import com.budgeta.sdk.api.model.BalanceAccount;
 
 import javax.validation.ConstraintViolationException;
-import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
-@Service
-@AllArgsConstructor
-public class BalanceServiceImpl implements BalanceService {
+public interface BalanceAccountService {
 
-    private BalanceRepository balanceRepository;
+    List<BalanceAccount> getBalanceAccounts();
+    void createBalanceAccount(BalanceAccount balanceAccount) throws ConstraintViolationException, ValidationCollectionException;
 
-    @Override
-    public void createBalanceTransaction(BalanceTransaction balanceTransaction) throws ConstraintViolationException, ValidationCollectionException {
-        balanceTransaction.setUpdatedAt(new Date());
-        balanceRepository.save(balanceTransaction);
-    }
+    Optional<BalanceAccount> getPrimaryBalanceAccount() throws ConstraintViolationException, ValidationCollectionException;
+
+    Optional<BalanceAccount> getBalanceAccount(String accountId);
+
+    void updateBalanceAccount(BalanceAccount balanceAccount);
 }

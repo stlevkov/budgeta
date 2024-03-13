@@ -20,13 +20,12 @@ import com.budgeta.sdk.api.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import javax.validation.ConstraintViolationException;
 import java.util.Date;
 import java.util.List;
 
 @Service
-public class DashboardServiceImpl implements DashboardService{
+public class DashboardServiceImpl implements DashboardService {
 
     @Autowired
     private DashboardRepository dashboardRepo;
@@ -41,7 +40,10 @@ public class DashboardServiceImpl implements DashboardService{
     private IncomeRepository incomeRepository;
 
     @Autowired
-    private BalanceRepository balanceRepository;
+    private BalanceAccountTransactionRepository balanceAccountTransactionRepository;
+
+    @Autowired
+    private BalanceAccountService balanceAccountService;
 
     @Autowired
     private UserService userService;
@@ -56,7 +58,7 @@ public class DashboardServiceImpl implements DashboardService{
     @Override
     public Dashboard getCurrentDashboard(int currentYear, int currentMonth) throws ConstraintViolationException, ValidationCollectionException {
         List<Dashboard> dashboards = dashboardRepo.findByYearAndMonthAndUserId(currentYear, currentMonth, userService.getCurrentLoggedUser().getId());
-        if(dashboards.size() == 1) {
+        if (dashboards.size() == 1) {
             return dashboards.get(0);
         } else {
             throw new ValidationCollectionException("Unable to found dashboards with given year, month: " + currentYear + ", " + currentMonth);
@@ -107,31 +109,36 @@ public class DashboardServiceImpl implements DashboardService{
         });
     }
 
-    private void copyCostAnalytics(final Dashboard closestDashboard, final Dashboard savedDashboard){
+    private void copyCostAnalytics(final Dashboard closestDashboard, final Dashboard savedDashboard) {
         CostAnalytic costAnalytic = costAnalyticRepository.findByDashboardId(closestDashboard.getId()).get(0);
         costAnalytic.setDashboardId(savedDashboard.getId()); // assign the new dashboard id
         costAnalytic.setId(null); // clear the entity id to trigger new object creation
         costAnalytic.setBalanceAccount(costAnalytic.getBalanceAccount().add(costAnalytic.getTargetSaving())); // Increasing the balance account
         CostAnalytic savedCostAnalytic = costAnalyticRepository.save(costAnalytic);
         System.out.println("Creating new balance transaction for the copy process...");
-        BalanceTransaction transaction = new BalanceTransaction(null, "Increasing Amount",
-                BalanceTransaction.SYSTEM_UPDATE_DESCR, costAnalytic.getTargetSaving(), new Date(),
-                BalanceTransaction.SYSTEM_UPDATE, savedDashboard.getId());
-        balanceRepository.save(transaction);
-        System.out.println("Saved new CostAnalytic: " + savedCostAnalytic);
+        BalanceAccountTransaction transaction;
+        try {
+            transaction = new BalanceAccountTransaction(null, "Increasing Amount",
+                    BalanceAccountTransaction.SYSTEM_UPDATE_DESCR, costAnalytic.getTargetSaving(), new Date(),
+                    BalanceAccountTransaction.SYSTEM_UPDATE, balanceAccountService.getPrimaryBalanceAccount().get(), savedDashboard.getId());
+            balanceAccountTransactionRepository.save(transaction);
+            System.out.println("Saved new CostAnalytic: " + savedCostAnalytic);
+        } catch (ValidationCollectionException e) {
+            System.out.println("ERROR: " + e.getMessage());
+        }
     }
 
     private Dashboard findClosestDashboard(final int year, final int month, final String userId) throws ValidationCollectionException {
         System.out.println("Checking if there are records for this year: " + year + ", month: " + month);
         List<Dashboard> dashboardsForCurrentYear = dashboardRepo.findByYearAndUserIdOrderByMonthAsc(year, userId);
         System.out.println("Found dashboardsForCurrentYear: " + dashboardsForCurrentYear);
-        if(month == 1 || dashboardsForCurrentYear.isEmpty()) {
+        if (month == 1 || dashboardsForCurrentYear.isEmpty()) {
             System.out.println("Target month is 1-January OR there are none records in the current year - " +
                     "will search only in the past year...");
-            System.out.println("Getting only the last year records: " + (year -1));
+            System.out.println("Getting only the last year records: " + (year - 1));
             List<Dashboard> byYear = dashboardRepo.findByYearAndUserIdOrderByMonthDesc(year - 1, userId);
             System.out.println("found by year for the pass year: " + byYear);
-            if(byYear.isEmpty()){
+            if (byYear.isEmpty()) {
                 throw new ValidationCollectionException("Unable to fetch data from the past 1 year. Check with Admin");
             }
             System.out.println("Returning the last closest dashboard: " + byYear.get(0));
@@ -141,7 +148,7 @@ public class DashboardServiceImpl implements DashboardService{
 
         for (Dashboard dashboard : dashboardsForCurrentYear) {
             // 1 2 3 4 - - (7) - 9 10 11
-            if(dashboard.getMonth() < month) {
+            if (dashboard.getMonth() < month) {
                 closestMonthInCurrentYear = dashboard.getMonth();
             } else {
                 System.out.println("Found closest month: " + closestMonthInCurrentYear);

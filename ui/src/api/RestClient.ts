@@ -86,9 +86,11 @@ export default class RestClient {
    * @param optional - notifySuccess, callback function which will be called if the operation passes
    * and providing the created object.
    */
-  async genericCreate(dto: DocumentInfo | any, notifySuccess?: (dto: DocumentInfo) => void): Promise<void> {
+  async genericCreate(dto: DocumentInfo | any, notifySuccess?: (dto: DocumentInfo) => void, pathVariables?: any[]): Promise<void> {
+    const uri = config.server.uriAPI + embedPathVariables(pathVariables, this.endpoint);
+    console.log("[POST][" + this.endpoint + "]: URI: ", uri);
     axios
-      .post(`${config.server.uriAPI}${this.endpoint}`, dto, {
+      .post(uri, dto, {
         withCredentials: true,
         headers: {
           "Content-Type": "application/json",

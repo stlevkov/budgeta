@@ -22,11 +22,13 @@ import Tooltip from "@mui/material/Tooltip";
 import ViewIncomeDialog from "../../dialogs/ViewIncomesDialog";
 import Grid from "@mui/material/Unstable_Grid2";
 import CreateIncomeDialog from "../../dialogs/CreateIncomeDialog";
+import CreateBalanceAccountDialog from "../../dialogs/CreateBalanceAccountDialog";
 import Divider from "@mui/material/Divider";
 import TextField from "@mui/material/TextField";
 import { CostAnalyticContext, IncomesContext, ExpensesContext, BalanceAccountContext, UnexpectedContext } from "../../../utils/AppUtil";
 import CreateBalanceTransactionDialog from "../../dialogs/CreateBalanceTransactionDialog";
 import { Skeleton } from "@mui/material";
+import ViewBalanceAccountDialog from "../../dialogs/ViewBalanceAccountsDialog";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -70,6 +72,7 @@ export default function CostAnalyticStack() {
   const [targetSaving, setTargetSaving] = useState(0);
   const [sumIncomes, setSumIncomes] = useState(0);
   const [sumAllExpenses, setSumAllExpenses] = useState(0);
+  const [sumAccounts, setSumAccounts] = useState("");
 
   const [loading, setLoading] = useState(true);
 
@@ -78,6 +81,11 @@ export default function CostAnalyticStack() {
     setLoading(false);
     setTargetSaving(newState.targetSaving);
     setCostAnalytic(newState);
+  };
+
+  const handleAccountStateChange = () => {
+    console.log("[CostAnalyticsStack] Balance Account state has changed");
+    setSumAccounts(balanceAccountState.getSumAccounts());
   };
 
   const handleIncomesChange = () => {
@@ -100,19 +108,22 @@ export default function CostAnalyticStack() {
     incomesState.addListener(handleIncomesChange);
     unexpectedsState.addListener(handleUnexpectedsChange);
     expensesState.addListener(handleExpensesChange);
-    
+    balanceAccountState.addListener(handleAccountStateChange);
+
     handleCostAnalyticStateChange(costAnalyticState.getState());
     handleIncomesChange();
     handleUnexpectedsChange();
     handleExpensesChange();
+    handleAccountStateChange();
 
     return () => { // Cleanup function to remove the listener when the component unmounts
       costAnalyticState.removeListener(handleCostAnalyticStateChange);
       incomesState.removeListener(handleIncomesChange);
       unexpectedsState.removeListener(handleUnexpectedsChange);
       expensesState.removeListener(handleExpensesChange);
+      balanceAccountState.removeListener(handleAccountStateChange);
     };
-  }, [costAnalyticState, incomesState, unexpectedsState, expensesState]);
+  }, [costAnalyticState, incomesState, unexpectedsState, expensesState, balanceAccountState]);
 
   const handleKeyDown = (targetSaving, event) => { // edit target unexpected
     if (event.key === "Enter") {
@@ -151,87 +162,85 @@ export default function CostAnalyticStack() {
 
 
         <Grid xs={12} sm={6} md={4} lg={2.3}>
-        {loading ? (
+          {loading ? (
             <Skeleton sx={{ bgcolor: 'grey.500' }} variant="rounded" height={130} />
           ) : (
-          <Item style={{ height: "120px" }}>
-            <Tooltip title={<Typography fontSize="1.3em">Expenses and Unexpecteds sum</Typography>} placement="top">
-              <Typography style={{ float: "left", fontWeight: "bold" }} component="p" color="orange" fontSize="1.5em" variant="standard" align="left">
-                ALL EXPENSES
+            <Item style={{ height: "120px" }}>
+              <Tooltip title={<Typography fontSize="1.3em">Expenses and Unexpecteds sum</Typography>} placement="top">
+                <Typography style={{ float: "left", fontWeight: "bold" }} component="p" color="orange" fontSize="1.5em" variant="standard" align="left">
+                  ALL EXPENSES
+                </Typography>
+              </Tooltip>
+              <Divider style={{ width: "100%", marginTop: "8px", marginBottom: "8px" }} />
+              <Typography style={{ marginTop: "20px", width: "fit-content" }} component="p" color="#b0b0b0" fontSize="3.3em" align="left">
+                {sumAllExpenses}
               </Typography>
-            </Tooltip>
-            <Divider style={{ width: "100%", marginTop: "8px", marginBottom: "8px" }} />
-            <Typography style={{ marginTop: "20px", width: "fit-content" }} component="p" color="#b0b0b0" fontSize="3.3em" align="left">
-              {sumAllExpenses}
-            </Typography>
-          </Item>
+            </Item>
           )}
         </Grid>
 
         <Grid xs={12} sm={6} md={4} lg={2.3}>
-        {loading ? (
+          {loading ? (
             <Skeleton sx={{ bgcolor: 'grey.500' }} variant="rounded" height={130} />
           ) : (
-          <Item style={{ height: "120px" }}>
-            <Tooltip title={<Typography fontSize="1.3em">All unexpecteds at one place</Typography>} placement="top">
-              <Typography style={{
-                float: "left", fontWeight: "bold", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
-                maxWidth: "100%", // Ensure the text doesn't overflow the box
-              }}
-                component="p" color="orange" fontSize="1.5em" variant="standard" align="left" >
-                BALANCE ACCOUNT
+            <Item style={{ height: "120px" }}>
+              <Tooltip title={<Typography fontSize="1.3em">All savings places, jars, piggy banks, bank accounts etc</Typography>} placement="top">
+                <Typography style={{
+                  float: "left", fontWeight: "bold", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+                  maxWidth: "100%",
+                }} component="p" color="orange" fontSize="1.5em" variant="standard" align="left">
+                  SAVINGS
+                </Typography>
+              </Tooltip>
+
+              <ViewBalanceAccountDialog balanceAccountState={balanceAccountState} />
+              <Divider style={{ width: "100%", marginTop: "8px", marginBottom: "8px" }} />
+              <Typography style={{ marginTop: "20px", width: "fit-content" }} variant="standard" component="p" color="#b0b0b0" fontSize="3.3em" align="left">
+                {sumAccounts === 0 ? 'none' : sumAccounts}
               </Typography>
-            </Tooltip>
-
-            <Divider style={{ width: "100%", marginTop: "8px", marginBottom: "8px" }} />
-            <Typography style={{ marginTop: "20px", width: "fit-content" }} variant="standard" component="p" color="#b0b0b0" fontSize="3.3em" align="left">
-              {costAnalytic.balanceAccount}
-            </Typography>
-
-            <CreateBalanceTransactionDialog balanceAccount={balanceAccountState} />
-          </Item>
+              <CreateBalanceAccountDialog balanceAccount={balanceAccountState} />
+            </Item>
           )}
         </Grid>
 
-
         <Grid xs={12} sm={6} md={4} lg={2.3}>
-        {loading ? (
+          {loading ? (
             <Skeleton sx={{ bgcolor: 'grey.500' }} variant="rounded" height={130} />
           ) : (
-          <Item style={{ height: "120px" }}>
-            <Tooltip title={<Typography fontSize="1.3em">Savings each month</Typography>} placement="top">
-              <Typography style={{ float: "left", fontWeight: "bold" }} component="p" color="orange" fontSize="1.5em" variant="standard" align="left">
-                TARGET SAVING
-              </Typography>
-            </Tooltip>
-            <Divider style={{ width: "100%", marginTop: "8px", marginBottom: "8px" }} />
-            <TargetSavingEditable variant="standard" InputProps={{ disableUnderline: true }}
-              onKeyDown={(event) => handleKeyDown(targetSaving, event)}
-              value={targetSaving}
-              onChange={(e) => {
-                onTargetSavingChange(e);
-              }}
-            />
-          </Item>
+            <Item style={{ height: "120px" }}>
+              <Tooltip title={<Typography fontSize="1.3em">Savings each month</Typography>} placement="top">
+                <Typography style={{ float: "left", fontWeight: "bold" }} component="p" color="orange" fontSize="1.5em" variant="standard" align="left">
+                  TARGET MONTHLY
+                </Typography>
+              </Tooltip>
+              <Divider style={{ width: "100%", marginTop: "8px", marginBottom: "8px" }} />
+              <TargetSavingEditable variant="standard" InputProps={{ disableUnderline: true }}
+                onKeyDown={(event) => handleKeyDown(targetSaving, event)}
+                value={targetSaving}
+                onChange={(e) => {
+                  onTargetSavingChange(e);
+                }}
+              />
+            </Item>
           )}
         </Grid>
 
         <Grid xs={12} sm={6} md={4} lg={2.8}>
-        {loading ? (
+          {loading ? (
             <Skeleton sx={{ bgcolor: 'grey.500' }} variant="rounded" height={130} />
           ) : (
-          <Item style={{ height: "120px", backgroundColor: "#07233e" }}>
-            <Tooltip title={<Typography fontSize="1.3em">Daily recommended - try not to exceed</Typography>} placement="top">
-              <Typography style={{ fontWeight: "bold" }} component="p" align="left" color="orange" fontSize="1.5em" variant="standard">
-                DAILY TARGET
-              </Typography>
-            </Tooltip>
-            <Divider style={{ width: "100%", marginTop: "0px", marginBottom: "8px" }} />
+            <Item style={{ height: "120px", backgroundColor: "#07233e" }}>
+              <Tooltip title={<Typography fontSize="1.3em">Daily recommended - try not to exceed</Typography>} placement="top">
+                <Typography style={{ fontWeight: "bold" }} component="p" align="left" color="orange" fontSize="1.5em" variant="standard">
+                  DAILY TARGET
+                </Typography>
+              </Tooltip>
+              <Divider style={{ width: "100%", marginTop: "0px", marginBottom: "8px" }} />
 
-            <Typography style={{ marginTop: "20px", width: "100%" }} component="p" color="#b0b0b0" fontSize="3.3em" align="center">
-              {costAnalytic.dailyRecommended < 0 ? 'no funds' : costAnalytic.dailyRecommended}
-            </Typography>
-          </Item>
+              <Typography style={{ marginTop: "20px", width: "100%" }} component="p" color="#b0b0b0" fontSize="3.3em" align="center">
+                {costAnalytic.dailyRecommended < 0 ? 'no funds' : costAnalytic.dailyRecommended}
+              </Typography>
+            </Item>
           )}
         </Grid>
       </Grid>

@@ -15,14 +15,10 @@
 package com.budgeta.sdk.api.service;
 
 import com.budgeta.sdk.api.exception.ValidationCollectionException;
-import com.budgeta.sdk.api.model.CostAnalytic;
+import com.budgeta.sdk.api.model.BalanceAccountTransaction;
 
 import javax.validation.ConstraintViolationException;
 
-public interface CostAnalyticService {
-    void createCostAnalytic(CostAnalytic costAnalytic) throws ConstraintViolationException, ValidationCollectionException;
-
-    void updateCostAnalytic(CostAnalytic costAnalytic) throws ConstraintViolationException, ValidationCollectionException;
-
-    CostAnalytic getCurrentCostAnalytic(int year, int month) throws ValidationCollectionException;
+public interface BalanceAccountTransactionService {
+    void createBalanceTransaction(BalanceAccountTransaction balanceAccountTransaction) throws ConstraintViolationException, ValidationCollectionException;
 }

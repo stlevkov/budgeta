@@ -14,7 +14,6 @@
  */
 package com.budgeta.sdk.api.service;
 
-import com.budgeta.sdk.api.exception.ValidationCollectionException;
 import com.budgeta.sdk.api.model.*;
 import com.budgeta.sdk.api.repository.CostAnalyticRepository;
 import com.budgeta.sdk.api.repository.DashboardRepository;
@@ -44,7 +43,7 @@ public class SettingServiceImpl implements SettingService {
     UserService userService;
 
     @Override
-    public Setting createInitDatabaseSetup() throws ConstraintViolationException, ValidationCollectionException {
+    public Setting createInitDatabaseSetup() throws ConstraintViolationException {
         User currentLoggedUser = userService.getCurrentLoggedUser();
         Dashboard dashboard = dashboardRepository.save(new Dashboard(null, DateUtils.getCurrentMonth(), DateUtils.getCurrentYear(),
                 false, currentLoggedUser.getId()));

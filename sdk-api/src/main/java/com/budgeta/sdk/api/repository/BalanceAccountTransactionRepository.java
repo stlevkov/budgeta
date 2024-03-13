@@ -14,19 +14,17 @@
  */
 package com.budgeta.sdk.api.repository;
 
-import com.budgeta.sdk.api.model.BalanceTransaction;
-import com.budgeta.sdk.api.model.Expense;
-import com.budgeta.sdk.api.model.Income;
+import com.budgeta.sdk.api.model.BalanceAccountTransaction;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface BalanceRepository extends MongoRepository<BalanceTransaction, String> {
+public interface BalanceAccountTransactionRepository extends MongoRepository<BalanceAccountTransaction, String> {
 
     @Query("{name : ?0, dashboardId: ?1}")
-    Optional<BalanceTransaction> findByNameAndDashboardId(String name, String dashboardId);
+    Optional<BalanceAccountTransaction> findByNameAndDashboardId(String name, String dashboardId);
 
-    List<BalanceTransaction> findByDashboardId(String dashboardId);
+    List<BalanceAccountTransaction> findByDashboardId(String dashboardId);
 }

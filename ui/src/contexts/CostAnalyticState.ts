@@ -10,7 +10,7 @@ import UnexpectedState from "./UnexpectedState";
 import CostAnalytic from "../data/classes/CostAnalytic";
 import DashboardListener from "../data/interfaces/DashboardListener";
 import Dashboard from "../data/classes/Dashboard";
-import BalanceTransaction from "../data/classes/BalanceTransaction";
+import BalanceAccountTransaction from "../data/classes/BalanceAccountTransaction";
 import DashboardState from "./DashboardState";
 
 export default class CostAnalyticState implements DashboardListener, FactoryInitializable<CostAnalyticState>{
@@ -64,7 +64,7 @@ export default class CostAnalyticState implements DashboardListener, FactoryInit
   
   }
 
-  onChangeUpdateBalanceAccount(balanceTransaction: BalanceTransaction) {
+  onChangeUpdateBalanceAccount(balanceTransaction: BalanceAccountTransaction) {
     console.log("[CostAnalyticState] Update balance account with: ", balanceTransaction);
     if (balanceTransaction.type === 'WITHDRAW') {
       this.state.balanceAccount -= Number(balanceTransaction.value);
